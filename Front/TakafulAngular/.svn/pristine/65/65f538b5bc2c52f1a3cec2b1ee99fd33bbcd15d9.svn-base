@@ -1,0 +1,76 @@
+<div class="bg-light bg-opacity-25 shadow sidebar">
+  <ul class="sidebar-item">
+      <li class="">
+          <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" title="Dashboard">
+              <i class="fas fa-dashboard"></i>
+              <h3>Dashboard</h3>
+          </a>
+          <div class="dropdown-menu shadow-sm side-menu">
+              <h3>Dashboard</h3>
+              <ul class="p-0 first-menu">
+                  <li class=""><a href="#">page Name</a></li>
+              </ul>
+          </div>
+      </li>
+      <li class="">
+          <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" title="Setup">
+              <i class="fas fa-gear"></i>
+              <h3>Setup</h3>
+          </a>
+          <div class="dropdown-menu shadow-sm side-menu">
+              <h3>Setup</h3>
+              <ul class="p-0 first-menu">
+                  <li class=""><a href="New-Authentication.html">New Authentication</a></li>
+                  <li><a href="Sector-Nature.html">Sector Nature</a></li>
+                  <li><a href="Nature-Of-Work.html">Nature Of Work</a></li>
+                  <li><a href="Related-Action.html">Related Action</a></li>
+                  <li><a href="Level-Definition.html">Level Definition</a></li>
+                  <li><a href="Organization-Structure.html">Organization Structure</a></li>
+                  <li><a href="Organization-Hierarchy-Chart.html">Organization Hierarchy Chart</a></li>
+                  <li><a href="Purchasing-Policy.html">Purchasing Policy</a></li>
+                  <li><a href="Purchasing-Policy2.html">Purchasing Policy</a></li>
+              </ul>
+          </div>
+      </li>
+      <li class="">
+          <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" title="Transaction">
+              <i class="fas fa-file-invoice-dollar"></i>
+              <h3>Transaction</h3>
+          </a>
+          <div class="dropdown-menu shadow-sm side-menu">
+              <h3>Transaction</h3>
+              <ul class="p-0 first-menu">
+                  <li class=""><a href="#">page Name</a></li>
+              </ul>
+          </div>
+      </li>
+      <li>
+          <a href="#" class="" title="Report"><i class="dms-icon-report"></i>
+              <h3>Report</h3>
+          </a>
+      </li>
+  </ul>
+
+
+  <!-- <ul class="sidebar-item">
+    <li class="">
+      <a href="#" [ngClass]="translate.currentLang == 'ar' ? 'dropdown-toggle dropdown-toggle-ar' : 'dropdown-toggle'" data-bs-toggle="dropdown" aria-expanded="true" title="{{translate.currentLang == 'ar' ?  userPermissions[0].screenTypeArabic : userPermissions[0].screenTypeEnglish}}"><i class="dms-icon-setting"></i>
+        <h3>{{translate.currentLang == 'ar' ?  userPermissions[0].screenTypeArabic : userPermissions[0].screenTypeEnglish}}</h3>
+      </a>
+      <div class="dropdown-menu shadow-sm side-menu">
+        <h3>{{translate.currentLang == 'ar' ?  userPermissions[0].screenTypeArabic : userPermissions[0].screenTypeEnglish}}</h3>
+
+        <ul class="">
+              <ng-container *ngFor="let permission of userPermissions" >
+                <li [routerLinkActive]="['active']" (click)="closeToggle(permission.englishname)"
+                [ngStyle]="translate.currentLang == 'ar' ? { 'margin-left': '5px' } : {}"
+                ><a class="dropdown-item" routerLink="Employee/{{permission.screenName}}">
+                  {{translate.currentLang == 'ar' ?  permission.arabicname : permission.englishname}}</a></li>
+              </ng-container>
+            </ul>
+      </div>
+    </li>
+  </ul> -->
+</div>
+
+

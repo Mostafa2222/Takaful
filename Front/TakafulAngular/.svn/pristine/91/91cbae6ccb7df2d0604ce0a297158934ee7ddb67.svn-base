@@ -1,0 +1,24 @@
+import { Pipe, PipeTransform } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
+
+@Pipe({
+  name: 'numberFormat'
+})
+export class NumberFormatPipe implements PipeTransform {
+  constructor(private translateService: TranslateService) {}
+
+  transform(value: number): string {
+    const language = this.translateService.currentLang;
+    if (language === 'ar') {
+      return this.toArabicNumerals(value);
+    }
+    return value.toString();
+  }
+
+  private toArabicNumerals(value: number): string {
+    const arabicNumerals = '٠١٢٣٤٥٦٧٨٩';
+    return value.toString().split('').map(char => {
+      return arabicNumerals[parseInt(char, 10)] || char;
+    }).join('');
+  }
+}

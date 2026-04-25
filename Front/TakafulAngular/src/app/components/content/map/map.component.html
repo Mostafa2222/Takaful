@@ -1,0 +1,67 @@
+<div class="page">
+  <!-- Zones Panel -->
+  <aside class="zones-panel">
+    <h3>🗺️ مناطق التشغيل</h3>
+    <button
+      *ngFor="let z of zones"
+      (click)="highlightZone(z.zoneId)"
+      [class.active]="selectedZoneId === z.zoneId">
+      <span>{{ z.zoneName }}</span>
+      <i class="fa fa-location-dot"></i>
+    </button>
+  </aside>
+
+  <!-- Editor Panel -->
+  <aside class="editor-panel">
+    <button class="primary" (click)="enableDraw()">✏️ رسم منطقة جديدة</button>
+    <h3>➕ إضافة منطقة جديدة</h3>
+    <input type="number" [(ngModel)]="newZoneId" placeholder="Zone ID" />
+    <input type="text" [(ngModel)]="newZoneName" placeholder="اسم المنطقة" />
+    <textarea [(ngModel)]="newFeatureText" rows="8" placeholder="الصق GeoJSON Feature هنا"></textarea>
+    <button class="primary" (click)="addZoneFromFeatureText(newFeatureText)">إضافة المنطقة</button>
+    <button class="secondary" (click)="downloadGeoJson()">تحميل الملف بعد التحديث</button>
+  </aside>
+
+  <!-- <div class="zone-card" *ngIf="selectedZone">
+  <h4>{{ selectedZone.zoneName }}</h4>
+  <p>عدد العملاء: {{ selectedZone.customersCount || 0 }}</p>
+  <p>عدد الطلبات اليوم: {{ selectedZone.ordersCount || 0 }}</p>
+</div> -->
+
+  <!-- Google Map -->
+  <main class="map-container">
+    <div class="map-toast"
+       *ngIf="toast.show"
+       [class.success]="toast.type==='success'"
+       [class.info]="toast.type==='info'">
+    <i class="fa" [class.fa-check-circle]="toast.type==='success'"
+       [class.fa-info-circle]="toast.type==='info'"></i>
+    <span>{{ toast.message }}</span>
+  </div>
+    <google-map
+      #gm
+      (mapInitialized)="onMapInit($event)"
+      height="100%"
+      width="100%"
+      [center]="center"
+      [zoom]="zoom"
+      [options]="mapOptions">
+
+      <map-polygon
+        *ngFor="let poly of polygons"
+        [paths]="poly.paths"
+        [options]="poly.options"
+        (polygonClick)="onPolygonClick(poly)">
+      </map-polygon>
+
+      <map-marker
+        *ngFor="let m of markers"
+        [position]="m.position"
+        [options]="m.options"
+        (mapClick)="onMarkerClick(m)">
+      </map-marker>
+
+    </google-map>
+
+  </main>
+</div>

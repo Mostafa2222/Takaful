@@ -1,0 +1,55 @@
+.search-box {
+  width: 300px;
+  position: relative;
+}
+
+.dropdown {
+  border: 1px solid #ddd;
+  max-height: 250px;
+  overflow-y: auto;
+  background: white;
+}
+
+.item {
+  padding: 8px;
+  cursor: pointer;
+}
+
+.item.active {
+  background: #eee;
+}
+
+.item:hover {
+  background: #f5f5f5;
+}
+
+.name b {
+  color: #007bff;
+}
+
+.section {
+  margin-top: 20px;
+}
+
+.list {
+  max-height: 300px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 10px;
+  background: #fff;
+}
+
+.item {
+  padding: 6px;
+  border-bottom: 1px solid #eee;
+}
+
+.item:hover {
+  background: #f5f5f5;
+}
+.list input {
+  width: 100%;
+  margin-bottom: 8px;
+  padding: 6px;
+}

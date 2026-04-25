@@ -1,0 +1,12 @@
+export interface TreeNode {
+  name: string | any;
+  arName: string | any;
+  linkEn: string | any;
+  linkAr: string | any;
+  pageUrl: string[] | any;
+  screenNames: string[] | any;
+  screenArNames: string[] | any;
+  screenEnNames: string[] | any;
+  subTypes: TreeNode[] ;
+  expanded: boolean | any;
+}

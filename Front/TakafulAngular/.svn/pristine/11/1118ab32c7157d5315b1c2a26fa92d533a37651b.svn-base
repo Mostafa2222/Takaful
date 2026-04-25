@@ -1,0 +1,7 @@
+import { BrowserDataDto } from "./browserDataDTO";
+
+export interface LegalStatusDialogsDTO {
+
+    capitalCurrency: BrowserDataDto;
+    language: BrowserDataDto;
+}

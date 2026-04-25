@@ -1,0 +1,159 @@
+@font-face {
+  font-family: 'asset-Font';
+  src:  url('asset-Font.eot?icwkg6');
+  src:  url('asset-Font.eot?icwkg6#iefix') format('embedded-opentype'),
+    url('asset-Font.ttf?icwkg6') format('truetype'),
+    url('asset-Font.woff?icwkg6') format('woff'),
+    url('asset-Font.svg?icwkg6#asset-Font') format('svg');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+[class^="iconasset-"], [class*=" iconasset-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'asset-Font' !important;
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.iconasset-001-handheld:before {
+  content: "\f12a";
+}
+.iconasset-004-chronometer:before {
+  content: "\f125";
+}
+.iconasset-001-count:before {
+  content: "\f126";
+}
+.iconasset-003-deadline:before {
+  content: "\f127";
+}
+.iconasset-002-box:before {
+  content: "\f128";
+}
+.iconasset-005-full:before {
+  content: "\f129";
+}
+.iconasset-002-inventory:before {
+  content: "\f101";
+}
+.iconasset-003-shelf-1:before {
+  content: "\f102";
+}
+.iconasset-004-inventory-1:before {
+  content: "\f103";
+}
+.iconasset-001-shelf:before {
+  content: "\f100";
+}
+.iconasset-001-school-bus:before {
+  content: "\f104";
+}
+.iconasset-002-truck:before {
+  content: "\f105";
+}
+.iconasset-003-chair:before {
+  content: "\f106";
+}
+.iconasset-004-blueprint:before {
+  content: "\f107";
+}
+.iconasset-005-apartment:before {
+  content: "\f108";
+}
+.iconasset-006-blueprint-1:before {
+  content: "\f109";
+}
+.iconasset-007-blueprint-2:before {
+  content: "\f10a";
+}
+.iconasset-008-stair:before {
+  content: "\f10b";
+}
+.iconasset-009-office-chair:before {
+  content: "\f10c";
+}
+.iconasset-010-office-chair-1:before {
+  content: "\f10d";
+}
+.iconasset-011-desk:before {
+  content: "\f10e";
+}
+.iconasset-012-office-chair-2:before {
+  content: "\f10f";
+}
+.iconasset-013-desk-1:before {
+  content: "\f110";
+}
+.iconasset-014-filling-cabinet:before {
+  content: "\f111";
+}
+.iconasset-015-desk-2:before {
+  content: "\f112";
+}
+.iconasset-016-office-chair-3:before {
+  content: "\f113";
+}
+.iconasset-017-file-cabinet:before {
+  content: "\f114";
+}
+.iconasset-018-desk-3:before {
+  content: "\f115";
+}
+.iconasset-019-desk-4:before {
+  content: "\f116";
+}
+.iconasset-020-digger:before {
+  content: "\f117";
+}
+.iconasset-021-demolishing:before {
+  content: "\f118";
+}
+.iconasset-022-digger-1:before {
+  content: "\f119";
+}
+.iconasset-023-machinery:before {
+  content: "\f11a";
+}
+.iconasset-024-laptop:before {
+  content: "\f11b";
+}
+.iconasset-025-loan:before {
+  content: "\f11c";
+}
+.iconasset-026-management:before {
+  content: "\f11d";
+}
+.iconasset-001-classification:before {
+  content: "\f11e";
+}
+.iconasset-004-van:before {
+  content: "\f11f";
+}
+.iconasset-003-trash:before {
+  content: "\f120";
+}
+.iconasset-007-bus:before {
+  content: "\f121";
+}
+.iconasset-005-mini-van:before {
+  content: "\f122";
+}
+.iconasset-002-vehicle:before {
+  content: "\f123";
+}
+.iconasset-006-truck:before {
+  content: "\f124";
+}
+.iconasset-069-laptop:before {
+  content: "\f144";
+}

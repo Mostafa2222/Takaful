@@ -1,0 +1,35 @@
+/*************** Model ***************/
+
+.modal-header img {
+    float: left;
+    margin-right: 10px;
+}
+
+.modal-title,
+.panel-title {
+    /*! font-size: 18px; */
+    color: #296dac;
+}
+
+.modal-body p {
+    font-size: 12px;
+    color: #333;
+    text-align: justify;
+}
+
+.modal-body p strong {
+    color: #0163a3;
+}
+
+.modal-footer button {
+    background-color: #0163a3;
+    color: #FFF;
+    border: 1px solid #00375a;
+    border-radius: 0;
+}
+
+.modal-footer button:hover {
+    background-color: #0487dc;
+    color: #FFF;
+}
+

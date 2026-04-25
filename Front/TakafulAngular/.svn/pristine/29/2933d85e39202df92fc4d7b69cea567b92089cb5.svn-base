@@ -1,0 +1,8 @@
+tr th{
+  color: white;
+  background: var(--appColor);
+  border: solid white 1px;
+}
+tr td{
+  border: solid rgb(150, 146, 146) 1px;
+}

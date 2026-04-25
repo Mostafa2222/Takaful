@@ -1,0 +1,23 @@
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { AddressGroupModelComponent } from './address-group-model.component';
+
+describe('AddressGroupModelComponent', () => {
+  let component: AddressGroupModelComponent;
+  let fixture: ComponentFixture<AddressGroupModelComponent>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [AddressGroupModelComponent]
+    })
+    .compileComponents();
+    
+    fixture = TestBed.createComponent(AddressGroupModelComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});

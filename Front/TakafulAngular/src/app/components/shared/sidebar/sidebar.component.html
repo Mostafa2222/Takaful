@@ -1,0 +1,123 @@
+<aside
+  class="neo-sidebar"
+  [class.collapsed]="collapsed"
+  [class.mobile-open]="mobileOpen"
+>
+  <div class="neo-header">
+    <div class="brand" 
+    *ngIf="!collapsed">
+      <img
+        src="assets/images/takaful-logo.png"
+        class="brand-logo"
+      />
+      <span>تكافل</span>
+    </div>
+
+    <button (click)="toggleSidebar()" class="btn neo-item2">
+      <i class="fa fa-bars"></i>
+    </button>
+
+    <button (click)="toggleTheme()" class="btn neo-item2" 
+    *ngIf="!collapsed">
+      <i
+        class="fa"
+        [class.fa-sun]="theme === 'dark'"
+        [class.fa-moon]="theme === 'light'"
+      >
+      </i>
+    </button>
+
+    <button class="lang-btn neo-item2" (click)="toggleLang()" 
+    *ngIf="!collapsed">
+      <i class="fa fa-globe"></i>
+      {{ currentLang === "ar" ? "EN" : "AR" }}
+    </button>
+  </div>
+
+
+  <div class="user-card" *ngIf="!collapsed">
+
+    <div class="user-header" (click)="toggleUserMenu()">
+  
+      <div class="avatar">
+        {{ userName ?.charAt(0) || 'U' }}
+      </div>
+  
+      <div class="info">
+        <div class="name">{{ userName  }}</div>
+        <div class="role">
+          {{ 'sidebar.user_profile.roles.' + user?.roleCode | translate }}
+        </div>
+      </div>
+  
+      <i class="fa fa-chevron-down arrow" [class.open]="userMenuOpen"></i>
+  
+    </div>
+  
+    <div class="user-menu" *ngIf="userMenuOpen">
+
+      <a class="menu-item" routerLink="/content/profile">
+        <i class="fa fa-user"></i>
+        <span>{{ 'sidebar.user_profile.profile' | translate }}</span>
+      </a>
+    
+      <a class="menu-item" routerLink="/content/settings">
+        <i class="fa fa-gear"></i>
+        <span>{{ 'sidebar.user_profile.settings' | translate }}</span>
+      </a>
+    
+      <div class="divider"></div>
+    
+      <button class="logout menu-item" (click)="logout()">
+        <i class="fa fa-right-from-bracket"></i>
+        <span>{{ 'sidebar.user_profile.logout' | translate }}</span>
+      </button>
+    
+    </div>
+  
+  </div>
+  <nav class="neo-menu">
+    <ng-container *ngFor="let item of menu">
+      <div
+        class="neo-item"
+        [class.active]="item.open"
+        [attr.data-tooltip]="collapsed ? (item.titleKey | translate) : null"
+        (click)="toggleItem(item)"
+      >
+        <div class="item-left">
+          <i class="fa-solid" [class]="item.icon"></i>
+
+          <span *ngIf="!collapsed">
+            {{  'sidebar.' + item.titleKey | translate }}
+          </span>
+        </div>
+
+        <i
+          *ngIf="item.children?.length && !collapsed"
+          class="fa fa-chevron-down arrow"
+          [class.open]="item.open"
+        >
+        </i>
+      </div>
+
+      <div
+        class="neo-submenu"
+        *ngIf="item.children?.length && item.open && !collapsed"
+      >
+        <a
+          *ngFor="let child of item.children"
+          [routerLink]="'content/' + child.route"
+          routerLinkActive="active"
+        >
+          <i class="fa-solid" [class]="child.icon"></i>
+
+          <span>
+            {{  'sidebar.' + child.titleKey | translate }}
+          </span>
+        </a>
+      </div>
+    </ng-container>
+  </nav>
+</aside>
+
+<div class="sidebar-overlay" *ngIf="mobileOpen" (click)="toggleMobile()"></div>

@@ -1,0 +1,166 @@
+<div class="modal fade" id="addressGroupModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5">Address Group Setup</h1>
+        <button
+          type="button"
+          #closeButton
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div
+            class="col-sm-6 col-md-6 col-lg-5 col-xl-5"
+            style="overflow-y: scroll; height: 563px"
+          >
+            <!-- Sticky search bar container -->
+            <div class="sticky-search">
+              <input
+                type="text"
+                pInputText
+                [(ngModel)]="searchQuery"
+                (input)="filterTree()"
+                placeholder="{{ 'SearchCriteria.SEARCH' | translate }}"
+                class="w-full md:w-[30rem] p-2 mb-2 border rounded"
+              />
+            </div>
+            <p-tree
+              [id]="'tree-' + translate.currentLang"
+              [value]="filteredNodes"
+              styleClass="p-0 w-full md:w-[30rem]"
+              [ngClass]="'tree-' + translate.currentLang"
+              selectionMode="single"
+              [(selection)]="selectedNode"
+              (onNodeSelect)="handleCurrentNode($event)"
+              (onNodeContextMenuSelect)="onNodeRightClick($event)"
+              [contextMenu]="cm"
+            >
+            </p-tree>
+            <p-contextMenu #cm [model]="items"  [baseZIndex]="1000"></p-contextMenu>
+          </div>
+          <div class="w-50 mx-auto mb-3">
+            <form [formGroup]="addressForm" (ngSubmit)="onSubmit()">
+              <div class="row">
+                <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 form-group">
+                  <label class="form-label"
+                    >{{
+                      "Organization.Timeline.Legal_Status.Arabic_Name"
+                        | translate
+                    }}<span class="text-danger"> *</span></label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    [(ngModel)]="dmsStpLevelDetails.arabicName"
+                    formControlName="arabicName"
+                    placeholder="{{
+                      'Organization.Timeline.Legal_Status.Arabic_Name'
+                        | translate
+                    }}"
+                  />
+                  <div
+                    *ngIf="addressForm.get('arabicName')!.touched"
+                    class="text-danger small-text"
+                  >
+                    <ng-container
+                      *ngIf="
+                        addressForm.get('arabicName')!.hasError('required')
+                      "
+                    >
+                      {{ "validation.required" | translate }}
+                    </ng-container>
+                  </div>
+                </div>
+                <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 form-group">
+                  <label class="form-label"
+                    >{{
+                      "Organization.Timeline.Legal_Status.English_Name"
+                        | translate
+                    }}<span class="text-danger"> *</span></label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    formControlName="englishName"
+                    [(ngModel)]="dmsStpLevelDetails.englishName"
+                    placeholder="{{
+                      'Organization.Timeline.Legal_Status.English_Name'
+                        | translate
+                    }}"
+                  />
+                  <div
+                    *ngIf="addressForm.get('englishName')!.touched"
+                    class="text-danger small-text"
+                  >
+                    <ng-container
+                      *ngIf="
+                        addressForm.get('englishName')!.hasError('required')
+                      "
+                    >
+                      {{ "validation.required" | translate }}
+                    </ng-container>
+                  </div>
+                </div>
+                <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 form-group">
+                  <label class="form-label"
+                    >{{
+                      "Organization.Timeline.Legal_Status.Company_Code"
+                        | translate
+                    }}<span class="text-danger"> *</span></label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    formControlName="definitionCode"
+                    [(ngModel)]="dmsStpLevelDetails.definitionCode"
+                    [maxlength]="codeWidth"
+                    placeholder="{{
+                      'Organization.Timeline.Legal_Status.Company_Code'
+                        | translate
+                    }}"
+                  />
+                  <div
+                    *ngIf="addressForm.get('definitionCode')!.touched"
+                    class="text-danger small-text"
+                  >
+                    <ng-container
+                      *ngIf="
+                        addressForm.get('definitionCode')!.hasError('required')
+                      "
+                    >
+                      {{ "validation.required" | translate }}
+                    </ng-container>
+                    <ng-container
+                      *ngIf="
+                        addressForm.get('definitionCode')!.hasError('pattern')
+                      "
+                    >
+                      {{ "validation.onlyLettersAndNumbers" | translate }}
+                    </ng-container>
+                  </div>
+                </div>
+
+              <div class="step-toolbar col-md-12 col-lg-6 col-xl-6">
+                  <a
+                  class="btn btn-primary"
+                  (click)="onSubmit()"
+                  style="cursor: pointer ;height: fit-content;margin-top: auto;"
+                >
+                  {{
+                    "Organization.Timeline.Legal_Status.Address.Save"
+                      | translate
+                  }}</a
+                >
+              </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,8 @@
+{
+  "apiUrl": "http://192.168.1.43:6060/api/",
+  "publicUrl": "http://192.168.1.43:6060/api/public/",
+  "swagUrl": "http://192.168.1.43:6060/",
+  "secUrl": "http://192.168.1.32:8080/DMS-SEC-WS/ws/security/",
+  "employessImgUrl":"http://192.168.1.32:8080/AdvancedEmployeeHr/api",
+  "RedirectGlassfishUrl": "http://192.168.1.32:8080/DMSHR-war/faces/resources/menuControllers/PRS.xhtml"
+}

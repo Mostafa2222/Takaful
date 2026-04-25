@@ -1,0 +1,254 @@
+import { Component } from '@angular/core';
+import { LegalStatusRestService } from '../../../services/LegalStatusServices/legal-status.service';
+import { DmsStpLevelDescriptionDTO } from '../../../DTO/DmsStpLevelDescriptionDTO';
+import { DmsStpLevelDetailsDTO } from '../../../DTO/DmsStpLevelDetailsDTO';
+import { TranslateService } from '@ngx-translate/core';
+
+@Component({
+  selector: 'app-address-setup-model',
+  templateUrl: './address-setup-model.component.html',
+  styleUrl: './address-setup-model.component.css'
+})
+export class AddressSetupModelComponent {
+  currentLang: string = 'en';
+  public levelsDescriptions: DmsStpLevelDescriptionDTO[] | any;
+  public selectedBranch: DmsStpLevelDetailsDTO | any;
+  public selectedLevelId: number | null = null;
+  maxLevelId: number = 0;
+  // New Row Object
+  public newLevel: DmsStpLevelDescriptionDTO = this.getEmptyLevel();
+
+  constructor(
+    private _legalStatusService: LegalStatusRestService,
+    public translate: TranslateService,
+  ) { }
+  ngOnInit(): void {
+    this.translate.onLangChange.subscribe((event: { lang: string; }) => {
+      this.currentLang = event.lang;
+    });
+    this.currentLang = this.translate.currentLang || 'en';
+    this.getSelectedBranch()
+    this.getMaxlevelId()
+  }
+
+  getSelectedBranch() {
+    const selected = localStorage.getItem('selectedBranch');
+    if (selected != undefined) {
+      this.selectedBranch = JSON.parse(selected) as DmsStpLevelDetailsDTO;
+    }
+  }
+  getMaxlevelId() {
+    this._legalStatusService.getMaxLevelId().subscribe(
+      (data: any) => {
+        this.maxLevelId = data;
+      },
+      (error) => {
+        console.error(this.currentLang === 'ar' ? 'خطأ في جلب المستوى الأقصى' : 'Error fetching max level', error);
+      }
+    )
+  }
+  getLevelsDescriptions() {
+    this._legalStatusService.GetLevelsDescriptions().subscribe(
+      (data: any) => {
+        if (data && data.length > 0) {
+          this.levelsDescriptions = data.map((level: any) => ({
+            ...level,
+            transactionalBool: level.transactional === 'Y',
+            organizationChartBool: level.organizationChart === 'Y',
+            purchasingBool: level.purchasing === 'Y',
+            inventoryBool: level.inventory === 'Y'
+          }));
+        } else {
+          this.levelsDescriptions = this.getDefaultLevels();
+          this.saveDefaultLevelsToDatabase();
+          console.warn(this.currentLang === 'ar' ? 'لم يتم استلام بيانات من API.' : 'No data received from the API.');
+        }
+      },
+      (error) => {
+        this.levelsDescriptions = this.getDefaultLevels();
+        console.error(this.currentLang === 'ar' ? 'خطأ في جلب أوصاف المستويات' : 'Error fetching levels descriptions:', error);
+      }
+    );
+  }
+
+  editRow(levelId: number) {
+    this.selectedLevelId = levelId;
+  }
+
+  saveEditedRow(level: DmsStpLevelDescriptionDTO) {
+    // Convert booleans back to 'Y' or 'N'
+
+    //    this.selectedLevelId = null;
+    if (!level.englishName || !level.arabicName || !level.segmentWidth) {
+      alert(this.currentLang === 'ar' ? "يرجى ملء جميع الحقول قبل الإضافة." : "Please fill all fields before adding a new row.");
+      return;
+    }
+    level.transactional = level.transactionalBool ? 'Y' : 'N';
+    level.organizationChart = level.organizationChartBool ? 'Y' : 'N';
+    level.purchasing = level.purchasingBool ? 'Y' : 'N';
+    level.inventory = level.inventoryBool ? 'Y' : 'N';
+    const newEntry: DmsStpLevelDescriptionDTO = {
+      ...level,
+      levelId: level.levelId,
+      // transactional : level.transactionalBool ? 'Y' : 'N',
+      // organizationChart : level.organizationChartBool ? 'Y' : 'N',
+      // purchasing : level.purchasingBool ? 'Y' : 'N',
+      // inventory : level.inventoryBool ? 'Y' : 'N'
+    };
+
+    const combinedDto = {
+      dto: newEntry
+    };
+    this._legalStatusService.editExistingLevelDescriptions(combinedDto.dto).subscribe(
+      (response) => {
+        if (response.message === "Edited") {
+          this.selectedLevelId = null;
+        }
+      },
+      (error: any) => {
+        console.error(this.currentLang === 'ar' ? 'خطأ في تعديل المستوى' : 'Error submitting levels:', error);
+        alert(this.currentLang === 'ar' ? 'فشل تعديل البيانات. حاول مرة أخرى.' : 'Failed to submit data. Please try again.');
+      }
+    );
+  }
+
+  cancelEdit() {
+    this.selectedLevelId = null;
+  }
+
+  addRow() {
+    if (!this.newLevel.englishName || !this.newLevel.arabicName || !this.newLevel.segmentWidth) {
+      alert(this.currentLang === 'ar' ? "يرجى ملء جميع الحقول قبل الإضافة." : "Please fill all fields before adding a new row.");
+      return;
+    }
+    const newId = this.levelsDescriptions.length > 0
+      ? Math.max(...this.levelsDescriptions.map((l: any) => l.levelId)) + 1
+      : 1;
+
+    const newEntry: DmsStpLevelDescriptionDTO = {
+      ...this.newLevel,
+      levelId: newId,
+      transactional: this.newLevel.transactionalBool ? 'Y' : 'N',
+      organizationChart: this.newLevel.organizationChartBool ? 'Y' : 'N',
+      purchasing: this.newLevel.purchasingBool ? 'Y' : 'N',
+      inventory: this.newLevel.inventoryBool ? 'Y' : 'N'
+    };
+    this._legalStatusService.saveLevelsDescriptions(newEntry).subscribe(
+      (response) => {
+        if (response.message === "Saved") {
+          this.levelsDescriptions.push(newEntry);
+          this.newLevel = this.getEmptyLevel();
+        }
+      },
+      (error: any) => {
+        console.error(this.currentLang === 'ar' ? 'خطأ في إرسال البيانات' : 'Error submitting levels:', error);
+        alert(this.currentLang === 'ar' ? 'فشل إرسال البيانات. حاول مرة أخرى.' : 'Failed to submit data. Please try again.');
+      }
+    );
+
+  }
+
+  deleteRow(levelId: number) {
+
+    this._legalStatusService.deleteExistingLevelDescriptions(levelId).subscribe(
+      (response) => {
+        if (response.message === "Deleted") {
+          this.levelsDescriptions = this.levelsDescriptions.filter((level: any) => level.levelId !== levelId);
+          this.getMaxlevelId()
+        }
+      },
+      (error: any) => {
+        console.error(this.currentLang === 'ar' ? 'خطأ في حذف المستوى' : 'Error Deleting level:', error);
+        alert(this.currentLang === 'ar' ? 'فشل حذف البيانات. حاول مرة أخرى.' : 'Failed to delete data. Please try again.');
+      }
+    )
+  }
+  saveDefaultLevelsToDatabase() {
+    this.levelsDescriptions.forEach((level:any) => {
+      const newEntry: DmsStpLevelDescriptionDTO = {
+        ...level,
+        transactional: level.transactionalBool ? 'Y' : 'N',
+        organizationChart: level.organizationChartBool ? 'Y' : 'N',
+        purchasing: level.purchasingBool ? 'Y' : 'N',
+        inventory: level.inventoryBool ? 'Y' : 'N'
+      };
+
+      this._legalStatusService.saveLevelsDescriptions(newEntry).subscribe(
+        (response) => {
+          if (response.message === "Saved") {
+            this.newLevel = this.getEmptyLevel();
+          }
+        },
+        (error: any) => {
+          console.error(
+            this.currentLang === 'ar'
+              ? `خطأ في إرسال البيانات لمستوى ${level.englishName}`
+              : `Error submitting level ${level.englishName}`,
+            error
+          );
+        }
+      );
+    });
+  }
+
+  // saveAllLevels() {
+  //   // Clone the array to prevent direct mutation
+  //   const savedLevels = [...this.levelsDescriptions];
+
+  //   console.log('Saved levels (but not sent to backend yet):', savedLevels);
+  //   alert('Levels saved locally!  You can still edit before submission.');
+  // }
+
+  /*submitToBackend() {
+    // const formattedData = this.levelsDescriptions.map((level:any) => ({
+    //   ...level,
+    //   transactional: level.transactionalBool ? 'Y' : 'N',
+    //   organizationChart: level.organizationChartBool ? 'Y' : 'N',
+    //   purchasing: level.purchasingBool ? 'Y' : 'N',
+    //   inventory: level.inventoryBool ? 'Y' : 'N'
+    // }));
+    if (!this.levelsDescriptions || this.levelsDescriptions.length === 0) {
+      alert('No data to submit. Please save first.');
+      return;
+    }
+    this._legalStatusService.saveLevelsDescriptions(this.levelsDescriptions).subscribe(
+      (response) => {
+        console.log('Levels submitted:', response);
+        alert('Levels successfully saved to the database.');
+        // this.levelsDescriptions = []; // Clear saved data after submission
+        this.getMaxlevelId()
+      },
+      (error: any) => {
+        console.error('Error submitting levels:', error);
+        alert('Failed to submit data. Please try again.');
+      }
+    );
+  }*/
+  private getEmptyLevel(): DmsStpLevelDescriptionDTO {
+    return {
+      levelId: 0,
+      clientId: 1,
+      templeteId: null,
+      englishName: '',
+      arabicName: '',
+      segmentWidth: 0,
+      transactional: 'N',
+      organizationChart: 'N',
+      purchasing: 'N',
+      inventory: 'N',
+      transactionalBool: false,
+      organizationChartBool: false,
+      purchasingBool: false,
+      inventoryBool: false,
+    };
+  }
+  getDefaultLevels(): DmsStpLevelDescriptionDTO[] {
+    return [
+      { clientId: 1, levelId: 1, englishName: "Group", arabicName: "مجموعة", segmentWidth: 2, transactional: "N", transactionalBool: false, organizationChart: "N", organizationChartBool: false, purchasing: "N", purchasingBool: false, inventory: "N", inventoryBool: false, templeteId: null },
+      { clientId: 1, levelId: 2, englishName: "Continent", arabicName: "قارة", segmentWidth: 2, transactional: "N", transactionalBool: false, organizationChart: "N", organizationChartBool: false, purchasing: "N", purchasingBool: false, inventory: "N", inventoryBool: false, templeteId: null },
+      { clientId: 1, levelId: 3, englishName: "Country", arabicName: "البلد", segmentWidth: 2, transactional: "N", transactionalBool: false, organizationChart: "N", organizationChartBool: false, purchasing: "N", purchasingBool: false, inventory: "N", inventoryBool: false, templeteId: null },
+      { clientId: 1, levelId: 4, englishName: "Area", arabicName: "المنطقه", segmentWidth: 2, transactional: "N", transactionalBool: false, organizationChart: "N", organizationChartBool: false, purchasing: "N", purchasingBool: false, inventory: "N", inventoryBool: false, templeteId: null },
+      { clientId: 1, levelId: 5, englishName: "Branch", arabicName: "فرع", segmentWidth: 2, transactional: "N", transactionalBool: false, organizationChart: "N", organizationChartBool: false, purchasing: "N", purchasingBool: false, inventory: "N", inventoryBool: false, templeteId: null }
+    ];
+  }
+}

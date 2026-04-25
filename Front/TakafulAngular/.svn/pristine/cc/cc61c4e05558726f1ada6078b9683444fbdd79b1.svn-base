@@ -1,0 +1,308 @@
+
+/************************************** Side Menu ********************************************/
+
+.side-menu {
+    width: 260px;
+    /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#13293d+0,1a3a58+0,3684ce+10,1d507f+22,2268a3+31,3eb7fe+44,2e7cc7+65,24598b+75,1a3a58+95 */
+    background: #13293d;
+    /* Old browsers */
+    /* FF3.6-15 */
+    /* Chrome10-25,Safari5.1-6 */
+    background: -webkit-gradient(linear, left top, left bottom, from(#13293d), color-stop(0%, #1a3a58), color-stop(10%, #3684ce), color-stop(22%, #1d507f), color-stop(31%, #2268a3), color-stop(44%, #3eb7fe), color-stop(65%, #2e7cc7), color-stop(75%, #24598b), color-stop(95%, #1a3a58));
+    background: linear-gradient(to bottom, #13293d 0%, #1a3a58 0%, #3684ce 10%, #1d507f 22%, #2268a3 31%, #3eb7fe 44%, #2e7cc7 65%, #24598b 75%, #1a3a58 95%);
+    /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    filter: progid: DXImageTransform.Microsoft.gradient(startColorstr='#13293d', endColorstr='#1a3a58', GradientType=0);
+    /* IE6-9 */
+    position: fixed;
+    left: 0;
+    z-index: 1;
+    /* height: -webkit-calc(100% - 82px);
+    height: calc(100% - 82px);*/
+    overflow: hidden;
+    /*transition: all ease 0.5s;*/
+    top: 41px;
+}
+
+.side-menu .navbar-default {
+    background-color: transparent;
+    border-color: transparent;
+    border: none;
+}
+
+.side-menu .navbar-nav>li>a {
+    padding-top: 0px;
+    padding-bottom: 0px;
+}
+
+.side-menu .collapse.navbar-collapse {
+    padding: 0px;
+}
+
+.side-menu .navbar-collapse {
+    background: transparent;
+}
+
+span.text {
+    display: none;
+}
+
+
+/*a.collaps-smenu {
+    background: url(../images/collapse-menu-icon.png) no-repeat top;
+    width: 20px;
+    height: 26px;
+    display: block;
+    cursor: pointer;
+    float: right;
+    transition: all ease 0.3s;
+}
+.openmenu {
+    background-position: bottom !important;
+}*/
+
+.collaps-smenu {
+    background: #2da6cc;
+    /* position: absolute;*/
+    float: right;
+    line-height: 20px;
+    padding: 5px;
+    color: #fff;
+    top: 1px;
+    /* right: 1px;*/
+    font-size: 12px;
+    transition: all 0.4s;
+    -moz-transition: all 0.4s;
+    -webkit-transition: all 0.4s;
+    -ms-transition: all 0.4s;
+    -o-transition: all 0.4s;
+}
+
+.collaps-smenu:hover,
+.collaps-smenu:focus {
+    color: #333;
+    text-decoration: none;
+    background: #ffbb00;
+}
+
+ul.sidemenu {
+    width: 100%;
+    display: block;
+    margin-top: 30px;
+    margin-top: 3px;
+    text-transform: capitalize;
+}
+
+ul.sidemenu li {
+    height: auto;
+    width: 100%;
+}
+
+ul.sidemenu li a span,
+ul.sidemenu li a img {
+    width: 26px;
+    height: 26px;
+    font-size: 26px;
+    vertical-align: middle;
+    margin-right: 10px;
+}
+
+ul.sidemenu li a span,
+ul.sidemenu li a i {
+    width: 26px;
+    height: 26px;
+    font-size: 20px;
+    vertical-align: middle;
+    margin-right: 5px;
+    text-align: center;
+}
+
+ul.sidemenu li>a {
+    display: block;
+    position: relative;
+    padding-left: 10px;
+    height: 40px;
+    line-height: 40px;
+    font-family: Verdana;
+    font-size: 15px;
+    color: #fff;
+    cursor: pointer;
+    background: inherit;
+    white-space: nowrap;
+    margin-bottom: 1px;
+    -webkit-transition: all ease 0.3s;
+    transition: all ease 0.3s;
+}
+
+ul.sidemenu li a.active,
+ul.sidemenu li a:hover {
+    background-color: #ffbb00 !important;
+    text-decoration: none;
+    color: #000 !important;
+}
+
+ul.sidemenu li.active>a,
+ul.sidemenu li:hover>a,
+ul.sidemenu li:focus>a {
+    background-color: #ffbb00 !important;
+    text-decoration: none;
+    color: #fff !important;
+}
+
+ul.sub li>a.current-page {
+    color: #ffbc2a !important;
+    background-color: transparent !important;
+    text-decoration: none;
+}
+
+ul.sub li>a.current-page:hover {
+    color: #ffbc2a !important;
+    background-color: transparent !important;
+    text-decoration: underline;
+}
+
+ul.sidemenu li a.has-sub.active,
+ul.sidemenu li a.has-sub:hover {
+    color: #fff !important;
+}
+
+.sub {
+    /*  margin-left: 20px;*/
+    position: relative;
+    background: rgba(0, 0, 0, 0.2);
+}
+
+ul.sub li {
+    text-decoration: none;
+    cursor: pointer;
+    min-height: 25px;
+    overflow: hidden;
+    position: relative;
+    height: auto;
+}
+
+ul.sub li>a {
+    height: 25px;
+    line-height: 25px;
+    color: #fff;
+    font-size: 12px;
+    text-transform: capitalize;
+    text-indent: 5px;
+    margin-bottom: 1px;
+    position: relative;
+    padding-right: 0;
+    padding-left: 20px;
+}
+
+ul.sub li a.s-sub {
+    height: 25px;
+    line-height: 25px;
+    color: #fff;
+    font-size: 12px;
+    text-transform: capitalize;
+    text-indent: 5px;
+    margin-bottom: 1px;
+    position: relative;
+}
+
+.s-sub:before {
+    position: absolute;
+    right: 15px;
+    top: 5px;
+    content: "\e080";
+    font-family: 'Glyphicons Halflings';
+    font-size: 14px;
+    font-weight: 100;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-size: 10px;
+    color: #fff;
+    -webkit-transition: all 300ms ease-in-out;
+    transition: all 300ms ease-in-out;
+}
+
+a.s-sub.opened:before {
+    top: 3px;
+    -webkit-transform: rotate(90deg);
+    transform: rotate(90deg);
+}
+
+.mr0 {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.slidemenu {
+    width: 45px;
+}
+
+.has-sub {
+    position: relative;
+}
+
+.has-sub a.s-sub.opened::before {
+    top: 12px;
+}
+
+.has-sub .s-sub::before {
+    top: 12px;
+}
+
+
+/*** third-sub ***/
+
+.third-sub ul.sub li>a {
+    text-indent: 18px;
+}
+
+.has-sub .third-sub .s-sub::before {
+    top: 7px;
+    font-size: 11px;
+}
+
+.has-sub .third-sub .s-sub.opened::before {
+    top: 5px;
+}
+
+.third-sub ul.sub li a.active,
+.third-sub ul.sub li a:hover {
+    background-color: #ffbb00 !important;
+    text-decoration: none;
+    color: #000 !important;
+}
+
+
+/************************************ Left Content ******************************************/
+
+.content {
+    width: 100%;
+    /*width: -webkit-calc(100% - 260px);
+    width: calc(100% - 260px);
+    height: -webkit-calc(100% - 82px);
+    height: calc(100% - 82px);*/
+    position: fixed;
+    right: 0;
+    /*transition: all ease 0.5s;*/
+    background-color: #fff;
+    padding-bottom: 0px;
+    /*	overflow-y: scroll;
+	overflow-x: hidden;*/
+    /*padding-top: 20px;*/
+    top: 41px;
+}
+
+.noSearch {
+    padding-top: 40px;
+}
+
+.section {
+    border: 1px solid #c3dced;
+    background-color: #f0f9ff;
+    padding: 10px 8px;
+    margin: 0px auto 15px;
+}
+
+
+.collapserRow {
+    display: none;
+}

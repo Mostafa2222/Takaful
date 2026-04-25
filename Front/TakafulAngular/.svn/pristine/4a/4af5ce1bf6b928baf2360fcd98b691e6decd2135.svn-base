@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <base href="/">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Organization</title>
+  <link rel="stylesheet" type="text/css" href="assets/css/bootstrap.min.css"  id="BootStrapCssFileEn">
+  <link rel="stylesheet" type="text/css" href="" id="BootStrapCssFile">
+  <link rel="stylesheet" type="text/css" href="assets/css/DMSmain.css">
+  <link rel="stylesheet" type="text/css" href="" id="DMSmainCssFile">
+  <link rel="stylesheet" type="text/css" href="assets/css/org.css">
+  <link rel="stylesheet" type="text/css" href="" id="OrgCssFile">
+  <script src="https://maps.googleapis.com/maps/api/js?key=AlzaSyDc9SW5lyoomdbtU85TfVx60eflJSWlLBg&libraries=places"></script>
+
+</head>
+
+<body class="DMSBlueBlue bg-img" >
+  <app-root></app-root>
+
+
+</body>
+
+</html>

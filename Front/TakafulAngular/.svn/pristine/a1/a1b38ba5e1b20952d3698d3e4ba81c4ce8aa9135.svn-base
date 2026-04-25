@@ -1,0 +1,29 @@
+export interface BrowserDataDto {
+    idNum : number ;
+    code? : string;
+    displayedNameEn : string ;
+    displayedNameAr : string ;
+}
+
+export interface BrowserDataExpandDto {
+  idNum : number ;
+  displayedNameEn : string ;
+  displayedNameAr : string ;
+}
+
+export interface DmsStpSectorNatureDto {
+  sectorNatureId: number;
+  natureNameEnglish: string;
+  natureNameArabic: string;
+  active: string;
+  dmsStpNatureOfWorks: DmsStpNatureOfWorkDto[];
+}
+
+export interface DmsStpNatureOfWorkDto {
+  natureOfWorkId: number;
+  englishName: string;
+  arabicName: string;
+  active: string;
+  sectorId: number;
+  activBool: boolean;
+}

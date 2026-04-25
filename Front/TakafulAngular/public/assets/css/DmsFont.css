@@ -1,0 +1,96 @@
+
+/*  ../fonts/DmsFont/  */
+@font-face {
+  font-family: 'DmsFont';
+  src: url('../fonts/DmsFont/DmsFont.eot?t1tcuh');
+  src: url('../fonts/DmsFont/DmsFont.eot?t1tcuh#iefix') format('embedded-opentype'),
+    url('../fonts/DmsFont/DmsFont.ttf?t1tcuh') format('truetype'),
+    url('../fonts/DmsFont/DmsFont.woff?t1tcuh') format('woff'),
+    url('../fonts/DmsFont/DmsFont.svg?t1tcuh#DmsFont') format('svg');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+i {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'DmsFont' !important;
+  speak: never;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.dms-icon-dashboard:before {
+  content: "\e901";
+}
+
+.dms-icon-bell:before {
+  content: "\e900";
+}
+
+.dms-icon-envelope:before {
+  content: "\e902";
+}
+
+.dms-icon-grid:before {
+  content: "\e903";
+}
+
+.dms-icon-info:before {
+  content: "\e904";
+}
+
+.dms-icon-magnifying-glass:before {
+  content: "\e905";
+}
+
+.dms-icon-pdf-file:before {
+  content: "\e906";
+}
+
+.dms-icon-report:before {
+  content: "\e907";
+}
+
+.dms-icon-setting:before {
+  content: "\e908";
+}
+
+.dms-icon-transaction:before {
+  content: "\e90a";
+}
+
+.dms-icon-xls-file:before {
+  content: "\e909";
+}
+
+.dms-icon-arabic:before {
+  content: "\e90f";
+}
+
+.dms-icon-pdf-file2:before {
+  content: "\e90e";
+}
+
+.dms-icon-xls-file1:before {
+  content: "\e90b";
+}
+
+.dms-icon-pdf-file1:before {
+  content: "\e90c";
+}
+
+.dms-icon-xls-file2:before {
+  content: "\e90d";
+}
+
+.dms-icon-English:before {
+  content: "\e910";
+}

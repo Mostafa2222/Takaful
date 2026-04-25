@@ -1,0 +1,21 @@
+export class FinancialFiscalPeriodDTO {
+    PeriodId: number;
+    ArabicName: string;
+    EnglishName: string;
+    Value: any;
+    YearId: number;
+    StartDate: string;
+    EndDate: string;
+    Status: string;
+  
+    constructor() {
+      this.PeriodId = 0;
+      this.ArabicName = '';
+      this.EnglishName = '';
+      this.Value = null;
+      this.YearId = 0;
+      this.StartDate = '';
+      this.EndDate = '';
+      this.Status = '';
+    }
+}

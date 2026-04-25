@@ -1,0 +1,222 @@
+<div id="pause" class="d-flex align-items-center justify-content-center" *ngIf="isLoading">
+    <!-- <div id="spinner"></div> -->
+    <span class="loader"></span>
+</div>
+<div class="row">
+    <div class="col-4">
+        <div class="border border-1 border-primary border-opacity-50 rounded-2 p-3">
+            <h3>{{"Organization.Timeline.Financial.Fiscal_Year.Fiscal_Years" |
+                translate}}
+                <!-- <a href="#" class="bt-icon px-1" title="New"><i
+                        class="fa fa-plus-circle"></i></a> -->
+                <button class="" type="button" title="New" (click)="addNewYear();"
+                    style="border: none; padding: 0; font: inherit; cursor: pointer; color: var(--appColor);">
+                    <i class="fa fa-plus-circle"></i>
+                </button>
+            </h3>
+            <div class="list-group list-group-flush mt-3" style="overflow-y: auto;height: 25.4rem;">
+                <div *ngFor="let fiscalYear of fiscalyears"
+                    class="list-group-item list-group-item-action"
+                    style="cursor: pointer;"
+                    [ngClass]="{'active': singleYear?.YearCode === fiscalYear.YearCode}"
+                    (click)="showDetails(fiscalYear)">
+                    {{"Organization.Timeline.Financial.Fiscal_Year.Fiscal_Year_Detail.Fiscal_Year_Code"
+                    |
+                    translate}} {{ fiscalYear.YearCode }}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-8">
+        <div class="border border-1 border-primary border-opacity-50 rounded-2 p-3">
+            <div class="mb-3">
+                <h3>{{"Organization.Timeline.Financial.Fiscal_Year.Fiscal_Year_Detail.Title"
+                    |
+                    translate}}</h3>
+            </div>
+            <form [formGroup]="form">
+            <div class="row">
+                <div class="col-sm-12 col-md-4 col-lg-3 col-xl-3 form-group">
+                    <label class="form-label">
+                        {{"Organization.Timeline.Financial.Fiscal_Year.Fiscal_Year_Detail.Year_Code"
+                        | translate}}
+                        <span class="text-danger"> *</span>
+                    </label>
+                    <input formControlName="YearCode" type="number" class="form-control"
+                        maxlength="4" oninput="this.value=this.value.slice(0,this.maxLength)"
+                        [ngClass]="{'is-invalid': form.controls['YearCode'].invalid && form.controls['YearCode'].touched}" />
+                    <div *ngIf="form.controls['YearCode'].invalid && form.controls['YearCode'].touched"
+                        class="invalid-feedback">
+                        {{"validation.required"
+                        | translate}}
+                    </div>
+                </div>
+
+                <div class="col-sm-12 col-md-4 col-lg-3 col-xl-3 form-group">
+                    <label class="form-label">
+                        {{"Organization.Timeline.Financial.Fiscal_Year.Fiscal_Year_Detail.English_Desc"
+                        | translate}}
+                        <span class="text-danger"> *</span>
+                    </label>
+                    <input formControlName="EnglishName" type="text" class="form-control"
+                        [ngClass]="{'is-invalid': form.controls['EnglishName'].invalid && form.controls['EnglishName'].touched}" />
+                    <div *ngIf="form.controls['EnglishName'].invalid && form.controls['EnglishName'].touched"
+                        class="invalid-feedback">
+                        {{"validation.required"
+                        | translate}}
+                    </div>
+                </div>
+
+                <div class="col-sm-12 col-md-4 col-lg-3 col-xl-3 form-group">
+                    <label class="form-label">
+                        {{"Organization.Timeline.Financial.Fiscal_Year.Fiscal_Year_Detail.Arabic_Desc"
+                        | translate}}
+                        <span class="text-danger"> *</span>
+                    </label>
+                    <input formControlName="ArabicName" type="text" class="form-control"
+                        [ngClass]="{'is-invalid': form.controls['ArabicName'].invalid && form.controls['ArabicName'].touched}" />
+
+                    <div *ngIf="form.controls['ArabicName'].invalid && form.controls['ArabicName'].touched"
+                        class="invalid-feedback">
+                        {{"validation.required"
+                        | translate}}
+                    </div>
+                </div>
+
+
+                <div class="col-sm-12 col-md-4 col-lg-3 col-xl-3 form-group">
+                    <label class="form-label">
+                        {{"Organization.Timeline.Financial.Fiscal_Year.Fiscal_Year_Detail.Year_Start_Date"
+                        | translate}}
+                        <span class="text-danger"> *</span>
+                    </label>
+                    <input formControlName="StartDate" type="date" class="form-control"
+                        [ngClass]="{'is-invalid': form.controls['StartDate'].invalid && form.controls['StartDate'].touched}" />
+
+                    <div *ngIf="form.controls['StartDate'].invalid && form.controls['StartDate'].touched"
+                        class="invalid-feedback">
+                        {{"validation.required"
+                        | translate}}
+                    </div>
+                </div>
+
+                <div class="col-sm-12 col-md-4 col-lg-3 col-xl-3 form-group">
+                    <label class="form-label">
+                        {{"Organization.Timeline.Financial.Fiscal_Year.Fiscal_Year_Detail.Year_End_Date"
+                        | translate}}
+                        <span class="text-danger"> *</span>
+                    </label>
+                    <input formControlName="EndDate" type="date" class="form-control"
+                        [ngClass]="{'is-invalid': form.controls['EndDate'].invalid && form.controls['EndDate'].touched}" />
+
+                    <div *ngIf="form.controls['EndDate'].invalid && form.controls['EndDate'].touched"
+                        class="invalid-feedback">
+                        {{"validation.required"
+                        | translate}}
+                    </div>
+                </div>
+
+                <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 form-group">
+                    <label class="form-label">
+                        {{"Organization.Timeline.Financial.Fiscal_Year.Fiscal_Year_Detail.End_Note"
+                        | translate}}
+                    </label>
+                    <textarea formControlName="EndYearNotes" class="form-control max-text-area"
+                        rows="3"></textarea>
+                </div>
+
+                <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 form-group">
+
+                </div>
+            </div>
+        </form>
+            <fieldset class="scheduler-border">
+                <legend class="scheduler-border">
+                    {{"Organization.Timeline.Financial.Fiscal_Year.Fiscal_Year_Detail.Periods"
+                    |
+                    translate}}
+                    <button class="" type="button" title="New" (click)="addNewPeriod();"
+                        [disabled]="!isAddingNewYear"
+                        [ngStyle]="{'color': isAddingNewYear ? 'var(--appColor)' : 'gray'}"
+                        style="border: none; padding: 0; font: inherit; cursor: pointer;">
+                        <i class="fa fa-plus-circle"></i>
+                    </button>
+                </legend>
+                <div class="">
+                    <div class="table-responsive mt-1">
+                        <table
+                            class="table KeyShareholders-table table-hover table-sm autoDataTablized form-block"
+                            data-colreorder="false" data-paging="true" data-pagelength="5"
+                            data-ordering="true" data-nonorderable="nonOrderable">
+                            <colgroup>
+                                <col style="width: 50px;">
+                                <col>
+                                <col>
+                                <col>
+                                <col>
+                            </colgroup>
+                            <thead>
+                                <tr>
+                                    <th data-orderable="false"></th>
+                                    <th class="searchableTh" data-searchtype="text">
+                                        {{"Organization.Timeline.Financial.Fiscal_Year.Fiscal_Year_Detail.Period_Status"
+                                        | translate}}
+                                    </th>
+                                    <th class="searchableTh" data-searchtype="text">
+                                        {{"Organization.Timeline.Financial.Fiscal_Year.Fiscal_Year_Detail.Start_Date"
+                                        | translate}}
+                                    </th>
+                                    <th class="searchableTh" data-searchtype="text">
+                                        {{"Organization.Timeline.Financial.Fiscal_Year.Fiscal_Year_Detail.End_Date"
+                                        | translate}}
+                                    </th>
+                                    <th class="searchableTh" data-searchtype="text">
+                                        {{"Organization.Timeline.Financial.Fiscal_Year.Fiscal_Year_Detail.Fiscal_Period_Name"
+                                        | translate}}
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let period of fiscalPeriods; let i = index">
+                                    <td>
+                                        <!-- <a href="#"
+                                            class="text-danger delete-row fa fa-trash-alt"></a> -->
+                                        <button class="" type="button" title="Delete" (click)="deletePeriod(i);"
+                                            [disabled]="!isAddingNewYear"
+                                            style="border: none; padding: 0; font: inherit; cursor: pointer;">
+                                            <i class=" delete-row fa fa-trash-alt"
+                                                [ngClass]="{'text-danger' : isAddingNewYear }"></i>
+                                        </button>
+                                    </td>
+                                    <td>
+                                        <input disabled [value]="period.Status === 'C' ? 'Closed' : 'Open'" />
+                                    </td>
+                                    <td>
+                                        <input  type="date" class="form-control" [(ngModel)]="period.StartDate" [disabled]="!isAddingNewYear"/>
+                                    </td>
+                                    <td>
+                                        <input  type="date" [ngClass]="{'is-invalid': period.EndDate === ''}" class="form-control" [(ngModel)]="period.EndDate " [disabled]="!isAddingNewYear" />
+                                    </td>
+                                    <td>
+                                       
+                                        <input [disabled]="!isAddingNewYear" [(ngModel)]="period.EnglishName"  />
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+    </div>
+</div>
+<div class="step-toolbar">
+    <div class="fiscal-row">
+        <button class="btn btn-danger" type="button" title="Delete" (click)="deleteFiscal();">
+            {{ "PriceList.delete" | translate}}
+        </button>
+        <button type="submit" class="btn btn-primary" (click)="onSubmit()" [disabled]="form.invalid">
+            {{ "Organization.Timeline.Department_Definition.Save" | translate}}
+        </button>
+    </div>
+</div>

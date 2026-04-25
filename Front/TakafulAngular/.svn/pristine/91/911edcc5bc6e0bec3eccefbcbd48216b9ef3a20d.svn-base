@@ -1,0 +1,322 @@
+<!-- Financial -->
+<div id="pause" class="d-flex align-items-center justify-content-center" *ngIf="isLoading">
+    <!-- <div id="spinner"></div> -->
+    <span class="loader"></span>
+</div>
+<app-dynamic-dialog (selected)="selected($event)" [selectedField]="lastSelected" [data]="dialogData"
+    [selectName]="selectName"></app-dynamic-dialog>
+<div class="tab-pane fade  active show" id="financial-step" role="tabpanel">
+    <h3>{{ "Organization.Timeline.Financial.Title" | translate }}</h3>
+    <div class="">
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="Currency-tab" data-bs-toggle="tab" data-bs-target="#Currency"
+                    type="button" role="tab" aria-controls="Currency" aria-selected="true">{{
+                    "Organization.Timeline.Financial.Basic_Data.Title" | translate }}</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="Fiscal-tab" data-bs-toggle="tab" data-bs-target="#Fiscal" type="button"
+                    role="tab" aria-controls="Fiscal"
+                    aria-selected="false">{{"Organization.Timeline.Financial.Fiscal_Year.Title" | translate}}</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="Construction-tab" data-bs-toggle="tab" data-bs-target="#Construction"
+                    type="button" role="tab" aria-controls="Construction" aria-selected="false">{{
+                    "Organization.Timeline.Financial.Under_Construct.Title" | translate }}</button>
+            </li>
+        </ul>
+        <div class="tab-content mt-3" id="myTabContent">
+            <div class="tab-pane fade show active" id="Currency" role="tabpanel" aria-labelledby="Currency-tab">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-4 col-lg-4 col-xl-4 form-group mb-2">
+                            <label class="form-label">{{"Organization.Timeline.Financial.Basic_Data.Currency" |
+                                translate}}</label>
+                            <select class="form-select" data-bs-toggle="modal" data-bs-target="#exampleModal"
+                                (mousedown)="stpDialog($event,
+                        'DMS_STP_CURRANCY',
+                        'CURRANCY_ID , CURRANCY_CODE',
+                        'LATIN_NAME',
+                        'ARABIC_NAME',
+                        currencyBrowserData,'Organization.Timeline.Financial.Basic_Data.Currency',financialBasicData.currency)">
+                                <option selected>
+                                    {{
+                                    translate.currentLang === "ar"
+                                    ? financialBasicData.currency.displayedNameAr ||
+                                    "-- اختر --"
+                                    : financialBasicData.currency.displayedNameEn ||
+                                    "-- Select --"
+                                    }}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col-sm-12 col-md-4 col-lg-4 col-xl-4 form-group mb-2">
+                            <label class="form-label">{{"Organization.Timeline.Financial.Basic_Data.Template_Type" |
+                                translate}}</label>
+                            <select class="form-select" data-bs-toggle="modal" data-bs-target="#exampleModal"
+                                (mousedown)="stpDialog($event,
+                        'GLD_STP_CHART_TYPE_TEMP',
+                        'SEQ_ID , CHART_TYPE_CD',
+                        'CHART_TYPE_LATIN_NAME',
+                        'CHART_TYPE_ARABIC_NAME',
+                        templateTypeBrowserData,'Organization.Timeline.Financial.Basic_Data.Template_Type',financialBasicData.type)">
+                                <option selected>
+                                    {{
+                                    translate.currentLang === "ar"
+                                    ? financialBasicData.type.displayedNameAr ||
+                                    "-- اختر --"
+                                    : financialBasicData.type.displayedNameEn ||
+                                    "-- Select --"
+                                    }}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col-sm-12 col-md-4 col-lg-4 col-xl-4 form-group mb-2">
+                            <label class="form-label">{{"Organization.Timeline.Financial.Basic_Data.Template" |
+                                translate}}</label>
+                            <select class="form-select"  data-bs-toggle="modal" data-bs-target="#exampleModal"
+                                (mousedown)="handleDialogDep($event,
+                        templateBrowserData,'Organization.Timeline.Financial.Basic_Data.Template',financialBasicData.template)">
+                                <option selected>
+                                    {{
+                                    translate.currentLang === "ar"
+                                    ? financialBasicData.template.displayedNameAr ||
+                                    "-- اختر --"
+                                    : financialBasicData.template.displayedNameEn ||
+                                    "-- Select --"
+                                    }}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col-sm-12 col-md-4 col-lg-4 col-xl-4 form-group">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" [(ngModel)]="this.isCheckedSub"
+                                    [checked]="this.basicDTO.createPOForSubBranch == 'Y'" id="flexCheckDefault" />
+                                <label class="form-check-label"
+                                    for="flexCheckDefault">{{"Organization.Timeline.Financial.Basic_Data.PO" |
+                                    translate}}</label>
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-md-4 col-lg-4 col-xl-4 form-group">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" [(ngModel)]="this.isCheckedInvoice"
+                                 />
+
+                                <label class="form-check-label"
+                                    for="flexCheckDefault">{{"Organization.Timeline.Financial.Basic_Data.Invoice" |
+                                    translate}}</label>
+                            </div>
+                        </div>
+                    </div>
+                <div class="step-toolbar">
+                    <button type="button" class="btn btn-primary" (click)="saveBasicData()">
+                        {{ "Organization.Timeline.Department_Definition.Save" | translate}}
+                    </button>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="Fiscal" role="tabpanel" aria-labelledby="Fiscal-tab">
+                <app-fiscal-periods></app-fiscal-periods>
+            </div>
+            <div class="tab-pane fade" id="Construction" role="tabpanel" aria-labelledby="Construction-tab">
+                <div class="p-2 pb-0">
+                    <a class="text-decoration-none link-icon" href="#AddProjectsModal"
+                        data-bs-toggle="modal">{{"Organization.Timeline.Financial.Under_Construct.Add_New_Project"
+                        |
+                        translate}} <i class="fa fa-plus-circle"></i></a>
+                    <div class="table-responsive">
+                        <table
+                            class="table KeyShareholders-table table-striped table-hover table-sm autoDataTablized form-block"
+                            data-colreorder="false" data-paging="true" data-pagelength="5" data-ordering="true"
+                            data-nonorderable="nonOrderable">
+                            <colgroup>
+                                <col style="width: 5%;">
+                                <col>
+                                <col>
+                                <col>
+                                <col>
+                                <col>
+                                <col>
+                                <col>
+                                <col>
+                                <col>
+                            </colgroup>
+                            <thead>
+                                <tr>
+                                    <th data-orderable="false"></th>
+                                    <th class="searchableTh" data-searchtype="text">
+                                        {{"Organization.Timeline.Financial.Under_Construct.Project_Code"
+                                        |
+                                        translate}}</th>
+                                    <th class="searchableTh" data-searchtype="text">
+                                        {{"Organization.Timeline.Financial.Under_Construct.English_Desc"
+                                        |
+                                        translate}}</th>
+                                    <th class="searchableTh" data-searchtype="text">
+                                        {{"Organization.Timeline.Financial.Under_Construct.Arabic_Desc"
+                                        |
+                                        translate}}</th>
+                                    <th class="searchableTh" data-searchtype="text">
+                                        {{"Organization.Timeline.Financial.Under_Construct.Project_Year"
+                                        |
+                                        translate}}</th>
+                                    <th class="searchableTh" data-searchtype="text">
+                                        {{"Organization.Timeline.Financial.Under_Construct.Start_Project_Date"
+                                        |
+                                        translate}}</th>
+                                    <th class="searchableTh" data-searchtype="text">
+                                        {{"Organization.Timeline.Financial.Under_Construct.End_Project_Date"
+                                        |
+                                        translate}}</th>
+                                    <th class="searchableTh" data-searchtype="text">
+                                        {{"Organization.Timeline.Financial.Under_Construct.Emp_Id"
+                                        |
+                                        translate}}</th>
+                                    <th class="searchableTh" data-searchtype="text">
+                                        {{"Organization.Timeline.Financial.Under_Construct.Closing"
+                                        |
+                                        translate}}</th>
+                                    <th class="searchableTh" data-searchtype="text">
+                                        {{"Organization.Timeline.Financial.Under_Construct.Project_Note"
+                                        |
+                                        translate}}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="not-saved d-none addNew">
+                                    <td class="text-center">
+                                        <a href="#" class="text-primary row-edit fa fa-save"></a>
+                                        <a href="#" class="text-danger delete-row fa fa-trash-alt"></a>
+                                    </td>
+                                    <td class="row-inline-editable" data-search="">219</td>
+                                    <td class="row-inline-editable active" data-search=""><span class="editable">
+                                        </span><input type="text" class="form-control" value=""></td>
+                                    <td class="row-inline-editable active" data-search=""><span class="editable">
+                                        </span><input type="text" class="form-control" value=""></td>
+                                    <td class="row-inline-editable active" data-search=""><span class="editable">
+                                        </span><input type="text" class="form-control" value=""></td>
+                                    <td class="row-inline-editable active" data-search=""><span class="editable">
+                                        </span><input type="text" class="form-control from" value=""></td>
+                                    <td class="row-inline-editable active" data-search=""><span class="editable">
+                                        </span><input type="text" class="form-control to" value=""></td>
+                                    <td class="row-inline-editable active" data-search=""><span class="editable">
+                                        </span><input type="text" class="form-control" value=""></td>
+                                    <td class="row-inline-editable active" data-search=""><span class="editable">
+                                        </span><input type="text" class="form-control" value=""></td>
+                                    <td class="row-inline-editable active" data-search=""><span class="editable">
+                                        </span><input type="text" class="form-control" value=""></td>
+                                </tr>
+                                <tr>
+                                    <td class="text-center">
+                                        <a href="#" class="text-primary row-edit fa fa-pencil-alt"></a>
+                                        <a href="#" class="text-danger delete-row fa fa-trash-alt"></a>
+                                    </td>
+                                    <td class="row-inline-editable" data-search="219">219</td>
+                                    <td class="row-inline-editable" data-search="New Builiding"><span class="editable">
+                                            New Builiding</span><input type="text" class="form-control"
+                                            value="New Builiding"></td>
+                                    <td class="row-inline-editable" data-search="مبنى جديد"><span class="editable"> مبنى
+                                            جديد</span><input type="text" class="form-control" value="مبنى جديد"></td>
+                                    <td class="row-inline-editable" data-search="2024"><span class="editable">2024
+                                        </span><input type="text" class="form-control" value="2024"></td>
+                                    <td class="row-inline-editable" data-search="01/10/2024"><span
+                                            class="editable">01/10/2024 </span><input type="text"
+                                            class="form-control from" value="01/10/2024"></td>
+                                    <td class="row-inline-editable" data-search="31/12/2024"><span
+                                            class="editable">31/12/2024 </span><input type="text"
+                                            class="form-control to" value="31/12/2024"></td>
+                                    <td class="row-inline-editable" data-search="5"><span class="editable">5
+                                        </span><input type="text" class="form-control" value="5"></td>
+                                    <td class="row-inline-editable" data-search=""><span class="editable"> </span><input
+                                            type="text" class="form-control" value=""></td>
+                                    <td class="row-inline-editable" data-search="test note test note"><span
+                                            class="editable">test note test note </span><input type="text"
+                                            class="form-control" value="test note test note"></td>
+                                </tr>
+                                <tr>
+                                    <td class="text-center">
+                                        <a href="#" class="text-primary row-edit fa fa-pencil-alt"></a>
+                                        <a href="#" class="text-danger delete-row fa fa-trash-alt"></a>
+                                    </td>
+                                    <td class="row-inline-editable" data-search="219">219</td>
+                                    <td class="row-inline-editable" data-search="New Builiding"><span class="editable">
+                                            New Builiding</span><input type="text" class="form-control"
+                                            value="New Builiding"></td>
+                                    <td class="row-inline-editable" data-search="مبنى جديد"><span class="editable"> مبنى
+                                            جديد</span><input type="text" class="form-control" value="مبنى جديد"></td>
+                                    <td class="row-inline-editable" data-search="2024"><span class="editable">2024
+                                        </span><input type="text" class="form-control" value="2024"></td>
+                                    <td class="row-inline-editable" data-search="01/10/2024"><span
+                                            class="editable">01/10/2024 </span><input type="text"
+                                            class="form-control from" value="01/10/2024"></td>
+                                    <td class="row-inline-editable" data-search="31/12/2024"><span
+                                            class="editable">31/12/2024 </span><input type="text"
+                                            class="form-control to" value="31/12/2024"></td>
+                                    <td class="row-inline-editable" data-search="5"><span class="editable">5
+                                        </span><input type="text" class="form-control" value="5"></td>
+                                    <td class="row-inline-editable" data-search=""><span class="editable"> </span><input
+                                            type="text" class="form-control" value=""></td>
+                                    <td class="row-inline-editable" data-search="test note test note"><span
+                                            class="editable">test note test note </span><input type="text"
+                                            class="form-control" value="test note test note"></td>
+                                </tr>
+                                <tr>
+                                    <td class="text-center">
+                                        <a href="#" class="text-primary row-edit fa fa-pencil-alt"></a>
+                                        <a href="#" class="text-danger delete-row fa fa-trash-alt"></a>
+                                    </td>
+                                    <td class="row-inline-editable" data-search="219">219</td>
+                                    <td class="row-inline-editable" data-search="New Builiding"><span class="editable">
+                                            New Builiding</span><input type="text" class="form-control"
+                                            value="New Builiding"></td>
+                                    <td class="row-inline-editable" data-search="مبنى جديد"><span class="editable"> مبنى
+                                            جديد</span><input type="text" class="form-control" value="مبنى جديد"></td>
+                                    <td class="row-inline-editable" data-search="2024"><span class="editable">2024
+                                        </span><input type="text" class="form-control" value="2024"></td>
+                                    <td class="row-inline-editable" data-search="01/10/2024"><span
+                                            class="editable">01/10/2024 </span><input type="text"
+                                            class="form-control from" value="01/10/2024"></td>
+                                    <td class="row-inline-editable" data-search="31/12/2024"><span
+                                            class="editable">31/12/2024 </span><input type="text"
+                                            class="form-control to" value="31/12/2024"></td>
+                                    <td class="row-inline-editable" data-search="5"><span class="editable">5
+                                        </span><input type="text" class="form-control" value="5"></td>
+                                    <td class="row-inline-editable" data-search=""><span class="editable"> </span><input
+                                            type="text" class="form-control" value=""></td>
+                                    <td class="row-inline-editable" data-search="test note test note"><span
+                                            class="editable">test note test note </span><input type="text"
+                                            class="form-control" value="test note test note"></td>
+                                </tr>
+                                <tr>
+                                    <td class="text-center">
+                                        <a href="#" class="text-primary row-edit fa fa-pencil-alt"></a>
+                                        <a href="#" class="text-danger delete-row fa fa-trash-alt"></a>
+                                    </td>
+                                    <td class="row-inline-editable" data-search="219">219</td>
+                                    <td class="row-inline-editable" data-search="New Builiding"><span class="editable">
+                                            New Builiding</span><input type="text" class="form-control"
+                                            value="New Builiding"></td>
+                                    <td class="row-inline-editable" data-search="مبنى جديد"><span class="editable"> مبنى
+                                            جديد</span><input type="text" class="form-control" value="مبنى جديد"></td>
+                                    <td class="row-inline-editable" data-search="2024"><span class="editable">2024
+                                        </span><input type="text" class="form-control" value="2024"></td>
+                                    <td class="row-inline-editable" data-search="01/10/2024"><span
+                                            class="editable">01/10/2024 </span><input type="text"
+                                            class="form-control from" value="01/10/2024"></td>
+                                    <td class="row-inline-editable" data-search="31/12/2024"><span
+                                            class="editable">31/12/2024 </span><input type="text"
+                                            class="form-control to" value="31/12/2024"></td>
+                                    <td class="row-inline-editable" data-search="5"><span class="editable">5
+                                        </span><input type="text" class="form-control" value="5"></td>
+                                    <td class="row-inline-editable" data-search=""><span class="editable"> </span><input
+                                            type="text" class="form-control" value=""></td>
+                                    <td class="row-inline-editable" data-search="test note test note"><span
+                                            class="editable">test note test note </span><input type="text"
+                                            class="form-control" value="test note test note"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

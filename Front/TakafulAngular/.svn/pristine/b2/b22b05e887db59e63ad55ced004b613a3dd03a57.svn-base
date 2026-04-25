@@ -1,0 +1,8 @@
+import { BrowserDataDto } from "./browserDataDTO";
+
+export interface FinancialBasicDataDTO {
+
+    currency: BrowserDataDto;
+    type: BrowserDataDto;
+    template: BrowserDataDto;
+}

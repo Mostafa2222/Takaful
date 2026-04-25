@@ -1,0 +1,9 @@
+<div (click)="onClick.emit()" class="flex flex-col items-center gap-2 cursor-pointer">
+    <div class="w-[60px] h-[60px] rounded-full flex items-center justify-center shadow-md hover:scale-105 transition-transform"
+        [style.backgroundColor]="color">
+        <div class="text-white">
+            <lucide-icon [name]="iconName" [size]="28"></lucide-icon>
+        </div>
+    </div>
+    <span class="text-[10px] text-center max-w-[70px]">{{ label }}</span>
+</div>

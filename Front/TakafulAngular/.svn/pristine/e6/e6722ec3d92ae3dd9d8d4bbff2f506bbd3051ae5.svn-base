@@ -1,0 +1,208 @@
+:host ::ng-deep .tree-en .p-treenode-children {
+  position: relative;
+  padding-left: 20px;
+}
+
+:host ::ng-deep .tree-en .p-treenode-children::before {
+  content: '';
+  position: absolute;
+  left: 10px;
+  top: 0;
+  bottom: 0;
+  border-left: 1px dotted black;
+}
+
+:host ::ng-deep .tree-ar .p-treenode-children {
+  position: relative;
+  padding-right: 20px;
+  /* Adjust for RTL */
+}
+
+:host ::ng-deep .tree-ar .p-treenode-children::before {
+  content: '';
+  position: absolute;
+  right: 10px;
+  /* Adjust for RTL */
+  top: 0;
+  bottom: 0;
+  border-right: 1px dotted black;
+}
+
+:host ::ng-deep .tree-en .p-tree .p-treenode>.p-treenode-content::before {
+  content: '';
+  position: absolute;
+  top: 12px;
+  left: -10px;
+  /* For LTR */
+  width: 20px;
+  height: 1px;
+  background-color: black;
+}
+
+:host ::ng-deep .tree-ar .p-tree .p-treenode>.p-treenode-content::before {
+  content: '';
+  position: absolute;
+  top: 12px;
+  right: -10px;
+  /* Adjust for RTL */
+  width: 20px;
+  height: 1px;
+  background-color: black;
+}
+
+::ng-deep .p-tree-container {
+  margin-bottom: 0rem !important;
+  padding-left: 0rem !important;
+  padding-right: 0rem !important;
+  font-size: 14px;
+}
+
+:host ::ng-deep .tree-ar .p-tree .p-treenode[aria-expanded="false"] .p-tree-toggler {
+  transform: rotate(180deg);
+}
+
+:host ::ng-deep .tree-en .p-tree .p-tree-container .p-treenode .p-treenode-content .p-treenode-icon{
+  margin-right: 0.5rem !important;
+  margin-left: 0rem !important;
+}
+:host ::ng-deep .tree-ar .p-tree .p-tree-container .p-treenode .p-treenode-content .p-treenode-icon{
+  margin-right: 0rem !important;
+  margin-left: 0.5rem !important;
+}
+#pause {
+  display: block;
+  background:
+    rgba(0, 0, 0, 0.66) no-repeat 0 0;
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  z-index: 1000;
+}
+
+.loader {
+  transform: rotateZ(45deg);
+  perspective: 1000px;
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  color: #fff;
+}
+
+.loader:before,
+.loader:after {
+  content: '';
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: inherit;
+  height: inherit;
+  border-radius: 50%;
+  transform: rotateX(70deg);
+  animation: 1s spin linear infinite;
+}
+
+.loader:after {
+  color: #FF3D00;
+  transform: rotateY(70deg);
+  animation-delay: .4s;
+}
+
+@keyframes rotate {
+  0% {
+    transform: translate(-50%, -50%) rotateZ(0deg);
+  }
+
+  100% {
+    transform: translate(-50%, -50%) rotateZ(360deg);
+  }
+}
+
+@keyframes rotateccw {
+  0% {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+
+  100% {
+    transform: translate(-50%, -50%) rotate(-360deg);
+  }
+}
+
+@keyframes spin {
+
+  0%,
+  100% {
+    box-shadow: .2em 0px 0 0px currentcolor;
+  }
+
+  12% {
+    box-shadow: .2em .2em 0 0 currentcolor;
+  }
+
+  25% {
+    box-shadow: 0 .2em 0 0px currentcolor;
+  }
+
+  37% {
+    box-shadow: -.2em .2em 0 0 currentcolor;
+  }
+
+  50% {
+    box-shadow: -.2em 0 0 0 currentcolor;
+  }
+
+  62% {
+    box-shadow: -.2em -.2em 0 0 currentcolor;
+  }
+
+  75% {
+    box-shadow: 0px -.2em 0 0 currentcolor;
+  }
+
+  87% {
+    box-shadow: .2em -.2em 0 0 currentcolor;
+  }
+}
+
+:host ::ng-deep .p-contextmenu-root-list {
+  margin: revert;
+  display: flex;
+  flex-direction: column;
+}
+
+:host ::ng-deep .p-menuitem-link {
+  display: flex;
+  gap: 1rem;
+  padding: 0.5rem;
+}
+
+:host ::ng-deep .p-menuitem-icon {
+  color: var(--appColor);
+}
+
+.table-container {
+  position: relative;
+  max-height: 25rem;
+  overflow: hidden;
+}
+
+.table-responsive {
+  position: sticky;
+  top: 0;
+  background: white;
+  z-index: 10;
+}
+
+.table-scroll {
+  max-height: 23rem; 
+  overflow-y: auto;
+}
+
+thead th {
+  position: sticky;
+  top: 0;
+  background: white;
+  z-index: 10;
+}

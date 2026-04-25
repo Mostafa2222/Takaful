@@ -1,0 +1,232 @@
+import { Component, OnInit } from '@angular/core';
+import { BrowserDataDto } from '../../../DTO/browserDataDTO';
+import { BrowserService } from '../../../services/common Services/browser.service';
+import { ItemsTypesDTO } from '../../../DTO/ItemsTypesDTO';
+import { TranslateService } from '@ngx-translate/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UserInfo } from '../../../models/UserInfo';
+import { AdminPolicyServiceService } from '../../../services/AdminPolicyService/admin-policy-service.service';
+import { NotificationsService } from '../../../services/Notifications/Notifications.service';
+import { LevelDetailsPurDTO } from '../../../DTO/LevelDetailsPurDTO';
+import { DmsStpLevelDetailsDTO } from '../../../DTO/DmsStpLevelDetailsDTO';
+import { ToastrService } from 'ngx-toastr';
+
+@Component({
+  selector: 'app-administration-policies',
+  templateUrl: './administration-policies.component.html',
+  styleUrl: './administration-policies.component.css'
+})
+export class AdministrationPoliciesComponent implements OnInit {
+
+  // dialog data
+  selectedValue!: BrowserDataDto;
+  dialogData: BrowserDataDto[] | any;
+  SelectName: string = '';
+  itemsTypeValues: ItemsTypesDTO;
+  currencyBrowserData: BrowserDataDto[] = [];
+  tableName: any;
+  loggedUser: UserInfo | any;
+  // value of purchases
+  valueOfPurchases: number = 0;
+  // form
+  administrationForm!: FormGroup;
+  // user name
+  userNameLatin: string | null = null;
+  // these two vaiables to handle retrieve data
+  storedBranch = localStorage.getItem("selectedBranch");
+  dmsStpLevelDetails = this.storedBranch ? JSON.parse(this.storedBranch) as DmsStpLevelDetailsDTO : null;
+  definitionId = this.dmsStpLevelDetails?.defintionId;
+  levelDetailsPurDTO: LevelDetailsPurDTO | any;
+  itemId: number | any
+  errorMessage: string | null = null;
+
+  constructor(
+    private _getTablesServices: BrowserService,
+    public translate: TranslateService,
+    private fb: FormBuilder,
+    private adminPolicyServiceService: AdminPolicyServiceService,
+    private notification: NotificationsService,
+    private toaster: ToastrService
+  ) {
+    this.itemsTypeValues = {
+      idNum: 0,
+      displayedNameEn: '',
+      displayedNameAr: ''
+    };
+  }
+  ngOnInit(): void {
+    this.retrieveDataForBranch()
+  }
+  // retrieve data from level details pur by defintion id :
+  retrieveDataForBranch() {
+    if (this.definitionId) {
+      this.levelDetailsPurDTO = this.adminPolicyServiceService.retrieveData(this.definitionId).subscribe(
+        (data) => {
+          let parsedData = JSON.parse(JSON.stringify(data));
+          this.levelDetailsPurDTO = parsedData;
+          this.levelDetailsPurDTO.showDetailPosIfOpenItem = this.convertToBoolean(parsedData.showDetailPosIfOpenItem)
+          this.levelDetailsPurDTO.autoClosPoTotalQtyRecived = this.convertToBoolean(parsedData.autoClosPoTotalQtyRecived)
+          this.levelDetailsPurDTO.autoSendQutReqVen = this.convertToBoolean(parsedData.autoSendQutReqVen)
+          this.levelDetailsPurDTO.automaticShowEmployeePr = this.convertToBoolean(parsedData.automaticShowEmployeePr)
+          this.levelDetailsPurDTO.prOnlyDepartmentEmployee = this.convertToBoolean(parsedData.prOnlyDepartmentEmployee)
+          this.levelDetailsPurDTO.validatePlannedBudget = this.convertToBoolean(parsedData.validatePlannedBudget)
+          this.levelDetailsPurDTO.linkWithBudget = this.convertToBoolean(parsedData.linkWithBudget)
+          this.levelDetailsPurDTO.showItemBalance = this.convertToBoolean(parsedData.showItemBalance)
+          this.levelDetailsPurDTO.approvePrIsMendatory = this.convertToBoolean(parsedData.approvePrIsMendatory)
+          this.levelDetailsPurDTO.approvePoIsMendatory = this.convertToBoolean(parsedData.approvePoIsMendatory)
+          this.levelDetailsPurDTO.approvVendorSelectMendatory = this.convertToBoolean(parsedData.approvVendorSelectMendatory)
+          this.levelDetailsPurDTO.approveTenderIssueMendatory = this.convertToBoolean(parsedData.approveTenderIssueMendatory)
+          this.levelDetailsPurDTO.prMendatoryForPoCreation = this.convertToBoolean(parsedData.prMendatoryForPoCreation)
+          this.levelDetailsPurDTO.releasePrWhenClosPoManual = this.convertToBoolean(parsedData.releasePrWhenClosPoManual)
+          this.levelDetailsPurDTO.printPoWithoutApproval = this.convertToBoolean(parsedData.printPoWithoutApproval)
+          this.levelDetailsPurDTO.supplierApprovePoMandatory = this.convertToBoolean(parsedData.supplierApprovePoMandatory)
+          this.levelDetailsPurDTO.chckPrNoItemsQualityOnPo = this.convertToBoolean(parsedData.chckPrNoItemsQualityOnPo)
+          this.levelDetailsPurDTO.chckQuotationNumItemsOnPo = this.convertToBoolean(parsedData.chckQuotationNumItemsOnPo)
+          this.levelDetailsPurDTO.allowPoForItemInWaregouse = this.convertToBoolean(parsedData.allowPoForItemInWaregouse)
+          this.levelDetailsPurDTO.doNotChangePrDate = this.convertToBoolean(parsedData.doNotChangePrDate)
+          this.levelDetailsPurDTO.validatePriceChangeInPo = this.convertToBoolean(parsedData.validatePriceChangeInPo)
+          this.levelDetailsPurDTO.validatPriceChngInPoPlist = this.convertToBoolean(parsedData.validatPriceChngInPoPlist)
+          this.levelDetailsPurDTO.validateDueDateForPo = this.convertToBoolean(parsedData.validateDueDateForPo)
+          this.levelDetailsPurDTO.validateUserForItems = this.convertToBoolean(parsedData.validateUserForItems)
+          this.itemId = this.levelDetailsPurDTO.itemTypeStp.itemTypeId
+          this.AdminAndPolicyFormGroup();
+        },
+        (error) => {
+          this.errorMessage = "Purchase rules not found";
+        }
+      );
+    }
+    this.AdminAndPolicyFormGroup();
+  }
+  AdminAndPolicyFormGroup() {
+    // this block of code just to get the user name from the local storage
+    const userData = localStorage.getItem('userData');
+    if (userData) {
+      const parsedData = JSON.parse(userData); // Parse JSON data
+      if (parsedData.userNameLatin && parsedData.userNameLatin.length > 1) {
+        this.userNameLatin = parsedData.userNameLatin[1]; // Assign the value to the global variable
+      }
+    }
+    this.administrationForm = this.fb.group({
+      defintionId: [this.definitionId],
+      consolIndividualPur: [this.levelDetailsPurDTO.consolIndividualPur || "I"],
+      itemTypeId: [this.levelDetailsPurDTO.itemTypeStp.itemTypeId, Validators.required],
+      valueOfPurchases: [this.levelDetailsPurDTO.valueOfPurchases],
+      addTransactionUser: [this.userNameLatin],
+      // serialization
+      serializationPolicyDTO: this.fb.group({
+        automaticPoNumber: [this.levelDetailsPurDTO.automaticPoNumber || "N"],
+        automaticReqNumber: [this.levelDetailsPurDTO.automaticReqNumber || "N"],
+        automaticConsNumber: [this.levelDetailsPurDTO.automaticConsNumber || "N"],
+        automaticQutNumber: [this.levelDetailsPurDTO.automaticQutNumber || "N"]
+      }),
+      // Automatic Action
+      automaticActionDTO: this.fb.group({
+        autoClosPoTotalQtyRecivedFlag: [this.levelDetailsPurDTO.autoClosPoTotalQtyRecived],
+        autoSendQutReqVenFlag: [this.levelDetailsPurDTO.autoSendQutReqVen],
+        automaticShowEmployeePrFlag: [this.levelDetailsPurDTO.automaticShowEmployeePr],
+        prOnlyDepartmentEmployeeFlag: [this.levelDetailsPurDTO.prOnlyDepartmentEmployee],
+      }),
+      //Purchasing Linked With
+      purchasingLinkedWithDTO: this.fb.group({
+        validatePlannedBudgetFlag: [this.levelDetailsPurDTO.validatePlannedBudget],
+        linkWithBudgetFlag: [this.levelDetailsPurDTO.linkWithBudget],
+        showItemBalanceFlag: [this.levelDetailsPurDTO.showItemBalance],
+      }),
+      //Approval Policy
+      approvalPolicyDTO: this.fb.group({
+        approvePrIsMendatoryFlag: [this.levelDetailsPurDTO.approvePrIsMendatory],
+        approvePoIsMendatoryFlag: [this.levelDetailsPurDTO.approvePoIsMendatory],
+        approvVendorSelectMendatoryFlag: [this.levelDetailsPurDTO.approvVendorSelectMendatory],
+        approveTenderIssueMendatoryFlag: [this.levelDetailsPurDTO.approveTenderIssueMendatory],
+        prMendatoryForPoCreationFlag: [this.levelDetailsPurDTO.prMendatoryForPoCreation],
+        releasePrWhenClosPoManualFlag: [this.levelDetailsPurDTO.releasePrWhenClosPoManual],
+        printPoWithoutApprovalFlag: [this.levelDetailsPurDTO.printPoWithoutApproval],
+        supplierApprovePoMandatoryFlag: [this.levelDetailsPurDTO.supplierApprovePoMandatory],
+        whenToValidatePlanedBudget: [this.levelDetailsPurDTO.whenToValidatePlanedBudget],
+        levelPlanedBudgetValidation: [this.levelDetailsPurDTO.levelPlanedBudgetValidation],
+        whenToDecreaseBudget: [this.levelDetailsPurDTO.whenToDecreaseBudget]
+      }),
+      // validations and checks
+      validationsChecksDTO: this.fb.group({
+        chckPrNoItemsQualityOnPoFlag: [this.levelDetailsPurDTO.chckPrNoItemsQualityOnPo],
+        chckQuotationNumItemsOnPoFlag: [this.levelDetailsPurDTO.chckQuotationNumItemsOnPo],
+        doNotChangePrDateFlag: [this.levelDetailsPurDTO.doNotChangePrDate],
+        allowPoForItemInWaregouseFlag: [this.levelDetailsPurDTO.allowPoForItemInWaregouse],
+        validatePriceChangeInPoFlag: [this.levelDetailsPurDTO.validatePriceChangeInPo],
+        validatPriceChngInPoPlistFlag: [this.levelDetailsPurDTO.validatPriceChngInPoPlist],
+        validateDueDateForPoFlag: [this.levelDetailsPurDTO.validateDueDateForPo],
+        validateUserForItemsFlag: [this.levelDetailsPurDTO.validateUserForItems],
+        showDetailPosifOpenItemFlag: [this.levelDetailsPurDTO.showDetailPosIfOpenItem],
+        averageConsumptionPeriod: [this.levelDetailsPurDTO.averageConsumptionPeriod],
+      })
+    });
+  }
+  stpDialog(
+    event: MouseEvent,
+    tableName: string,
+    idColumnName: string,
+    targetArray: BrowserDataDto[],
+    selectName: string
+  ) {
+    event.preventDefault();
+    this.dialogData = targetArray;
+    this.SelectName = selectName;
+    if (targetArray.length == 0) {
+      this.fetchData(tableName, idColumnName, targetArray);
+    }
+  }
+  private fetchData(
+    table: string,
+    idColumnName: string,
+    targetArray: BrowserDataDto[]
+  ): void {
+    this._getTablesServices
+      .getTable(table, idColumnName, 'LATIN_NAME', 'ARABIC_NAME')
+      .subscribe({
+        next: (data: BrowserDataDto[]) => {
+          targetArray.push(...data);
+          this.tableName = table;
+        },
+        error: (error: any) => {
+          console.error(`Error fetching: `, error);
+        },
+      });
+  }
+  // when select item type
+  onItemSelect(event: any) {
+    const { idNum, displayedNameEn, displayedNameAr } = event;
+    this.itemsTypeValues.idNum = idNum;
+    this.itemsTypeValues.displayedNameEn = displayedNameEn;
+    this.itemsTypeValues.displayedNameAr = displayedNameAr;
+    this.levelDetailsPurDTO.itemTypeStp.itemTypeId = this.itemsTypeValues.idNum
+  }
+  onSubmit() {
+    this.AdminAndPolicyFormGroup();
+    if (this.administrationForm.get("itemTypeId")?.value == null) {
+      this.showToast('success', 'Please Select An Item', 'الرجاء اختيار عنصر', 'Info', 'معلومة');
+    }
+    else {
+      this.adminPolicyServiceService.postData(this.administrationForm.value).subscribe({
+        next: () => {
+          this.showToast('success', 'Saved successfully!', 'تم الحفظ بنجاح!', 'Success', 'نجاح');
+        },
+        error: (error: any) => {
+          console.error('Error occurred:', error);
+        }
+      });
+    }
+  }
+  // private method to convert from Y and N into true , false :
+  private convertToBoolean(value: string | null): boolean {
+    return value === "Y";
+  }
+  // Method to display toast with localization :
+  private showToast(type: 'success' | 'warning' | 'error', enMessage: string, arMessage: string, enTitle: string,
+    arTitle: string) {
+    const message = this.translate.currentLang === 'en' ? enMessage : arMessage;
+    const options = this.translate.currentLang === 'ar' ? { positionClass: 'toast-top-left' } : {};
+    const title = this.translate.currentLang === 'en' ? enTitle : arTitle;
+    this.toaster[type](message, title.charAt(0).toUpperCase() + title.slice(1), options);
+  }
+}

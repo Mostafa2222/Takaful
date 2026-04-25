@@ -1,0 +1,18 @@
+export class JobDefinition {
+    latinName: string;
+    arabicName: string;
+    jobId: string;
+    jobCode: string;
+
+    constructor(
+        latinName: string = '',
+        arabicName: string = '',
+        jobId: string = '',
+        jobCode: string = ''
+    ) {
+        this.latinName = latinName;
+        this.arabicName = arabicName;
+        this.jobId = jobId;
+        this.jobCode = jobCode;
+    }
+}

@@ -1,0 +1,686 @@
+/************************        DataTable      **************************/
+$(document).ready(function () {
+  $(".autoDataTablized").each(function () {
+    var autoTabalized = dataTablizer($(this));
+    FilterDatatable(autoTabalized);
+  });
+
+  // delete row
+  $(".delete-cell").on("click", function () {
+    $(this).closest("tr").remove();
+  });
+});
+//
+
+$(document).ready(function () {
+  // Select2
+  $(".single-select").select2({
+    width: "100%",
+    // allowClear: true,
+    placeholder: function () {
+      $(this).data("placeholder");
+    },
+  });
+  $(".multi-select").select2({
+    width: "100%",
+    allowClear: true,
+    placeholder: function () {
+      $(this).data("placeholder");
+    },
+    multiple: true,
+    dropdownAutoWidth: true,
+    closeOnSelect: false,
+    tags: false,
+  });
+  $(".multi-select.itemCount").on("select2:close", function (evt) {
+    var uldiv = $(this).siblings("span.select2").find("ul");
+    var oldCount = parseInt(uldiv.find(".count").text()) || 0;
+    var count = uldiv.find("li").length - 1 + oldCount;
+    var max = $(this).data("maximum");
+    var sentence = $(this).data("sentence");
+    if (count > max) {
+      uldiv.html(
+        "<li class='select2-selection__summary'><span class='count'>" +
+          count +
+          "</span> " +
+          sentence +
+          "</li>"
+      );
+    }
+  });
+  //datepicker
+  $(".datepicker").datepicker();
+  $(function () {
+    var dateFormat = "mm/dd/yy",
+      from = $(".from")
+        .datepicker({
+          defaultDate: "+1w",
+          changeMonth: true,
+        })
+        .on("change", function () {
+          to.datepicker("option", "minDate", getDate(this));
+        }),
+      to = $(".to")
+        .datepicker({
+          defaultDate: "+1w",
+          changeMonth: true,
+        })
+        .on("change", function () {
+          from.datepicker("option", "maxDate", getDate(this));
+        });
+
+    function getDate(element) {
+      var date;
+      try {
+        date = $.datepicker.parseDate(dateFormat, element.value);
+      } catch (error) {
+        date = null;
+      }
+
+      return date;
+    }
+  });
+
+  // Toggle icons when accordion panels are shown/hidden
+  $(".panel-collapse").on("show.bs.collapse", function () {
+    $(this)
+      .prev(".panel-heading")
+      .find(".glyphicon")
+      .removeClass("glyphicon-plus")
+      .addClass("glyphicon-minus");
+  });
+  $(".panel-collapse").on("hide.bs.collapse", function () {
+    $(this)
+      .prev(".panel-heading")
+      .find(".glyphicon")
+      .removeClass("glyphicon-minus")
+      .addClass("glyphicon-plus");
+  });
+
+  //
+  $(".datetime-picker").datetimepicker({
+    hours12: false,
+  });
+  //select-row
+  //  check-td
+  $(document).on("change", "input[name=check-tr]", function () {
+    if (this.checked) {
+      $(this).parent().parent().addClass("selected");
+    } else {
+      $(this).parent().parent().removeClass("selected");
+    }
+  });
+  // disable-row
+  $(document).on("click", ".disable-row", function () {
+        var $row = $(this).closest('tr');
+        $row.addClass('disable');
+        $row.find('input[type="checkbox"], input[type="text"]').prop('disabled', true);
+  });
+  // nav-link not-complet
+  // var stepLink = $(".nav-link");
+  // stepLink.each(function () {
+  //   if ($(this).hasClass("not-complet")) {
+  //     $(this).addClass("alert-msg");
+  //   } else {
+  //     $(this).removeClass("alert-msg");
+  //   }
+  // });
+  //
+  // var tabContent = $(".tab-pane");
+  // tabContent.each(function () {
+  //   if ($(this).children(".sub-steps").length > 0) {
+  //     $(this).css("margin-top", "48px");
+  //   } else {
+  //     $(this).css("margin-top", "10px");
+  //   }
+  // });
+  // consolidated-btn individual-btn
+  $(document).on("click", ".consolidated-btn", function () {
+    $(".consolidated-item").removeClass("dnone");
+  });
+  //
+  $(document).on("click", ".individual-btn", function () {
+    $(".consolidated-item").addClass("dnone");
+  });
+});
+//add new row
+   function addNew() {
+     $(".addNew.not-saved").removeClass("d-none");
+}
+//
+// tree
+$(document).ready(function () {
+  $.fn.extend({
+    treed: function (o) {
+      var openedClass = "fa-minus";
+      var closedClass = "fa-plus";
+      if (typeof o != "undefined") {
+        if (typeof o.openedClass != "undefined") {
+          openedClass = o.openedClass;
+        }
+
+        if (typeof o.closedClass != "undefined") {
+          closedClass = o.closedClass;
+        }
+      }
+
+      //initialize each of the top levels
+      var tree = $(this);
+      tree.addClass("tree");
+      tree
+        .find("li")
+        .has("ul")
+        .each(function () {
+          var branch = $(this); //li with children ul
+          branch.prepend("<i class='indicator fa " + closedClass + "'></i>");
+          branch.addClass("branch");
+          branch.on("click", function (e) {
+            if (this == e.target) {
+              var icon = $(this).children("i:first");
+              icon.toggleClass(openedClass + " " + closedClass);
+              $(this).children().children().toggle();
+            }
+          });
+          branch.children().children().toggle();
+        });
+      //fire event from the dynamically added icon
+      tree.find(".branch .indicator").each(function () {
+        $(this).on("click", function () {
+          $(this).closest("li").click();
+        });
+      });
+      //fire event to open branch if the li contains an anchor instead of text
+      tree.find(".branch>a").each(function () {
+        $(this).on("click", function (e) {
+          $(this).closest("li").click();
+          e.preventDefault();
+        });
+      });
+      //fire event to open branch if the li contains a button instead of text
+      tree.find(".branch>button").each(function () {
+        $(this).on("click", function (e) {
+          $(this).closest("li").click();
+          e.preventDefault();
+        });
+      });
+    },
+  });
+  // $("#org-tree").jstree({
+  //   core: {
+  //     animation: 1,
+  //     check_callback: true,
+  //     themes: {
+  //       variant: "",
+  //     },
+  //   },
+  //   types: {
+  //     root: {
+  //       icon: "fas fa-building",
+  //       valid_children: ["default"],
+  //     },
+
+  //     default: {
+  //       icon: "fas fa-door-closed",
+  //       valid_children: ["default", "file"],
+  //     },
+  //     file: {
+  //       icon: "fas fa-door-open",
+  //       valid_children: ["file", "type2"],
+  //     },
+  //     type2: {
+  //       icon: "fas fa-stop",
+  //       valid_children: [],
+  //     },
+  //   },
+  //   plugins: ["contextmenu", "types", "unique"],
+  //   contextmenu: {
+  //     items: function ($node) {
+  //       var tree = $("#org-tree").jstree(true);
+  //       return {
+  //         Create: {
+  //           separator_before: false,
+  //           separator_after: true,
+  //           label: "Add",
+  //           action: function (obj) {
+  //             $node = tree.create_node($node, {
+  //               text: "item",
+  //               type: "file",
+  //               icon: "fas fa-file",
+  //             });
+  //             tree.deselect_all();
+  //             tree.select_node($node);
+  //             $(".wellcom-msg").hide();
+  //           },
+
+  //           // "submenu": {
+  //           //     "child": {
+  //           //         "seperator_before": false,
+  //           //         "seperator_after": false,
+  //           //         "label": "Child",
+  //           //         action: function (obj) {
+  //           //             $node = tree.create_node($node, { text: 'item', type: 'file', icon: 'fas fa-file' });
+  //           //             tree.deselect_all();
+  //           //             tree.select_node($node);
+  //           //         }
+  //           //     },
+  //           //     "Parent": {
+  //           //         "seperator_before": false,
+  //           //         "seperator_after": false,
+  //           //         "label": "Parent",
+  //           //         action: function (obj) {
+  //           //             $node = tree.create_node($node, { text: 'Group', type: 'root', icon: "fas fa-building" });
+  //           //             tree.deselect_all();
+  //           //             tree.select_node($node);
+  //           //         }
+  //           //     }
+  //           // }
+  //         },
+  //         Rename: {
+  //           separator_before: false,
+  //           separator_after: false,
+  //           label: "Rename",
+  //           action: function (obj) {
+  //             tree.edit($node);
+  //             $(".wellcom-msg").hide();
+  //           },
+  //         },
+  //         // "Create": {
+  //         //     "separator_before": false,
+  //         //     "separator_after": false,
+  //         //     "label": "Add",
+  //         //     },
+  //         Remove: {
+  //           separator_before: false,
+  //           separator_after: false,
+  //           label: "Remove",
+  //           action: function (obj) {
+  //             tree.delete_node($node);
+  //             $(".tree-form").hide();
+  //             $(".wellcom-msg").hide();
+  //           },
+  //         },
+  //         Edit: {
+  //           separator_before: false,
+  //           separator_after: false,
+  //           label: "Edit",
+  //           action: function (obj) {
+  //             $(".tree-form").show();
+  //             $(".wellcom-msg").hide();
+
+  //             var content = tree.select_node($node).children("a").text();
+  //             $("#tree-data").val(content);
+  //           },
+  //         },
+  //       };
+  //     },
+  //   },
+  // });
+
+  // create the instance
+  // $("#org-tree").jstree(true).refresh_node("node_1");
+  // $("#org-tree").jstree(true).refresh_node($("#org-tree").jstree(true).get_node("node_1").parent);
+  // //
+  // $(".jstree-container-ul li").on("click", function () {
+  //   var content = $(this).text();
+  //   $("#tree-data").val(content);
+  //   $(".tree-form").show();
+  //   $(".wellcom-msg").hide();
+  // });
+});
+//
+$(document).ready(function () {
+  $.fn.extend({
+    treed: function (o) {
+      var openedClass = "fa-minus";
+      var closedClass = "fa-plus";
+      if (typeof o != "undefined") {
+        if (typeof o.openedClass != "undefined") {
+          openedClass = o.openedClass;
+        }
+
+        if (typeof o.closedClass != "undefined") {
+          closedClass = o.closedClass;
+        }
+      }
+
+      //initialize each of the top levels
+      var tree = $(this);
+      tree.addClass("tree");
+      tree
+        .find("li")
+        .has("ul")
+        .each(function () {
+          var branch = $(this); //li with children ul
+          branch.prepend("<i class='indicator fa " + closedClass + "'></i>");
+          branch.addClass("branch");
+          branch.on("click", function (e) {
+            if (this == e.target) {
+              var icon = $(this).children("i:first");
+              icon.toggleClass(openedClass + " " + closedClass);
+              $(this).children().children().toggle();
+            }
+          });
+          branch.children().children().toggle();
+        });
+      //fire event from the dynamically added icon
+      tree.find(".branch .indicator").each(function () {
+        $(this).on("click", function () {
+          $(this).closest("li").click();
+        });
+      });
+      //fire event to open branch if the li contains an anchor instead of text
+      tree.find(".branch>a").each(function () {
+        $(this).on("click", function (e) {
+          $(this).closest("li").click();
+          e.preventDefault();
+        });
+      });
+      //fire event to open branch if the li contains a button instead of text
+      tree.find(".branch>button").each(function () {
+        $(this).on("click", function (e) {
+          $(this).closest("li").click();
+          e.preventDefault();
+        });
+      });
+    },
+  });
+  // $("#loc-tree").jstree({
+  //   core: {
+  //     animation: 1,
+  //     check_callback: true,
+  //     themes: {
+  //       variant: "",
+  //     },
+  //   },
+  //   types: {
+  //     root: {
+  //       icon: "fas fa-building",
+  //       valid_children: ["default"],
+  //     },
+
+  //     default: {
+  //       icon: "fas fa-door-closed",
+  //       valid_children: ["default", "file"],
+  //     },
+  //     file: {
+  //       icon: "fas fa-door-open",
+  //       valid_children: ["file", "type2"],
+  //     },
+  //     type2: {
+  //       icon: "fas fa-stop",
+  //       valid_children: [],
+  //     },
+  //   },
+  //   plugins: ["contextmenu", "types", "unique"],
+  //   contextmenu: {
+  //     items: function ($node) {
+  //       var tree = $("#loc-tree").jstree(true);
+  //       return {
+  //         Create: {
+  //           separator_before: false,
+  //           separator_after: true,
+  //           label: "Add",
+  //           action: function (obj) {
+  //             $node = tree.create_node($node, {
+  //               text: "item",
+  //               type: "file",
+  //               icon: "fas fa-file",
+  //             });
+  //             tree.deselect_all();
+  //             tree.select_node($node);
+  //             $(".wellcom-msg").hide();
+  //           },
+
+  //           // "submenu": {
+  //           //     "child": {
+  //           //         "seperator_before": false,
+  //           //         "seperator_after": false,
+  //           //         "label": "Child",
+  //           //         action: function (obj) {
+  //           //             $node = tree.create_node($node, { text: 'item', type: 'file', icon: 'fas fa-file' });
+  //           //             tree.deselect_all();
+  //           //             tree.select_node($node);
+  //           //         }
+  //           //     },
+  //           //     "Parent": {
+  //           //         "seperator_before": false,
+  //           //         "seperator_after": false,
+  //           //         "label": "Parent",
+  //           //         action: function (obj) {
+  //           //             $node = tree.create_node($node, { text: 'Group', type: 'root', icon: "fas fa-building" });
+  //           //             tree.deselect_all();
+  //           //             tree.select_node($node);
+  //           //         }
+  //           //     }
+  //           // }
+  //         },
+  //         Rename: {
+  //           separator_before: false,
+  //           separator_after: false,
+  //           label: "Rename",
+  //           action: function (obj) {
+  //             tree.edit($node);
+  //             $(".wellcom-msg").hide();
+  //           },
+  //         },
+  //         // "Create": {
+  //         //     "separator_before": false,
+  //         //     "separator_after": false,
+  //         //     "label": "Add",
+  //         //     },
+  //         Remove: {
+  //           separator_before: false,
+  //           separator_after: false,
+  //           label: "Remove",
+  //           action: function (obj) {
+  //             tree.delete_node($node);
+  //             $(".tree-form").hide();
+  //             $(".wellcom-msg").hide();
+  //           },
+  //         },
+  //         Edit: {
+  //           separator_before: false,
+  //           separator_after: false,
+  //           label: "Edit",
+  //           action: function (obj) {
+  //             $(".tree-form").show();
+  //             $(".wellcom-msg").hide();
+
+  //             var content = tree.select_node($node).children("a").text();
+  //             $("#tree-data").val(content);
+  //           },
+  //         },
+  //       };
+  //     },
+  //   },
+  // });
+  // create the instance
+  // $("#loc-tree").jstree(true).refresh_node("node_1");
+  // $("#loc-tree").jstree(true).refresh_node($("#org-tree").jstree(true).get_node("node_1").parent);
+  // //
+  // $(".jstree-container-ul li").on("click", function () {
+  //   var content = $(this).text();
+  //   $("#tree-data").val(content);
+  //   $(".tree-form").show();
+  //   $(".wellcom-msg").hide();
+  // });
+});
+//
+$(document).ready(function () {
+  $.fn.extend({
+    treed: function (o) {
+      var openedClass = "fa-minus";
+      var closedClass = "fa-plus";
+      if (typeof o != "undefined") {
+        if (typeof o.openedClass != "undefined") {
+          openedClass = o.openedClass;
+        }
+
+        if (typeof o.closedClass != "undefined") {
+          closedClass = o.closedClass;
+        }
+      }
+
+      //initialize each of the top levels
+      var tree = $(this);
+      tree.addClass("tree");
+      tree
+        .find("li")
+        .has("ul")
+        .each(function () {
+          var branch = $(this); //li with children ul
+          branch.prepend("<i class='indicator fa " + closedClass + "'></i>");
+          branch.addClass("branch");
+          branch.on("click", function (e) {
+            if (this == e.target) {
+              var icon = $(this).children("i:first");
+              icon.toggleClass(openedClass + " " + closedClass);
+              $(this).children().children().toggle();
+            }
+          });
+          branch.children().children().toggle();
+        });
+      //fire event from the dynamically added icon
+      tree.find(".branch .indicator").each(function () {
+        $(this).on("click", function () {
+          $(this).closest("li").click();
+        });
+      });
+      //fire event to open branch if the li contains an anchor instead of text
+      tree.find(".branch>a").each(function () {
+        $(this).on("click", function (e) {
+          $(this).closest("li").click();
+          e.preventDefault();
+        });
+      });
+      //fire event to open branch if the li contains a button instead of text
+      tree.find(".branch>button").each(function () {
+        $(this).on("click", function (e) {
+          $(this).closest("li").click();
+          e.preventDefault();
+        });
+      });
+    },
+  });
+  // $("#address-tree").jstree({
+  //   core: {
+  //     animation: 1,
+  //     check_callback: true,
+  //     themes: {
+  //       variant: "",
+  //     },
+  //   },
+  //   types: {
+  //     root: {
+  //       icon: "fas fa-building",
+  //       valid_children: ["default"],
+  //     },
+
+  //     default: {
+  //       icon: "fas fa-door-closed",
+  //       valid_children: ["default", "file"],
+  //     },
+  //     file: {
+  //       icon: "fas fa-door-open",
+  //       valid_children: ["file", "type2"],
+  //     },
+  //     type2: {
+  //       icon: "fas fa-stop",
+  //       valid_children: [],
+  //     },
+  //   },
+  //   plugins: ["contextmenu", "types", "unique"],
+  //   contextmenu: {
+  //     items: function ($node) {
+  //       var tree = $("#address-tree").jstree(true);
+  //       return {
+  //         Create: {
+  //           separator_before: false,
+  //           separator_after: true,
+  //           label: "Add",
+  //           action: function (obj) {
+  //             $node = tree.create_node($node, {
+  //               text: "item",
+  //               type: "file",
+  //               icon: "fas fa-file",
+  //             });
+  //             tree.deselect_all();
+  //             tree.select_node($node);
+  //             $(".wellcom-msg").hide();
+  //           },
+
+  //           // "submenu": {
+  //           //     "child": {
+  //           //         "seperator_before": false,
+  //           //         "seperator_after": false,
+  //           //         "label": "Child",
+  //           //         action: function (obj) {
+  //           //             $node = tree.create_node($node, { text: 'item', type: 'file', icon: 'fas fa-file' });
+  //           //             tree.deselect_all();
+  //           //             tree.select_node($node);
+  //           //         }
+  //           //     },
+  //           //     "Parent": {
+  //           //         "seperator_before": false,
+  //           //         "seperator_after": false,
+  //           //         "label": "Parent",
+  //           //         action: function (obj) {
+  //           //             $node = tree.create_node($node, { text: 'Group', type: 'root', icon: "fas fa-building" });
+  //           //             tree.deselect_all();
+  //           //             tree.select_node($node);
+  //           //         }
+  //           //     }
+  //           // }
+  //         },
+  //         Rename: {
+  //           separator_before: false,
+  //           separator_after: false,
+  //           label: "Rename",
+  //           action: function (obj) {
+  //             tree.edit($node);
+  //             $(".wellcom-msg").hide();
+  //           },
+  //         },
+  //         // "Create": {
+  //         //     "separator_before": false,
+  //         //     "separator_after": false,
+  //         //     "label": "Add",
+  //         //     },
+  //         Remove: {
+  //           separator_before: false,
+  //           separator_after: false,
+  //           label: "Remove",
+  //           action: function (obj) {
+  //             tree.delete_node($node);
+  //             $(".tree-form").hide();
+  //             $(".wellcom-msg").hide();
+  //           },
+  //         },
+  //         Edit: {
+  //           separator_before: false,
+  //           separator_after: false,
+  //           label: "Edit",
+  //           action: function (obj) {
+  //             $(".tree-form").show();
+  //             $(".wellcom-msg").hide();
+
+  //             var content = tree.select_node($node).children("a").text();
+  //             $("#tree-data").val(content);
+  //           },
+  //         },
+  //       };
+  //     },
+  //   },
+  // });
+  // create the instance
+  // $("#address-tree").jstree(true).refresh_node("node_1");
+  // $("#address-tree").jstree(true).refresh_node($("#org-tree").jstree(true).get_node("node_1").parent);
+  // //
+  // $(".jstree-container-ul li").on("click", function () {
+  //   var content = $(this).text();
+  //   $("#tree-data").val(content);
+  //   $(".tree-form").show();
+  //   $(".wellcom-msg").hide();
+  // });
+});
+//

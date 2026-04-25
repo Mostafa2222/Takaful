@@ -1,0 +1,120 @@
+@font-face {
+  font-family: 'EmailFont';
+  src:  url('EmailFont.eot?afaprv');
+  src:  url('EmailFont.eot?afaprv#iefix') format('embedded-opentype'),
+    url('EmailFont.ttf?afaprv') format('truetype'),
+    url('EmailFont.woff?afaprv') format('woff'),
+    url('EmailFont.svg?afaprv#EmailFont') format('svg');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+[class^="iconmail-"], [class*=" iconmail-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'EmailFont' !important;
+  speak: never;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.iconmail-email-reply:before {
+  content: "\f100";
+}
+.iconmail-reply:before {
+  content: "\f101";
+}
+.iconmail-email-1:before {
+  content: "\f102";
+}
+.iconmail-004-arrow:before {
+  content: "\f103";
+}
+.iconmail-reply-message:before {
+  content: "\f104";
+}
+.iconmail-reply-1:before {
+  content: "\f105";
+}
+.iconmail-removed:before {
+  content: "\f106";
+}
+.iconmail-mail-1:before {
+  content: "\f107";
+}
+.iconmail-fax:before {
+  content: "\f108";
+}
+.iconmail-fax-1:before {
+  content: "\f109";
+}
+.iconmail-open-mail:before {
+  content: "\f110";
+}
+.iconmail-email-2:before {
+  content: "\f111";
+}
+.iconmail-email:before {
+  content: "\f112";
+}
+.iconmail-email-important:before {
+  content: "\f113";
+}
+.iconmail-mail-view:before {
+  content: "\f114";
+}
+.iconmail-opened-envelope:before {
+  content: "\f115";
+}
+.iconmail-mail-qview:before {
+  content: "\f116";
+}
+.iconmail-mail-search:before {
+  content: "\f118";
+}
+.iconmail-search-mail:before {
+  content: "\f119";
+}
+.iconmail-paper-plane:before {
+  content: "\f120";
+}
+.iconmail-mailbox:before {
+  content: "\f121";
+}
+.iconmail-mail-3:before {
+  content: "\f122";
+}
+.iconmail-mail-add:before {
+  content: "\f123";
+}
+.iconmail-mail-secure:before {
+  content: "\f124";
+}
+.iconmail-open-email:before {
+  content: "\f125";
+}
+.iconmail-document:before {
+  content: "\f126";
+}
+.iconmail-email-11:before {
+  content: "\f127";
+}
+.iconmail-inbox:before {
+  content: "\f128";
+}
+.iconmail-inbox-1:before {
+  content: "\f129";
+}
+.iconmail-inbox-2:before {
+  content: "\f130";
+}
+.iconmail-tag:before {
+  content: "\f131";
+}

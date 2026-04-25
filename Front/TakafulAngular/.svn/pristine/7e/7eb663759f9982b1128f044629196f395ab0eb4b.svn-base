@@ -1,0 +1,136 @@
+import { Injectable } from '@angular/core';
+import * as XLSX from 'xlsx';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { EnvironmentService } from '../environment.service';
+import { PrsStpLocationPK } from '../../models/PrsStpLocationPK';
+
+
+@Injectable({
+    providedIn: 'root'
+})
+export class LocationDefinitionService {
+    public apiUrl: string = this._environmentService.apiUrl;
+
+    constructor(public http: HttpClient, public _environmentService: EnvironmentService) { }
+
+    // Service to fetch Location level Tree from database: 
+    public getLocationLevel(): Observable<any> {
+        let url = this.apiUrl + 'organization/location/all/api';
+        const headers = new HttpHeaders({
+            'Content-Type': 'application/json'
+            , 'Authorization': `Bearer ${localStorage.getItem('token')}`
+        });
+        return this.http.get<any>(url, { headers });
+    }
+    // Service to add a new location level or edit location:
+    addLocation(locationData: any): Observable<any> {
+        const getValueOrEmpty = (value: any): string => value === null || value === "null" || value === undefined ? "" : value;
+
+        const url = `${this.apiUrl}organization/location/save`;
+
+        const formData = new FormData();
+
+        formData.append('ParentId', getValueOrEmpty(locationData.nodeSelectedParentId));
+        formData.append('AREA', getValueOrEmpty(locationData.nodeSelectedAreaSquare));
+        formData.append('ARABIC_NAME', getValueOrEmpty(locationData.nodeSelectedArabicName));
+        formData.append('LAND_AREA', getValueOrEmpty(locationData.nodeSelectedLandAreaSquare));
+        formData.append('CODE', getValueOrEmpty(locationData.nodeSelectedCode));
+        formData.append('LATIN_NAME', getValueOrEmpty(locationData.nodeSelectedEnglishName));
+        formData.append('DIRECTION', getValueOrEmpty(locationData.nodeSelectedDirection));
+        formData.append('NON_DEPARTMENT', getValueOrEmpty(locationData.nodeSelectedNonDepartment));
+        formData.append('ACTIVE', getValueOrEmpty(locationData.nodeSelectedActive));
+        formData.append('BRANCH_ID', '1');
+        formData.append('TEMPLATE_ID', getValueOrEmpty(locationData.nodeSelectedTemplateId?.idNum?.toString()));
+        formData.append('NOTES', getValueOrEmpty(locationData.nodeSelectedNotes));
+        formData.append('LOCATION_IMAGE_ICON', locationData.nodeSelectedLocationImageIcon);
+        formData.append('LOCATION_TYPE_ID', getValueOrEmpty(locationData.nodeSelectedLocationTypeSelected?.idNum?.toString()));
+        formData.append('ORDER_VALUE', getValueOrEmpty(locationData.nodeSelectedOrderValue));
+        formData.append('id', locationData.nodeSelectedId);
+        const headers = new HttpHeaders({
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+        });
+        return this.http.post<any>(url, formData, { headers });
+    }
+    // Service to delete location level node : 
+    deleteLocation(locationPKList: PrsStpLocationPK[]): Observable<string> {
+        let url = this.apiUrl + 'organization/location/delete';
+        const headers = new HttpHeaders({
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+        });
+
+        return this.http.delete<string>(url, {
+            headers: headers,
+            body: locationPKList
+        });
+    }
+    // Service to add new location level node via excel sheet : 
+    parseExcel(file: File): Promise<any> {
+        const url = this.apiUrl + 'organization/location/save/excel';
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = (e: any) => {
+                const data = new Uint8Array(e.target.result);
+                const workbook = XLSX.read(data, { type: 'array' });
+                const sheetName = 'Location Setup';
+                const worksheet = workbook.Sheets[sheetName];
+                if (!worksheet) {
+                    reject('Location Setup sheet not found.');
+                    return;
+                }
+                const sheetData: any[][] = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+                if (sheetData.length < 2) {
+                    reject('No valid data found in the sheet.');
+                    return;
+                }
+                const treeStpVM = sheetData.slice(1).map(row => ({
+                    Id: null,
+                    ParentId: row[3] || null,
+                    CODE: row[0] || null,
+                    LATIN_NAME: row[1] || null,
+                    ARABIC_NAME: row[2] || null,
+                    BRANCH_ID: 0,
+                    ACTIVE: null,
+                    IN_PHYSICAL_COUNT: null,
+                    PHYSICAL_MINUTES_NUMBER_ID: 0,
+                    LOCATION_IMAGE_ICON: null,
+                    COST_CENTER_ID: null,
+                    LOCATION_TYPE_ID: null,
+                    AREA: null,
+                    LAND_AREA: null,
+                    DIRECTION: null,
+                    ORDER_VALUE: null,
+                    NON_DEPARTMENT: null,
+                    NOTES: null,
+                    TEMPLATE_ID: null,
+                    TOTAL_AREA_PERCENT: null,
+                    LAND_AREA_PERCENT: null,
+                    AREA_PERCENT: null,
+                    MAX_AREA: null,
+                    MIN_AREA: null,
+                    MAX_LAND_AREA: null,
+                    MIN_LAND_AREA: null
+                }));
+                const requestData = {
+                    TreeStpVM: treeStpVM,
+                    SetupVM: []
+                };
+                resolve(requestData);
+            };
+            reader.onerror = (error) => reject(error);
+            reader.readAsArrayBuffer(file);
+        });
+    }
+    uploadExcelData(data: any): Observable<any> {
+        const url = this.apiUrl + 'organization/location/save/excel';
+        return this.http.post<any>(url, data);
+    }
+    triggerFileUpload(): void {
+        // Trigger the hidden file input click to select the file
+        const fileInput = document.getElementById('file-upload') as HTMLInputElement;
+        if (fileInput) {
+            fileInput.click();
+        }
+    }
+}

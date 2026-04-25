@@ -1,0 +1,471 @@
+
+/*************** Table Title & Create Button ***************/
+
+.searchableTh i.fa-search {
+    cursor: pointer;
+}
+
+.searchableTh input[type="text"] {
+    width: calc(100% - 15px);
+    display: none;
+}
+
+.searchableTh.searching input[type="text"] {
+    display: block;
+}
+
+.tableTitle {
+    display: inline-block;
+    margin-right: 10px;
+}
+
+.create {
+    float: left;
+    margin-top: 5px;
+    position: relative;
+    min-width: 86px;
+}
+
+.modulesDrobdown {
+    position: absolute;
+    z-index: 1;
+    background: #fff;
+    padding: 0px;
+    border: 1px solid #aaa;
+    -webkit-box-shadow: 0px 4px 7px 0px rgba(50, 50, 50, 0.75);
+    box-shadow: 0px 4px 7px 0px rgba(50, 50, 50, 0.75);
+    margin-top: 8px;
+    display: none;
+    left: -60px;
+}
+
+.modulesDrobdown:after {
+    content: " ";
+    height: 0px;
+    width: 0px;
+    border-top: 10px solid rgba(0, 0, 0, 0);
+    border-bottom: 10px solid #ffffff;
+    border-left: 10px solid rgba(0, 13, 255, 0);
+    border-right: 10px solid rgba(0, 251, 255, 0);
+    position: absolute;
+    top: -20px;
+    left: 60px;
+}
+
+.modulesDrobdown:before {
+    content: " ";
+    height: 0px;
+    width: 0px;
+    border-top: 10px solid rgba(0, 0, 0, 0);
+    border-bottom: 10px solid #000000;
+    border-left: 10px solid rgba(0, 13, 255, 0);
+    border-right: 10px solid rgba(0, 251, 255, 0);
+    position: absolute;
+    top: -20px;
+    left: 60px;
+}
+
+.modulesDrobdown ul {
+    margin: 0px auto;
+    position: relative;
+    height: auto;
+}
+
+.modulesDrobdown ul:after {
+    content: ' ';
+    position: absolute;
+    top: -11px;
+    background-size: 16px;
+    z-index: 99999;
+    display: block;
+    height: 12px;
+    width: 16px;
+    left: 45%;
+}
+
+.modulesDrobdown ul li a {
+    color: #333;
+    text-transform: capitalize;
+    display: block;
+    padding: 3px 8px;
+    font-size: 12px;
+    -webkit-transition: all ease 0.3s;
+    transition: all ease 0.3s;
+}
+
+.modulesDrobdown ul li a:hover,
+.modulesDrobdown ul li a:focus,
+.modulesDrobdown ul li a.active {
+    color: #fff;
+    background: #254a6d;
+    text-decoration: none;
+}
+
+.detailsCreateBtn,
+.createBtn,
+.deleteBtn {
+    width: 22px;
+    border-radius: 100% !important;
+    cursor: pointer;
+    padding: 0px !important;
+}
+
+.popupForm {
+    text-align: left;
+    /* border: 1px solid #c3dced; */
+    background-color: #f0f9ff;
+    padding: 5px 0px;
+    margin: 0px 15px;
+}
+
+
+/***** Table Row Action Tooltip *****/
+
+.moreBtn {
+    position: relative;
+}
+
+.options {
+    display: none;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    -webkit-transition: all ease 0.3s;
+    transition: all ease 0.3s;
+}
+
+.options ul {
+    background: rgba(0, 0, 0, 0.70);
+    width: 180px;
+}
+
+.options ul li {
+    display: inline-block;
+}
+
+.options ul li a {
+    color: #fff;
+    padding: 8px;
+    display: inline-block;
+    text-transform: capitalize;
+    font-size: 12px;
+}
+
+.options ul li a:hover,
+.options ul li a:focus {
+    color: #ffbb00;
+    -webkit-transition: all ease 0.3s;
+    transition: all ease 0.3s;
+}
+
+
+/***** Tables Control list  *****/
+
+.table-controls {
+    margin-top: 100px;
+    display: block;
+    height: 100%;
+    text-align: center;
+}
+
+.table-controls li {
+    margin: 0px auto 15px;
+}
+
+.dataTables_wrapper {
+    margin-bottom: 10px;
+}
+
+
+/************************* Table Style*************************/
+
+.table {
+    background-color: #fff;
+    text-align: left;
+    /*! font-family: Tahoma !important; */
+}
+
+.cu-table {
+    margin-bottom: 0px;
+}
+
+.cu-table>thead>tr>th:first-child {
+    border-radius: 0px 0 0 0;
+}
+
+.cu-table>thead>tr>th:last-child {
+    border-radius: 0 0px 0 0;
+}
+
+.table thead,
+.table tfoot {
+    /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#26537e+0,1a3a59+100 */
+    background: #26537e;
+    /* Old browsers */
+    /* FF3.6-15 */
+    /* Chrome10-25,Safari5.1-6 */
+    background: -webkit-gradient(linear, left top, left bottom, from(#26537e), to(#1a3a59));
+    background: linear-gradient(to bottom, #26537e 0%, #1a3a59 100%);
+    /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    filter: progid: DXImageTransform.Microsoft.gradient(startColorstr='#26537e', endColorstr='#1a3a59', GradientType=0);
+    /* IE6-9 */
+    color: #fff;
+    text-transform: capitalize;
+}
+
+.table tbody .description {
+    text-align: left;
+}
+
+.moreBtn {
+    font-size: 14px;
+    color: #224b72;
+}
+
+.table>tbody>tr>td,
+.table>tbody>tr>th,
+.table>tfoot>tr>td,
+.table>tfoot>tr>th,
+.table>thead>tr>td,
+.table>thead>tr>th {
+    vertical-align: middle;
+    line-height: 13px;
+}
+
+.table-striped>tbody>tr {
+    -webkit-transition: all ease 0.3s;
+    transition: all ease 0.3s;
+}
+
+.table-striped>tbody>tr:nth-of-type(odd) {
+    background-color: #fff;
+}
+
+.table-striped>tbody>tr:nth-of-type(even) {
+    background-color: #e0f3ff;
+}
+
+.table-bordered>thead>tr>td,
+.table-bordered>thead>tr>th {
+    border-bottom: 0px solid #fff;
+    text-align: left;
+    font-weight: 100;
+}
+
+.table-hover>tbody>tr:hover {
+    background-color: #c0e2f7;
+}
+
+
+/*
+.table tfoot {
+    background: #fff;
+    text-align: center;
+}*/
+
+.table tfoot .tblPagination {
+    /*background: linear-gradient(to bottom, #26537e 0%, #1a3a59 100%);*/
+    color: #fff;
+    background-color: #26537e;
+}
+
+.dataTables_paginate {
+    background-color: #26537e;
+}
+
+.table tfoot .tblPagination ul {
+    margin: 0px auto;
+}
+
+.table tfoot .tblPagination ul li {
+    display: inline-block;
+}
+
+.table tfoot .tblPagination ul li a {
+    color: #fff;
+    padding: 0px 5px 1px;
+    margin: 0px 3px;
+    display: inline-block;
+    -webkit-transition: all ease 0.3s;
+    transition: all ease 0.3s;
+}
+
+.table tfoot .tblPagination ul li a.active,
+.table tfoot .tblPagination ul li a:hover,
+.table tfoot .tblPagination ul li a:focus {
+    background-color: #fff;
+    color: #23527c;
+    text-decoration: none;
+}
+
+.table .Details,
+.table .Edit,
+.table .delete {
+
+    color: #224b72;
+    cursor: pointer;
+}
+
+.table .Details a,
+.table .Edit a,
+.table .delete a {
+    color: inherit;
+}
+
+.highlighted,
+.highlighted:hover,
+.highlighted:focus {
+    background-color: #a1cde8 !important;
+    -webkit-transition: all ease 0.3s !important;
+    transition: all ease 0.3s !important;
+}
+
+.table-bordered>tfoot.total>tr>td {
+    border: 1px solid #26537e;
+}
+
+.table input,
+.table select {
+    margin-bottom: 0px;
+}
+
+
+/**************************** colReorder.dataTables.min.css ************************/
+
+table.DTCR_clonedTable.dataTable {
+    position: absolute !important;
+    background-color: rgba(255, 255, 255, 0.7);
+    z-index: 202
+}
+
+div.DTCR_pointer {
+    width: 1px;
+    background-color: #0259C4;
+    z-index: 201
+}
+
+
+/***************************** dataTables.checkboxes.css *************************/
+
+table.dataTable.dt-checkboxes-select tbody tr,
+table.dataTable thead th.dt-checkboxes-select-all,
+table.dataTable tbody td.dt-checkboxes-cell {
+    cursor: pointer;
+}
+
+table.dataTable thead th.dt-checkboxes-select-all,
+table.dataTable tbody td.dt-checkboxes-cell {
+    text-align: center;
+}
+
+div.dataTables_wrapper span.select-info,
+div.dataTables_wrapper span.select-item {
+    margin-left: 0.5em;
+}
+
+.gragh-container {
+    margin: 0px auto 15px;
+    -webkit-box-shadow: 0px 0px 3px rgba(102, 102, 102, 0.5);
+    box-shadow: 0px 0px 3px rgba(102, 102, 102, 0.5);
+    padding: 15px;
+}
+
+.gragh-container .panel {
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+
+.gragh-container .panel .graphTitle {
+    margin: 0px;
+}
+
+.gragh-container .panel .panel-body .table {
+    margin-bottom: 0px;
+}
+
+
+/************************* data table ********************************************/
+
+.dataTables_filter {
+    text-align: left !important;
+}
+
+table.dataTable.table-condensed>thead>tr>th {
+    padding: 5px 3px 5px 3px;
+}
+
+div.dataTables_wrapper div.dataTables_paginate ul.pagination {
+    margin: 4px 0 0;
+    font-size: 11px;
+}
+
+.pagination>li>a,
+.pagination>li>span {
+    padding: 0 6px;
+    color: #337ab7;
+}
+
+.pagination>li:last-child>a,
+.pagination>li:last-child>span,
+.pagination>li:first-child>a,
+.pagination>li:first-child>span {
+    border-radius: 3px;
+    margin: 0 8px;
+}
+
+.pagination>.active>a,
+.pagination>.active>a:focus,
+.pagination>.active>a:hover,
+.pagination>.active>span,
+.pagination>.active>span:focus,
+.pagination>.active>span:hover {
+    color: #fff;
+    background-color: #337ab7;
+    border-color: #337ab7;
+    border-radius: 3px;
+}
+
+
+/**************************************************************************/
+
+/************************************** tables ***********************************/
+
+.pre-scrollable {
+    /*! max-height: 250px; */
+    overflow-y: auto;
+}
+
+.modal-table .pre-scrollable {
+    max-height: 450px;
+    overflow-y: auto;
+}
+
+.setup-table {
+    min-width: 760px;
+}
+
+.info-table>thead>tr>th {
+    padding: 4px 5px;
+    line-height: 13px;
+}
+
+.info-table .fa-eye {
+    margin-left: 3px;
+}
+
+a.btn.btn-primary.detailBtn {
+    padding: 0px 2px 4px;
+    line-height: 9px;
+    border-radius: 0 !important;
+}
+
+
+.section-modal h3 {
+    background-image: -moz-linear-gradient(90deg, rgb(28, 62, 95) 0%, rgb(37, 81, 123) 100%);
+    background-image: -webkit-linear-gradient(90deg, rgb(28, 62, 95) 0%, rgb(37, 81, 123) 100%);
+    background-image: -ms-linear-gradient(90deg, rgb(28, 62, 95) 0%, rgb(37, 81, 123) 100%);
+    margin: 0 0 5px 0;
+    padding: 8px 10px;
+    color: #fff;
+    font-size: 13px;
+}

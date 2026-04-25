@@ -1,0 +1,184 @@
+/***** Common *****/
+:root {
+    --bs-primary-rgb: 30, 107, 172;
+    --appColor: #1e6bac;
+    --filter-img: grayscale(100%) brightness(70%) sepia(70%) hue-rotate(190deg) saturate(4567%) contrast(200%);
+}
+
+.table td.delete-cell .fa-trash-alt {
+    color: red;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+div.dataTables_wrapper div.dataTables_length {
+    bottom: -25px;
+    position: relative;
+}
+
+/*  */
+
+.main-info{background: #e4edf3;border-color: #c8ddea;}
+.viewField {
+    border-bottom: 1px dotted silver;
+    color: #514e4e !important;
+    padding-bottom: 0.15rem;
+    margin-bottom: 6px;
+}
+
+.main-info label {
+    font-size: 12px;
+    font-weight: bold;
+    color: #296dac;
+    text-transform: capitalize;
+}
+
+.main-info-img{margin-right: 15px;border: 2px solid #77abcd;background: #fff;height: 100px;width: 100px;border-radius: 100%;box-sizing: content-box;}
+.main-info-img img{width: 100px;height: 100px;border-radius: 100%;}
+.main-info-action .action-item{margin: 0 2px;/*! background: #99bfd9; */padding: 1px 5px;color: #376f95;border: 2px solid #376f95;border-radius: 3px;}
+.main-info-action .action-item:hover{background: #99bfd9; }
+
+.action-menu{width: 200px;font-size: 13px;padding: 3px;}
+.action-menu .list-group{margin: 0 5px;}
+.action-menu .list-group-item{background: unset;padding: 3px 6px; font-size: 0.75rem;}
+.action-menu .list-group-item:hover {
+    background: #00000015;
+}
+.action-menu i{font-size: 16px;padding: 5px;}
+
+
+
+/***************** Start Employee Details *****************/
+
+.employee-thumbnail {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    border-radius: 50em;
+}
+
+
+.employee-thumbnail-wrapper {
+    position: relative;
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+    padding: 0.1rem;
+    background-color: #fff;
+    border: 1px solid var(--bs-border-color);
+}
+
+.employee-thumbnail-wrapper:hover .file-input {
+    opacity: 1;
+}
+
+.employee-thumbnail-wrapper .file-input {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    top: 0;
+    left: 0;
+    background-color: #fff;
+    border-radius: 100%;
+    box-shadow: 0 0.5rem 1rem rgb(0 0 0 / 15%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    margin: 0;
+    opacity: 0;
+    transition: .2s all ease-in-out;
+}
+
+.employee-thumbnail-wrapper .file-input i {
+    font-size: 20px;
+    color: #296dac;
+}
+
+/***************** End Employee Details *****************/
+
+/***************** Start Employee Card *****************/
+.pagination{
+    justify-content: center;
+}
+.employee-card-mini {
+    background: #e3effb;
+    border: 1px solid #c5dff9;
+    border-radius: 5px;
+    margin: 10px 0;
+    cursor: pointer;
+}
+.employee-card-mini .employee-card-head {
+    border-bottom: 1px solid var(--appColor);
+    padding: 10px 10px 0 10px;
+}
+.employee-card-mini .name {
+    font-weight: 700;
+    font-size: .75rem;
+    margin: 0;
+}
+
+.employee-card-mini .employee-card-body {
+    min-height: 50px;
+}
+
+.employee-card-mini .employee-pic {
+    width: 20%;
+    height: 100%;
+    float: left;
+}
+
+.employee-card-mini .employee-info {
+    width: 80%;
+    float: right;
+    margin: 0;
+    padding: 0;
+}
+.employee-card-body ul.employee-info>li.half{
+    width: 50%;
+    float: left;
+}
+.employee-card-body ul.employee-info>li:not(.half):nth-of-type(odd){
+    background: #c2daf3;
+}
+.employee-card-body ul.employee-info>li.half:nth-of-type(4n) {
+    background: #c2daf3;
+}
+.employee-card-body ul.employee-info>li.half:nth-of-type(4n + 1) {
+    background: #c2daf3;
+}
+
+.employee-card-body ul.employee-info>li {
+    padding: 2px 10px;
+}
+.employee-card-body ul.employee-info>li i {
+    color: var(--appColor);
+    padding: 0 10px 0 0;
+}
+
+.employee-card-footer {
+    padding: 0 10px;
+}
+.employee-card-footer .indicators {
+    margin: 5px 0 0 0;
+    text-align: right;
+}
+
+.employee-card-footer .indicators li {
+    display: inline;
+    margin-right: 10px;
+}
+.employee-card-footer .indicators li:last-child {
+    margin-right: 0;
+}
+.employee-card-footer .indicators li a {
+    color: #adadad;
+}
+
+.employee-card-footer .indicators li a.Complete {
+    color: var(--appColor);
+}
+.employee-card-footer .actions {
+    float: left;
+}
+/***************** End Employee Card *****************/

@@ -1,0 +1,145 @@
+<!-- page title -->
+<div
+  class="page-title mb-3 border-bottom bg-light d-flex align-items-center justify-content-center sticky-top  flex-md-nowrap"
+>
+  <!-- breadcrumb -->
+  <div>
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb  position-relative">
+        <li  style="margin:0.1rem 0 0 0.1rem;">
+          Organization
+          <i
+            *ngIf="translate.currentLang !== 'ar'"
+            class="fa-solid fa-angle-right"
+          ></i>
+          <i
+            *ngIf="translate.currentLang === 'ar'"
+            class="fa-solid fa-angle-left"
+          ></i>
+        </li>
+        <li class=""  style="margin:0.1rem 0 0 0.1rem;">
+          Setup Wizard
+
+        </li>
+      </ol>
+    </nav>
+  </div>
+  <!-- action-tools  -->
+  <div class="ms-auto ms-sm-auto m-sm-0 p-1">
+    <div class="action-tools d-flex align-items-center justify-content-end">
+      <!-- wizard progress -->
+      <div class="setup-progress" title="Setup Progress">
+        <div class="progress">
+          <div
+            class="progress-bar bg-success"
+            role="progressbar"
+            style="width: 20%"
+            aria-valuenow="20"
+            aria-valuemin="0"
+            aria-valuemax="100"
+          ></div>
+        </div>
+        <a href="#" class="px-1" title="Wizard Setup"
+          ><i class="fas fa-wand-magic-sparkles text-success"></i
+        ></a>
+      </div>
+      <span class="vr mx-2"></span>
+      <!--  -->
+      <a
+        class="px-1 btn-filter disabled"
+        title="Advance Search"
+        data-bs-toggle="offcanvas"
+        href="#offcanvasFilter"
+        role="button"
+        aria-controls="offcanvasFilter"
+        ><i class="fa fa-filter"></i
+      ></a>
+      <span class="vr mx-2"></span>
+      <a href="#" class="px-1 disabled" title="New" onclick="addNew();"
+        ><i class="fa fa-plus-circle"></i
+      ></a>
+      <span class="vr mx-2"></span>
+      <a
+        href="#"
+        class="px-1 disabled"
+        title="Save"
+        data-bs-toggle="modal"
+        data-bs-target="#SaveModal"
+        ><i class="fa fa-floppy-disk"></i
+      ></a>
+      <span class="vr mx-2"></span>
+      <a href="#" class="px-1 disabled" title="XLS file"
+        ><i class="dms-icon-xls-file1"></i
+      ></a>
+      <a href="#" class="px-1 disabled" title="PDF file"
+        ><i class="dms-icon-pdf-file1"></i
+      ></a>
+    </div>
+    <!-- filter element-->
+    <div
+      class="offcanvas offcanvas-end"
+      data-bs-scroll="true"
+      data-bs-backdrop="false"
+      tabindex="-1"
+      id="offcanvasFilter"
+      aria-labelledby="offcanvasFilterLabel"
+    >
+      <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="offcanvasExampleLabel">
+          <i class="fa fa-filter"></i> Search
+        </h5>
+        <button
+          type="button"
+          class="btn-close text-reset"
+          data-bs-dismiss="offcanvas"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="offcanvas-body">
+        <div class="row">
+          <div class="col-12 mb-2">
+            <label class="form-label">Code</label>
+            <input type="text" class="form-control" placeholder="Code" />
+          </div>
+          <div class="col-12 mb-2">
+            <label class="form-label">English Name</label>
+            <input
+              type="text"
+              class="form-control"
+              placeholder="English Name"
+            />
+          </div>
+          <div class="col-12 mb-2">
+            <label class="form-label">Arabic Name</label>
+            <input type="text" class="form-control" placeholder="Arabic Name" />
+          </div>
+          <div class="col-12 mb-2">
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                value=""
+                id="flexCheckDefault"
+              />
+              <label class="form-check-label" for="flexCheckDefault"
+                >Active</label
+              >
+            </div>
+          </div>
+          <div class="mt-2 d-grid gap-2 d-md-flex justify-content-center">
+            <a href="#" class="btn btn-outline-secondary btn-sm px-5"
+              ><i class="fa fa-refresh"></i> Refresh</a
+            >
+            <a
+              href="#"
+              class="btn btn-primary text-white btn-sm px-5"
+              data-bs-dismiss="offcanvas"
+              aria-label="Close"
+              ><i class="fa fa-search"></i> Search</a
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

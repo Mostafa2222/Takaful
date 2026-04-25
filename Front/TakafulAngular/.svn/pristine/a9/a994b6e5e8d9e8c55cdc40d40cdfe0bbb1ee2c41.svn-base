@@ -1,0 +1,30 @@
+import { Injectable } from '@angular/core';
+import {  HttpErrorResponse } from '@angular/common/http';
+
+import { UserData } from '../../models/UserData';
+import { TreeRestService } from './tree-rest';
+import { DmsStpLevelDetailsDTO } from '../../DTO/DmsStpLevelDetailsDTO';
+@Injectable({
+  providedIn: 'root'
+})
+export class TreeService {
+
+  public levelsDetails: DmsStpLevelDetailsDTO[] = [];
+
+  constructor(
+    private _treeRest: TreeRestService) { }
+
+  // GetAllLevels() {
+  //    this._treeRest.getAllLevelDetails().subscribe
+  //     (
+  //       (res: any) => {
+  //         this.levelsDetails = res as DmsStpLevelDetailsDTO[];
+  //         localStorage.removeItem("Levels");
+  //         localStorage.setItem("Levels",JSON.stringify(this.levelsDetails));
+  //       },
+  //       (error: HttpErrorResponse) => {
+  //       }
+  //     );
+  // }
+
+}

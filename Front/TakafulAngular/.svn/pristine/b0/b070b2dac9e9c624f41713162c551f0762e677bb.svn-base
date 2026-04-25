@@ -1,0 +1,36 @@
+
+.main-info-img{margin-right: unset;margin-left: 15px;}
+
+/***************** Start Employee Card *****************/
+
+.employee-card-mini .employee-pic {
+    float: right;
+}
+
+.employee-card-mini .employee-info {
+    float: left;
+}
+.employee-card-body ul.employee-info>li.half{
+    float: right;
+}
+
+.employee-card-body ul.employee-info>li i {
+    padding: 0 0 0 10px;
+}
+
+.employee-card-footer .indicators {
+    text-align: left;
+}
+
+.employee-card-footer .indicators li {
+    margin-right: unset;
+    margin-left: 10px;
+}
+.employee-card-footer .indicators li:last-child {
+    margin-right: unset;
+    margin-left: 0;
+}
+.employee-card-footer .actions {
+    float: right;
+}
+/***************** End Employee Card *****************/

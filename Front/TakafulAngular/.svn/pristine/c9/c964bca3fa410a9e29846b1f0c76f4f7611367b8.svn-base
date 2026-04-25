@@ -1,0 +1,57 @@
+export class FinancialFiscalYearDTO {
+    YearId: number;
+    StartDate: string;
+    EndDate: string;
+    NumberOfPeriod: number;
+    EndYearFlag: string;
+    EndYearDate: string | null;
+    EndYearUser: string | null;
+    EndYearNotes: string | null;
+    NumberOfJVYear: number | null;
+    NumberOfUnPostedJVYear: number | null;
+    AcceptJVLastDate: string | null;
+    YearCode: string;
+    ArabicName: string;
+    EnglishName: string;
+    YearName: string | null;
+    Value: number | null;
+    ProfitLoss: number | null;
+
+    constructor(
+        YearId: number = 0,
+        StartDate: string = "",
+        EndDate: string = "",
+        NumberOfPeriod: number = 0,
+        EndYearFlag: string = "",
+        EndYearDate: string | null = null,
+        EndYearUser: string | null = null,
+        EndYearNotes: string | null = null,
+        NumberOfJVYear: number | null = null,
+        NumberOfUnPostedJVYear: number | null = null,
+        AcceptJVLastDate: string | null = null,
+        YearCode: string = "",
+        ArabicName: string = "",
+        EnglishName: string = "",
+        YearName: string | null = null,
+        Value: number | null = null,
+        ProfitLoss: number | null = null
+    ) {
+        this.YearId = YearId;
+        this.StartDate = StartDate;
+        this.EndDate = EndDate;
+        this.NumberOfPeriod = NumberOfPeriod;
+        this.EndYearFlag = EndYearFlag;
+        this.EndYearDate = EndYearDate;
+        this.EndYearUser = EndYearUser;
+        this.EndYearNotes = EndYearNotes;
+        this.NumberOfJVYear = NumberOfJVYear;
+        this.NumberOfUnPostedJVYear = NumberOfUnPostedJVYear;
+        this.AcceptJVLastDate = AcceptJVLastDate;
+        this.YearCode = YearCode;
+        this.ArabicName = ArabicName;
+        this.EnglishName = EnglishName;
+        this.YearName = YearName;
+        this.Value = Value;
+        this.ProfitLoss = ProfitLoss;
+    }
+}

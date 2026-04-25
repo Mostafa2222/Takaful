@@ -1,0 +1,73 @@
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+
+
+
+// import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+// import { TableModule } from "primeng/table";
+// import { TabViewModule } from 'primeng/tabview';
+// import { KnobModule } from 'primeng/knob';
+// import { SharedModule } from 'primeng/api';
+// import { FullCalendarModule } from '@fullcalendar/angular';
+import { HttpClient } from '@angular/common/http';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+// import { TranslateModule } from '@ngx-translate/core';
+// import { DropdownModule } from 'primeng/dropdown';
+ import { ContentRoutingModule } from './content-routing.module';
+import { AdministrationPoliciesComponent } from './administration-policies/administration-policies.component';
+import { DepartmentDefinitionComponent } from './department-definition/department-definition.component';
+import { FinancialComponent } from './financial/financial.component';
+import { LegalStatusComponent } from './legal-status/legal-status.component';
+import { LocationDefinitionComponent } from './location-definition/location-definition.component';
+import { RelatedCompaniesComponent } from './related-companies/related-companies.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { DynamicDialogComponent } from '../../helper/dynamic-dialog/dynamic-dialog.component';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TreeModule } from 'primeng/tree';
+import { ContextMenuModule } from 'primeng/contextmenu';
+import { TreeOrgChartComponent } from '../../helper/tree-org-chart/tree-org-chart.component';
+import { OrganizationChartModule } from 'primeng/organizationchart';
+import { GoogleMapsModule } from '@angular/google-maps';
+import { MapComponent } from '../../helper/map/map.component';
+import { FiscalPeriodsComponent } from './financial/fiscal-periods/fiscal-periods.component';
+import { AddressSetupModelComponent } from './address-setup-model/address-setup-model.component';
+import { ShareholdersmodelComponent } from './shareholdersmodel/shareholdersmodel.component';
+import { AddressGroupModelComponent } from './address-group-model/address-group-model.component';
+export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
+  return new TranslateHttpLoader(http);
+}
+@NgModule({
+  declarations: [
+    AdministrationPoliciesComponent,
+    DepartmentDefinitionComponent,
+    FinancialComponent,
+    LegalStatusComponent,
+    LocationDefinitionComponent,
+    RelatedCompaniesComponent,
+    DynamicDialogComponent,
+    TreeOrgChartComponent,
+    MapComponent,
+    AddressSetupModelComponent,
+    AddressGroupModelComponent,
+    ShareholdersmodelComponent,
+    FiscalPeriodsComponent
+  ],
+  imports: [
+     CommonModule,
+     TreeModule ,
+     ContentRoutingModule,
+    FormsModule,
+    ReactiveFormsModule,
+    GoogleMapsModule,
+    // SharedModule,
+    // TableModule,
+    // KnobModule,
+    // FullCalendarModule,
+    // TabViewModule,
+    TranslateModule,
+    ContextMenuModule,
+    OrganizationChartModule
+    // DropdownModule
+  ]
+})
+export class ContentModule { }

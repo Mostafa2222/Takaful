@@ -1,0 +1,23 @@
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { DepartmentDefinitionComponent } from './department-definition.component';
+
+describe('DepartmentDefinitionComponent', () => {
+  let component: DepartmentDefinitionComponent;
+  let fixture: ComponentFixture<DepartmentDefinitionComponent>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [DepartmentDefinitionComponent]
+    })
+    .compileComponents();
+    
+    fixture = TestBed.createComponent(DepartmentDefinitionComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});

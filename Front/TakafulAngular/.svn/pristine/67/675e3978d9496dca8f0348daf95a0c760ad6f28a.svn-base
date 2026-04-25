@@ -1,0 +1,27 @@
+export interface DmsStpLevelDescriptionDTO {
+  levelId: number;
+  clientId: number;
+  templeteId: number | null;
+  englishName: string;
+  arabicName: string;
+  segmentWidth: number;
+  transactional: string;  // Assuming this is a string ('Y' or 'N')
+  organizationChart: string;  // Assuming this is a string ('Y' or 'N')
+  purchasing: string;  // Assuming this is a string ('Y' or 'N')
+  inventory: string;  // Assuming this is a string ('Y' or 'N')
+  transactionalBool: boolean;
+  organizationChartBool: boolean;
+  purchasingBool: boolean;
+  inventoryBool: boolean;
+}
+
+
+export interface DmsStpShareholdersDTO {
+  shareId: number;
+  clientId: number;
+  definitionId: number;
+  percentage: number;
+  shareNameEnglish: string;
+  shareNameArabic: string;
+  shares: number;
+}

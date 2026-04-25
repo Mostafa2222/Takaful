@@ -1,0 +1,22 @@
+
+[class^="iconasset-"], [class*=" iconasset-"] {
+ font-family: 'asset-Font' !important;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+
+.iconasset-002-inventory:before {
+  content: "\f101";
+}
+
+.subArrow::before{
+  top: 5px !important;
+}
+

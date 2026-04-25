@@ -1,0 +1,815 @@
+/***** Common *****/
+:root {
+    --bs-primary-rgb: 30, 107, 172;
+    --appColor: #1e6bac;
+    --filter-img: grayscale(100%) brightness(70%) sepia(70%) hue-rotate(190deg) saturate(4567%) contrast(200%);
+}
+
+.table td.delete-cell .fa-trash-alt {
+    color: red;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+div.dataTables_wrapper div.dataTables_length {
+    bottom: -25px;
+    position: relative;
+}
+
+.status {
+    padding: .5rem 1rem;
+    border-radius: 10px;
+    display: inline-flex;
+    align-items: center;
+    line-height: 1;
+}
+
+.status>i {
+    margin-right: 5px;
+}
+
+.status.warning {
+    background-color: #0d6efd31;
+    color: #0d6efd;
+}
+
+.status.success {
+    background-color: #3c763d31;
+    color: #3c763d;
+}
+
+.status.info {
+    background-color: #ffef8b;
+    color: #854f30;
+}
+
+.status.danger {
+    background-color: #a9444231;
+    color: #a94442;
+}
+
+/***** End Common *****/
+/***** Icons *****/
+.icons-wrapper {
+    margin: 5px 0;
+    text-align: center;
+    position: relative;
+    display: flex;
+    width: 40px;
+    height: 40px;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border-radius: 50em;
+    opacity: 0.5;
+}
+
+.icons-wrapper i {
+    font-size: 30px;
+    margin-bottom: -9px;
+}
+
+.icons-wrapper::after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    border-radius: 50em;
+}
+
+.icons-wrapper.icons-primary::after {
+    background-color: #0d6efd59;
+    border: 1px solid #0d6efd;
+}
+
+.icons-wrapper.icons-success::after {
+    background-color: #19875459;
+    border: 1px solid #198754;
+}
+
+.icons-wrapper.icons-warning::after {
+    background-color: #ffc10759;
+    border: 1px solid #ffc107;
+}
+
+.icons-wrapper-lg {
+    position: relative;
+    display: flex;
+    overflow: hidden;
+    border-radius: 50em;
+    width: 100px;
+    height: 100px;
+    margin-right: 10px;
+    align-items: center;
+    justify-content: center;
+}
+
+.icons-wrapper-lg i {
+    font-size: 90px;
+    margin-bottom: -30px;
+}
+
+.icons-wrapper-lg::after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    border-radius: 50em;
+    background-color: #7fff0061;
+}
+
+.icons-wrapper-lg.md-size {
+    width: 40px;
+    height: 40px;
+}
+
+.icons-wrapper-lg.md-size i {
+    font-size: 30px;
+    margin-bottom: -9px;
+}
+
+@media (max-width: 1199.98px) {
+    .icons-wrapper-lg {
+        width: 50px;
+        height: 50px;
+    }
+
+    .icons-wrapper-lg i {
+        font-size: 45px;
+        margin-bottom: -5px;
+    }
+
+    .icons-wrapper,
+    .icons-wrapper-lg.md-size {
+        width: 30px;
+        height: 30px;
+    }
+
+    .icons-wrapper i,
+    .icons-wrapper-lg.md-size i {
+        font-size: 25px;
+        margin-bottom: -5px;
+    }
+
+    #patientsList .patientIcon::before {
+        font-size: 16px;
+        left: 10px;
+        top: 8px;
+    }
+}
+
+/***** End Icons *****/
+/***** Critical Indicators *****/
+.critical-indicators {
+    margin-top: 2px;
+    padding: 1px 5px;
+    display: inline-flex;
+    border-radius: 2px;
+}
+
+.critical-indicators a {
+    margin-right: 15px;
+    font-size: 20px;
+    color: var(--appColor);
+}
+
+@media (min-width: 991px) and (max-width:1199.98px) {
+    .critical-indicators {
+        flex-wrap: wrap;
+        display: flex;
+    }
+
+    .critical-indicators>a {
+        flex: 1 1 auto;
+        width: 33.3333%;
+        margin-right: 0;
+    }
+}
+
+/***** End Critical Indicators *****/
+/***** Accordion *****/
+.accordion-button::after {
+    content: "\2b";
+    font-family: 'Font Awesome 6 Free';
+    font-weight: bold;
+    position: absolute;
+    left: 7px;
+}
+
+.accordion-button:not(.collapsed)::after {
+    content: "\f068";
+}
+
+.accordion-item .accordion-button,
+.accordion-item .accordion-button.collapsed {
+    background-color: #1e6bac1a;
+    color: var(--appColor);
+    padding-left: 36px;
+}
+
+/***** End Accordion *****/
+/***** Patient Panel *****/
+#patientsPanel .card {
+    border-radius: 0 0 5px 5px;
+}
+
+#patientsPanel #patientsList .card {
+    /* border-bottom: 0; */
+}
+
+#patientsList .btn.btn-primary {
+    font-size: 12px;
+    border-radius: 0 0 5px 5px;
+    width: 50%;
+}
+
+#patientsList .btn.btn-primary:first-of-type {
+    border-radius: 0 0 0 5px;
+}
+
+#patientsList .btn.btn-primary:last-of-type {
+    border-radius: 0 0 5px 0;
+}
+
+@media (min-width: 991px) and (max-width:1199.98px) {
+    #patientsList .btn.btn-primary {
+        font-size: 10px;
+    }
+}
+
+#patientsList .card-footer {
+    padding: 0;
+}
+
+#patientsList .morePatients a {
+    white-space: nowrap;
+    text-decoration: underline;
+    font-size: 12px;
+    position: relative;
+    left: -10px;
+}
+
+#patientsList .patientIcon {
+    position: relative;
+}
+
+#patientsList .patientIcon::before {
+    counter-increment: myCounter;
+    content: counter(myCounter);
+    list-style-type: decimal-leading-zero;
+    font-size: 18px;
+    color: #fff;
+    position: absolute;
+    z-index: 1;
+    left: 15px;
+    top: 10px;
+    text-shadow: 1px 1px #646464;
+}
+
+#patientsList .patientIcon:hover .icons-wrapper {
+    opacity: 1;
+}
+
+#patientInfo .patientName,
+#patientInfo .patientMR {
+    font-size: 14px;
+}
+
+@media (max-width: 1199.98px) {
+    #patientInfo .card-body {
+        padding: 10px;
+    }
+}
+
+#patientHistor {
+    font-size: 0.7rem;
+}
+
+#visitControls .dropdown-menu {
+    padding: 0;
+    border: 0;
+    box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .15);
+}
+
+#visitControls .dropdown-menu li {
+    color: rgb(108, 117, 125) !important;
+    line-height: 1.2;
+    position: relative;
+    font-size: 12px;
+    transition: .2s all ease-in-out;
+}
+
+#visitControls .dropdown-menu li:not(:last-child) {
+    border-bottom: 1px solid #dee2e6;
+}
+
+#visitControls .dropdown-menu li:hover {
+    background-color: #EFEFEF;
+    color: #296dac !important;
+}
+
+#visitControls .dropdown-menu li:before {
+    position: absolute;
+    content: "";
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 4px;
+    background-color: #296dac;
+    transition: all .2s ease-in-out;
+    opacity: 0;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+#visitControls .dropdown-menu li:hover:before {
+    opacity: 1;
+}
+
+#visitControls .dropdown-menu li a {
+    padding: 0.5rem 1rem;
+}
+
+#visitControls .btn-group>.btn:first-child {
+    width: calc(100% - 40px);
+}
+
+.visit-btn-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    height: 100%;
+    /*! flex-direction: column; */
+    /*! align-items: end; */
+    gap: 5px;
+}
+
+@media (min-width:1200px) {
+    .visit-btn-wrapper>.btn {
+        width: 100%;
+    }
+}
+
+@media (min-width: 991px) and (max-width:1199.98px) {
+    .visit-btn-wrapper {
+        flex-direction: row;
+        align-items: center;
+        justify-content: end;
+        margin-top: .5rem;
+    }
+
+    .card-icons .patientIcon:nth-child(8),
+    .card-icons .patientIcon:nth-child(9) {
+        display: none !important;
+    }
+}
+
+@media (max-width:1199.98px) {
+    .visit-btn-wrapper>.btn {
+        min-width: 100px;
+    }
+
+    .visit-btn-wrapper>.btn:not(:last-child) {
+        margin-right: .5rem;
+    }
+}
+
+@media (max-width: 991.98px) {
+    .visit-btn-wrapper {
+        flex-direction: row;
+        justify-content: end;
+    }
+}
+
+/***** End Patient Panel *****/
+/***** Collapse *****/
+.accordion-item {
+    margin-bottom: 1rem;
+}
+
+.collapsableWithIcon .card-header,
+.inputTemplates .card-header {
+    color: var(--appColor);
+    font-size: 1rem;
+    background-color: #1e6bac24;
+
+}
+
+.inputTemplates .card-header i {
+    margin-right: 0.5rem
+}
+
+.collapsableWithIcon .card-header .action-tools>.btn {
+    height: 23px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+}
+
+.collapsableWithIcon [aria-expanded="true"] .card-header>.fa-plus::before {
+    content: "\f068";
+}
+
+.inputTemplates .card-body .btn-secondary {
+    background-color: #e6e6e6;
+    border-color: #d5d5d5;
+    color: #6c6c6c;
+    border-width: 2px;
+    padding-top: 0;
+    padding-bottom: 0;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    display: inline-block;
+    width: 100%;
+    text-align: left;
+    font-size: 13px;
+    font-weight: 700;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.inputTemplates .card-body .btn-secondary:hover {
+    background-color: #d9d9d9;
+}
+
+.inputTemplates .card-body .btn-secondary i {
+    display: inline-flex;
+    color: #bbc1c7;
+    border-right: 2px solid #bbc1c7;
+    padding-right: 5px;
+    line-height: 1.6;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    margin-right: 5px;
+    font-size: 14px;
+    width: 1rem;
+    height: 24px;
+    justify-content: center;
+    align-items: center;
+}
+
+.inputTemplates .card-body .btn-secondary span {
+    vertical-align: middle;
+}
+
+.inputTemplates .card-body .btn-secondary.btn-details {
+    background-color: #dae9f6;
+    border-color: #cfe2f3;
+    color: #6c91b3;
+}
+
+.inputTemplates .card-body .btn-secondary.btn-details:hover {
+    background: #c7daeb;
+}
+
+.inputTemplates .card-body .btn-secondary.btn-details i {
+    color: #6c91b3;
+    border-right: 2px solid #cfe2f3;
+}
+
+.inputTemplates .card-body .btn-secondary i.fa-circle {
+    font-size: 6px;
+}
+
+/***** End Collapse *****/
+/***** Input Templates *****/
+.template-header {
+    color: var(--appColor);
+    font-weight: 500;
+}
+
+.template-header .template-back {
+    margin-right: 3px;
+    border: 2px solid var(--appColor);
+    border-radius: 50em;
+    padding: 4px;
+    width: 30px;
+    height: 30px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--appColor);
+}
+
+.side-check {
+    margin-bottom: 0;
+}
+
+.side-check .btn-check+.btn {
+    border: 0;
+    padding: 0;
+    border-radius: 0;
+    width: 25px;
+    height: 20px;
+    font-size: 14px;
+    border-right: 1px solid #fff;
+    font-weight: 500;
+}
+
+.side-check .btn-check:checked+.btn,
+.side-check .btn-check+.btn:hover {
+    background-color: #ffc356;
+    color: #333 !important;
+    opacity: 1;
+}
+
+@media (min-width: 768px) {
+    .collapsedTemplate .inputTemplates {
+        height: 40px;
+        width: 40px;
+        border: 0;
+        overflow: hidden;
+        margin-left: auto;
+    }
+
+    .collapsedTemplate .inputTemplates .card-header {
+        border: 0;
+        border-radius: 0.4rem;
+        justify-content: center;
+    }
+
+    .collapsedTemplate .patientsBodyCollapse {
+        flex: 1 0 0%;
+    }
+
+    .collapsedTemplate .inputTemplatesCollapse {
+        width: 5%;
+    }
+
+    .inputTemplates .card-header #collapse-template {
+        color: var(--appColor);
+    }
+
+    .collapsedTemplate .inputTemplates .card-header span,
+    .collapsedTemplate .inputTemplates .card-header .action-tools,
+    .collapsedTemplate .inputTemplates .card-body {
+        display: none;
+    }
+
+    .collapsedTemplate .inputTemplates .card-header i {
+        margin-right: 0;
+    }
+
+    .collapsedTemplate .inputTemplates .card-header i.fa-chevron-right::before {
+        content: "\f053";
+    }
+}
+
+@media (min-width: 991px) {
+    .inputTemplates .card-header>span {
+        white-space: nowrap;
+    }
+}
+
+@media (max-width: 1199.98px) {
+    .inputTemplates .card-body .btn-secondary span {
+        font-size: 11px;
+    }
+}
+
+/***** End Input Templates *****/
+/***** Spectacle *****/
+:root {
+    --glassesColor: #6b8591;
+}
+
+.spectacle-bg {
+    background: #ebf6fb;
+    padding: 10px;
+    border: 1px solid #cee7f2;
+    margin: 0 0 10px 0;
+}
+
+.spectacle-view {
+    display: flex;
+    justify-content: space-between;
+    margin: 5px 139px;
+    text-align: center;
+    width: 78%;
+    margin: 5px auto 10px;
+    position: relative;
+}
+
+@media (max-width: 991.98px) {
+    .spectacle-view {
+        width: 98%;
+    }
+}
+
+.spectacle-view input {
+    width: 70px;
+    padding: 6px;
+    text-align: center;
+    border: 1px solid #96b6c4;
+}
+
+.spectacle-view label {
+    margin-bottom: 1px;
+}
+
+.ipd-view {
+    padding: 5px 10px 0;
+    border-top: 8px solid var(--glassesColor);
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    align-items: center;
+}
+
+.left-eye,
+.right-eye {
+    border: 8px solid var(--glassesColor);
+    border-radius: 20px 20px 60px 60px;
+    height: 137px;
+    padding: 4px 10px 8px;
+    position: relative;
+    flex-flow: row wrap;
+    justify-content: center;
+    gap: 4px 13px;
+    background: #fff;
+    line-height: 14px;
+}
+
+@media (max-width: 991.98px) {
+
+    .left-eye,
+    .right-eye {
+        gap: 4px 5px;
+    }
+}
+
+.left-eye p,
+.right-eye p {
+    width: 100%;
+    text-transform: uppercase;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: underline;
+    color: #566b75;
+    margin: 0;
+    text-align: left;
+}
+
+.left-eye p {
+    text-align: right;
+}
+
+.left-eye:after,
+.right-eye:after {
+    content: "";
+    width: 11px;
+    height: 33px;
+    background: var(--glassesColor);
+    position: absolute;
+    top: 17px;
+}
+
+.left-eye:after {
+    border-radius: 0 7px 7px 0;
+    right: -19px;
+}
+
+.right-eye:after {
+    border-radius: 7px 0 0 7px;
+    left: -19px;
+}
+
+/***** End Spectacle *****/
+/***** Files *****/
+.files-card {
+    height: 100%;
+}
+
+.files-card .card-body {
+    height: calc(100vh - (365px));
+    overflow: auto;
+}
+
+.files-card .card-header {
+    color: var(--appColor);
+    font-size: 1rem;
+    background-color: #1e6bac24;
+}
+
+.files-card .card-header .header-filter {
+    position: relative;
+}
+
+.files-card .card-header .header-filter .fa-filter {
+    cursor: pointer;
+    font-size: 18px;
+}
+
+.files-card .card-header .header-filter.filter-active .fa-circle {
+    position: absolute;
+    top: 0;
+    right: 0;
+    color: var(--bs-danger);
+    font-size: 8px;
+}
+
+.file-wrapper {
+    background-color: #fff;
+    padding: 0.25rem;
+    border: 3px solid #0d6efd1a;
+    display: flex;
+    flex-direction: column;
+}
+
+.file-icon-wrapper {
+    padding: .5rem;
+    background-color: #0d6efd1a;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.file-icon-wrapper i {
+    font-size: 34px;
+    color: #164863;
+}
+
+.file-icon-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.file-name {
+    font-size: 10px;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.galleryFn {
+    height: 100%;
+}
+
+.galleryFn .image-viewer {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.galleryFn .toolbar {
+    padding: .5rem;
+    border: 1px solid var(--appColor);
+    background-color: #0d6efd0a;
+    border-radius: 6px;
+    gap: 10px
+}
+
+.galleryFn .toolbar .single-tool {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border: 1px solid var(--appColor);
+    border-radius: 4px;
+}
+
+.galleryFn .toolbar .single-tool.active {
+    border-width: 3px;
+}
+
+.galleryFn .toolbar .single-tool i {
+    color: var(--appColor);
+}
+
+.galleryFn .toolbar .single-tool.gray-btn,
+.galleryFn .toolbar .single-tool.contrast-btn {
+    width: auto;
+}
+
+.galleryFn .toolbar .single-tool.contrast-btn {
+    width: auto;
+}
+
+.galleryFn.contrasted .image-viewer img {
+    filter: contrast(1.5);
+}
+
+.galleryFn.grayed .image-viewer img {
+    filter: grayscale(1)
+}
+
+.image-viewer img {
+    transition: transform 0.5s;
+}
+
+.galleryFn .toolbar .single-tool.activable.activated {
+    background-color: var(--appColor);
+    color: #fff;
+}
+
+/***** End Files *****/
+.info-icon{margin: 0 3px 0 7px;background: #1e6bac;color: #fff;width: 18px;height: 18px;display: inline-block;border-radius: 100%;text-align: center;position: relative;top: 1px;}
+.info-icon:hover{color: #fff;background: #1e6bacab;}
+.info-icon i{font-size: 12px;}

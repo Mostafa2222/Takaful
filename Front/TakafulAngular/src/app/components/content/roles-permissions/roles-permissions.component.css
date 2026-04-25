@@ -1,0 +1,52 @@
+.layout {
+    display: flex;
+    gap: 20px;
+  }
+  
+  .roles {
+    width: 200px;
+  }
+  
+  .role-item {
+    padding: 10px;
+    border: 1px solid #ccc;
+    margin-bottom: 8px;
+    cursor: pointer;
+    border-radius: 8px;
+  }
+  
+  .role-item.active {
+    background: #007bff;
+    color: white;
+  }
+  
+  .permissions {
+    flex: 1;
+  }
+  
+  .group {
+    margin-bottom: 20px;
+  }
+  
+  .perm-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+  
+  .perm-card {
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    text-align: center;
+  }
+  
+  .perm-card.active {
+    background: #28a745;
+    color: white;
+  }
+  
+  .save-btn {
+    margin-top: 20px;
+  }

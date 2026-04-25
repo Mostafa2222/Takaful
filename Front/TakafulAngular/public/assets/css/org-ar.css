@@ -1,0 +1,243 @@
+/***** Common *****/
+.status>i {
+    margin-left: 5px;
+}
+
+/***** Accordion *****/
+.accordion-button::after {
+    right: 7px;
+}
+
+.accordion-item .accordion-button,
+.accordion-item .accordion-button.collapsed {
+    padding-right: 36px;
+}
+
+/***** Collapse *****/
+.inputTemplates .card-body .btn-secondary {
+    text-align: right;
+}
+
+.inputTemplates .card-body .btn-secondary i {
+    border-left: 2px solid #bbc1c7;
+    border-right: 1px solid;
+    padding-left: 5px;
+    margin-left: 5px;
+}
+
+.inputTemplates .card-body .btn-secondary.btn-details i {
+    border-left: 2px solid #cfe2f3;
+    border-right: 1px solid;
+}
+
+/***** End Collapse *****/
+@media (min-width: 768px) {
+    .collapsedTemplate .inputTemplates {
+        margin-right: auto;
+    }
+
+    .collapsedTemplate .inputTemplates .card-header i {
+        margin-right: 0;
+    }
+}
+
+/***** End Input Templates *****/
+.delete-file {
+    justify-content: start;
+}
+
+/* -----------------------------------------------------   ----------------------------------------------------- */
+.user-info .user-icon {
+    margin-left: -3px;
+    align-items: start;
+}
+
+.user-info .height-icon {
+    margin-right: 14px;
+}
+
+.user-icon i:last-child {
+    margin-right: 2px;
+}
+
+.measures-block {
+    margin-right: 30px;
+}
+
+.full-content {
+    padding-right: 250px;
+    padding-left: 0;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice {
+    margin-left: 0.5rem;
+}
+
+/* SingleSelect  */
+.page-title h1 .fas.right {
+    margin-right: 10px;
+}
+
+.date {
+    margin-right: 20px;
+}
+
+.time {
+    margin-right: 7px;
+}
+
+td .date {
+    margin-left: 0;
+}
+
+.btn-history .count {
+    margin-right: 6px;
+}
+
+/* ------------------------ no side menu ------------------------- */
+.no-menu .main-content {
+    margin-leftright: 5px;
+}
+
+.no-menu .page-content {
+    padding-leftright: 0;
+}
+
+/* ------------------------------------- Table Nav Tabs ------------------------------------- */
+ul.nav-filter {
+    padding-right: 0;
+}
+
+.nav-tabs li,
+.nav-filter>li {
+    margin-left: 1rem;
+}
+
+/***************************************** accordion *******************************************/
+.panel-heading [data-bs-toggle="collapse"]:before {
+    float: right !important;
+    margin-left: 6px;
+}
+
+/******************************************* TimeLine Steps **************************/
+.step>span:after {
+    right: 100%;
+    left: unset;
+}
+
+.step:not(:last-child) span {
+    margin-left: 20px;
+}
+
+/******************************************* Assorted **************************/
+.badge.iconic i {
+    border-left: 1px solid #fff;
+    padding-left: 5px;
+    margin-left: 5px;
+}
+
+/****************************************************** Order Actions ************************************/
+.actions-list::before {
+    right: 0;
+}
+
+/******************************************************Action Menu*************************************/
+.action-menu ul li {
+    text-align: right;
+}
+
+/*  */
+.main-steps .nav .nav-item:first-child a {
+    justify-content: flex-end;
+}
+
+.main-steps .nav .nav-item:last-child a {
+    justify-content: start;
+}
+
+.step-toolbar {
+    justify-content: start;
+}
+
+.setup-progress {
+    margin-left: 0;
+}
+
+.setup-progress .progress {
+    margin-left: 7px;
+}
+
+/*  */
+.form-group::after {
+    float: left;
+}
+
+/* avatar */
+.avatar-upload .avatar-edit {
+    left: 3%;
+    right: unset;
+}
+
+/*******************  Start Timeline ******************/
+.timeline .timeline-step.active img.patient {
+    right: 20px;
+    left: unset;
+}
+
+.timeline .timeline-step i.myClinic {
+    right: calc(50% - 5px);
+    left: unset;
+}
+
+.timeline .timeline-step .time,
+.timeline .timeline-step .title,
+.timeline .timeline-step .icon {
+    right: 0;
+}
+
+.timeline div.timeline-step {
+    float: right;
+}
+
+.timeline div.timeline-step.end::after {
+    right: 50%;
+    left: unset;
+}
+
+.timeline div.timeline-step.end .time,
+.timeline div.timeline-step.end .title,
+.timeline div.timeline-step.end .icon {
+    right: 50%;
+    left: unset;
+}
+
+.timeline div.timeline-step.start:after {
+    left: 50% !important;
+    right: unset !important;
+}
+
+.timeline div.timeline-step.start .time,
+div.timeline-step.start .title,
+div.timeline-step.start .icon {
+    right: -50%;
+    left: unset;
+}
+
+/* mini Timeline*/
+.timeline.mini .timeline-step {
+    padding: 0 5px 0 0 !important;
+}
+
+/*  */
+.jqx-tree {
+    text-align: right;
+}
+
+.jqx-tree-dropdown-root {
+    right: 100%;
+    left: 0;
+}
+
+.avatar-upload .avatar-edit input+label:after {
+    left: 0px;
+}

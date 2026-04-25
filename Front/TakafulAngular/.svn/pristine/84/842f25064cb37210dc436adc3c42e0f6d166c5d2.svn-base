@@ -1,0 +1,132 @@
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  SimpleChanges,
+} from '@angular/core';
+import { Subject } from 'rxjs';
+import $ from 'jquery';
+import 'datatables.net';
+import { debounceTime } from 'rxjs/operators';
+import { TranslateService } from '@ngx-translate/core';
+import { BrowserDataDto } from '../../DTO/browserDataDTO';
+
+
+@Component({
+  selector: 'app-dynamic-dialog',
+  templateUrl: './dynamic-dialog.component.html',
+  styleUrl: './dynamic-dialog.component.css',
+})
+export class DynamicDialogComponent implements OnInit {
+  @Input() data: BrowserDataDto[] | any;
+  @Input() selectedField: BrowserDataDto | any;
+  @Input() selectName!: string;
+  @Output() selected: EventEmitter<any> = new EventEmitter<any>();
+  hover: boolean = false;
+  currentLanguage: string = 'en';
+  currentPage: number = 1;
+  itemsPerPage: number = 5;
+
+  filter = {
+    code: '',
+    idNum: '',
+    displayedNameEn: '',
+    displayedNameAr: '',
+  };
+
+  private searchTerms = new Subject<void>();
+
+  constructor(public translate: TranslateService) { }
+
+  ngOnInit(): void {
+    this.translate.onLangChange.subscribe((event) => {
+      this.currentLanguage = event.lang;
+    });
+    this.currentLanguage = this.translate.currentLang || 'en';
+
+    this.searchTerms.pipe(debounceTime(300)).subscribe(() => {
+      this.currentPage = 1;
+    });
+  }
+  ngOnChanges(changes: SimpleChanges): void {
+    if (this.data) {
+      setTimeout(() => {
+        this.setInitialSelectedValue();
+      }, 100);
+    }
+  }
+
+  private setInitialSelectedValue(): void {
+    this.currentPage = 1;
+    if (this.selectedField) {
+      const index = this.data.findIndex(
+        (item: BrowserDataDto) =>
+          String(item.idNum) === String(this.selectedField?.idNum)
+      );
+      if (index != -1) {
+        this.currentPage = Math.floor(index / this.itemsPerPage) + 1;
+      }
+    }
+  }
+
+  get paginatedData(): BrowserDataDto[] {
+    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+    return this.filteredData()?.slice(
+      startIndex,
+      startIndex + this.itemsPerPage
+    );
+  }
+
+  totalPages(): number {
+    return Math.ceil(this.filteredData()?.length / this.itemsPerPage) || 1;
+  }
+
+  changePage(page: number): void {
+    if (page > 0 && page <= this.totalPages()) {
+      this.currentPage = page;
+    }
+  }
+
+  filteredData(): BrowserDataDto[] {
+    return this.data?.filter((group: BrowserDataDto) => {
+      return (
+        (!this.filter?.idNum ||
+          group.idNum.toString().includes(this.filter?.idNum)) &&
+        (!this.filter?.displayedNameEn ||
+          group.displayedNameEn
+            .toLowerCase()
+            .includes(this.filter?.displayedNameEn.toLowerCase())) &&
+        (!this.filter?.displayedNameAr ||
+          group.displayedNameAr.includes(this.filter?.displayedNameAr))
+      );
+    });
+  }
+
+  onSearchChange() {
+    this.searchTerms.next();
+  }
+
+  selectedOption(group: any) {
+    this.selectedField = group;
+    if (!group || Object.keys(group).length === 0) {
+      const emptyGroup = {
+        idNum: null,
+        displayedNameEn: '',
+        displayedNameAr: '',
+        code: null
+      };
+      this.selected.emit(emptyGroup);
+    } else {
+      this.selected.emit(group);
+    }
+    this.closeDialog();
+  }
+
+  closeDialog(): void {
+    this.filter.displayedNameAr = '';
+    this.filter.idNum = '';
+    this.filter.displayedNameEn = '';
+  }
+}

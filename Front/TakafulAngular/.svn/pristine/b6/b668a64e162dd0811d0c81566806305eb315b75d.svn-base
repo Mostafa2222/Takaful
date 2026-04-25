@@ -1,0 +1,23 @@
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { UnderconstructionmodelComponent } from './underconstructionmodel.component';
+
+describe('UnderconstructionmodelComponent', () => {
+  let component: UnderconstructionmodelComponent;
+  let fixture: ComponentFixture<UnderconstructionmodelComponent>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [UnderconstructionmodelComponent]
+    })
+    .compileComponents();
+    
+    fixture = TestBed.createComponent(UnderconstructionmodelComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});

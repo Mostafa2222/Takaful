@@ -1,0 +1,159 @@
+import { Injectable } from '@angular/core';
+
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { EnvironmentService } from '../environment.service';
+import { UserBranches } from '../../models/user-branches';
+import { UserInfo } from '../../models/UserInfo';
+import { UserAuthoritiesDTO } from '../../models/UserAuthoritiesDTO';
+import { DmsStpLevelDescriptionDTO, DmsStpShareholdersDTO } from '../../DTO/DmsStpLevelDescriptionDTO';
+import { ToastrService } from 'ngx-toastr';
+import { TranslateService } from '@ngx-translate/core';
+import { DmsStpLevelDetailsDTO } from '../../DTO/DmsStpLevelDetailsDTO';
+
+
+@Injectable({
+  providedIn: 'root'
+})
+export class LegalStatusRestService {
+
+  constructor(public http: HttpClient, public _environmentService: EnvironmentService
+    , public translate: TranslateService,
+    private toaster: ToastrService
+  ) { }
+
+  public GetSectors(): Observable<any> {
+    let url = this._environmentService.apiUrl + 'legalStatus/sectors';
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json'
+      , 'Authorization': `Bearer ${localStorage.getItem('token')}`
+    });
+    return this.http.get<any>(url, { headers });
+  }
+
+  public GetLevelsDetailsStructure(defintionId: any): Observable<DmsStpLevelDetailsDTO> {
+    let url = this._environmentService.apiUrl + `legalStatus/getLevelStructure/${defintionId}`;
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json'
+      , 'Authorization': `Bearer ${localStorage.getItem('token')}`
+    });
+    return this.http.get<DmsStpLevelDetailsDTO>(url, { headers });
+  }
+  public SaveDmsStpLevelDetails(combinedDto: any) {
+    let url = this._environmentService.apiUrl + 'legalStatus/addLevelDetail';
+    let headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    });
+    return this.http.post<any>(url, combinedDto, { headers });
+  }
+  SaveDmsNewStandaloneOrGroupStpLevelDetails(combinedDto: any) {
+    let url = this._environmentService.apiUrl + 'legalStatus/addNewStandaloneOrGroupLevelDetail';
+    let headers = new HttpHeaders({
+      'Content-Type': 'application/json'
+    });
+    return this.http.post<any>(url, combinedDto, { headers });
+  }
+  isDefinitionCodeExists(definitionCode: string): Observable<any> {
+    const url = `${this._environmentService.apiUrl}legalStatus/definition-code/exists/${definitionCode}`;
+    const token = localStorage.getItem('token');
+    let headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+    return this.http.get<any>(url, { headers });
+  }
+
+  deleteExistingLevelDetails(selectedLevels: number[]): Observable<any> {
+    let headers = new HttpHeaders({
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    });
+    return this.http.put<any>(this._environmentService.apiUrl + `legalStatus/deleteLevelDetails`, selectedLevels, { headers });
+  }
+
+  editExistingDmsStpLevelDetails(combinedDto: any): Observable<any> {
+    let headers = new HttpHeaders({
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    });
+    return this.http.put<any>(this._environmentService.apiUrl + `legalStatus/editLevelDetail`, combinedDto, { headers });
+  }
+  public GetLevelsDescriptions(): Observable<DmsStpLevelDescriptionDTO> {
+    let url = this._environmentService.apiUrl + 'legalStatus/getLevelsDescriptions';
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json'
+      , 'Authorization': `Bearer ${localStorage.getItem('token')}`
+    });
+    return this.http.get<DmsStpLevelDescriptionDTO>(url, { headers });
+  }
+
+  public saveLevelsDescriptions(level: DmsStpLevelDescriptionDTO): Observable<any> {
+    let url = this._environmentService.apiUrl + 'legalStatus/saveAllLevelsDescriptions';
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json'
+      , 'Authorization': `Bearer ${localStorage.getItem('token')}`
+    });
+
+    return this.http.post<any>(url, level, { headers });
+  }
+
+  editExistingLevelDescriptions(combinedDto: any): Observable<any> {
+    let headers = new HttpHeaders({
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    });
+    return this.http.put<any>(this._environmentService.apiUrl + `legalStatus/editLevelDescriptions`, combinedDto, { headers });
+  }
+
+  deleteExistingLevelDescriptions(selectedLevel: number): Observable<any> {
+    let headers = new HttpHeaders({
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    });
+    return this.http.put<any>(this._environmentService.apiUrl + `legalStatus/deleteLevelDescriptions`, selectedLevel, { headers });
+  }
+  getMaxLevelId(): Observable<number> {
+    let headers = new HttpHeaders({
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    });
+    return this.http.get<number>(this._environmentService.apiUrl + `legalStatus/maxLevelId`, { headers });
+  }
+
+  /*----------- Shareholders Services-----------------*/
+  public GetShareholders(definitionId: number): Observable<DmsStpShareholdersDTO> {
+    let url = this._environmentService.apiUrl + `legalStatus/getShareholders/${definitionId}`;
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json'
+      , 'Authorization': `Bearer ${localStorage.getItem('token')}`
+    });
+    return this.http.get<DmsStpShareholdersDTO>(url, { headers });
+  }
+
+  public saveShareholder(shareholder: DmsStpShareholdersDTO): Observable<any> {
+    let url = this._environmentService.apiUrl + 'legalStatus/saveShareholder';
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json'
+      , 'Authorization': `Bearer ${localStorage.getItem('token')}`
+    });
+    return this.http.post<any>(url, shareholder, { headers });
+  }
+
+  editExistingShareholder(combinedDto: any): Observable<any> {
+    let headers = new HttpHeaders({
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    });
+    return this.http.put<any>(this._environmentService.apiUrl + `legalStatus/editShareholder`, combinedDto, { headers });
+  }
+
+  deleteExistingShareholder(selectedLevel: number): Observable<any> {
+    let headers = new HttpHeaders({
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    });
+    return this.http.put<any>(this._environmentService.apiUrl + `legalStatus/deleteShareholder`, selectedLevel, { headers });
+  }
+
+  /*----------- showToast method to be accessed from any related component---------  */
+  public showToast(type: 'success' | 'warning' | 'error', enMessage: string, arMessage: string, enTitle: string,
+    arTitle: string) {
+    const message = this.translate.currentLang === 'en' ? enMessage : arMessage;
+    const options = this.translate.currentLang === 'ar' ? { positionClass: 'toast-top-left' } : {};
+    const title = this.translate.currentLang === 'en' ? enTitle : arTitle;
+    this.toaster[type](message, title.charAt(0).toUpperCase() + title.slice(1), options);
+  }
+}

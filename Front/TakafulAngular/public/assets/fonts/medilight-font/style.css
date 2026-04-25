@@ -1,0 +1,36 @@
+@font-face {
+  font-family: 'medilight-font';
+  src:  url('medilight-font.eot?wvx95o');
+  src:  url('medilight-font.eot?wvx95o#iefix') format('embedded-opentype'),
+    url('medilight-font.ttf?wvx95o') format('truetype'),
+    url('medilight-font.woff?wvx95o') format('woff'),
+    url('medilight-font.svg?wvx95o#medilight-font') format('svg');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+[class^="med-icon-"], [class*=" med-icon-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'medilight-font' !important;
+  speak: never;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.med-icon-claim2:before {
+  content: "\e903";
+}
+.med-icon-claim:before {
+  content: "\e904";
+}
+.med-icon-client:before {
+  content: "\e900";
+}

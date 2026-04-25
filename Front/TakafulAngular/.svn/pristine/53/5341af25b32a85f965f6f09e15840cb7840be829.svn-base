@@ -1,0 +1,366 @@
+import { Component } from '@angular/core';
+import { ToastrService } from 'ngx-toastr';
+import { FinancialService } from '../../../../services/financial.service';
+import { TranslateService } from '@ngx-translate/core';
+import { FinancialFiscalYearDTO } from '../../../../DTO/financialFiscalYearDTO';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FinancialFiscalPeriodDTO } from '../../../../DTO/financial-fiscal-period-dto';
+import { FinancialResponseDTO } from '../../../../DTO/financial-response-dto';
+import { finalize } from 'rxjs';
+
+@Component({
+  selector: 'app-fiscal-periods',
+  templateUrl: './fiscal-periods.component.html',
+  styleUrl: './fiscal-periods.component.css'
+})
+export class FiscalPeriodsComponent {
+  singleYear: FinancialFiscalYearDTO;
+  fiscalyears: FinancialFiscalYearDTO[] | any;
+  fiscalPeriods: FinancialFiscalPeriodDTO[] = [];
+  isLoading = true;
+  isAddingNewYear = false;
+  form: FormGroup;
+  periodCounter: number = 1;
+  constructor(public translate: TranslateService, private financialService: FinancialService, private toaster: ToastrService) {
+    this.singleYear = new FinancialFiscalYearDTO();
+    this.form = new FormGroup({
+      YearId: new FormControl("0"),
+      BranchId: new FormControl("14"),
+      EndYearUser: new FormControl(""),
+      StartDate: new FormControl("", Validators.required),
+      EndDate: new FormControl("", Validators.required),
+      EndYearNotes: new FormControl(""),
+      NumberOfPeriod: new FormControl(""),
+      YearCode: new FormControl("", [
+        Validators.required,
+        Validators.pattern('^[0-9]*$'),
+        Validators.maxLength(4)
+      ]),
+      ArabicName: new FormControl("", Validators.required),
+      EnglishName: new FormControl("", Validators.required),
+      FiscalPeriodDetailsVM: new FormControl([]),
+    });
+  }
+  ngOnInit() {
+    this.isLoading = true;
+    this.financialService.getFiscalYears(14).pipe(
+      finalize(()=>{
+        this.isLoading = false;
+      })
+    )
+    .subscribe(
+      (data: FinancialFiscalYearDTO[]) => {
+        this.fiscalyears = data;
+        this.fiscalyears = this.fiscalyears.sort((a: { YearCode: number; }, b: { YearCode: number; }) => a.YearCode - b.YearCode);
+      },
+      (error) => {
+        console.error('Error fetching fiscal years', error);
+      }
+    );
+    this.form.controls['StartDate'].valueChanges.subscribe(value => {
+      this.updateEndDate(value);
+    });
+
+    this.disableTypingDate();
+  }
+  updateEndDate(startDate: string): void {
+    const start = new Date(startDate);
+    const end = new Date(start.getFullYear() + 1, start.getMonth());
+    this.form.controls['EndDate'].setValue(end.toISOString().split('T')[0]);
+  }
+
+  disableTypingDate() {
+    const dateInputs =
+      document.querySelectorAll<HTMLInputElement>('input[type="date"]');
+    dateInputs.forEach((input) => {
+      input.addEventListener('keydown', (event: KeyboardEvent) => {
+        event.preventDefault();
+      });
+    });
+  }
+  showDetails(fiscalYear: FinancialFiscalYearDTO) {
+    this.singleYear = fiscalYear;
+    this.isAddingNewYear = false;
+    this.form.patchValue({
+      YearId: this.singleYear.YearId,
+      EndYearUser: this.singleYear.EndYearUser,
+      StartDate: this.singleYear.StartDate,
+      EndDate: this.singleYear.EndDate,
+      EndYearNotes: this.singleYear.EndYearNotes,
+      NumberOfPeriod: this.singleYear.NumberOfPeriod,
+      YearCode: this.singleYear.YearCode,
+      ArabicName: this.singleYear.ArabicName,
+      EnglishName: this.singleYear.EnglishName,
+    });
+    this.isLoading = true;
+    this.financialService.getFiscalPeriods(14, fiscalYear.YearId).pipe(
+      finalize(()=>{
+        this.isLoading = false;
+      })
+    )
+    .subscribe(
+      (fiscalPeriods: FinancialFiscalPeriodDTO[]) => {
+        this.fiscalPeriods = fiscalPeriods;
+      },
+      (error) => {
+        console.error('Error fetching fiscal periods:', error);
+      }
+    );
+  }
+
+  onSubmit(): void {
+    if (this.form.dirty && this.form.valid) {
+      if (this.singleYear.YearCode === "") {
+        // We are adding new
+        if (this.fiscalPeriods.length === 0) {
+          if (this.translate.currentLang == 'en') {
+            this.toaster.info('Add atleast 1 fiscal period', 'Info')
+          }
+          else {
+            this.toaster.info('أضف فترة مالية واحدة على الأقل', 'معلومه', {
+              positionClass: 'toast-top-left'
+            })
+          }
+          return;
+        }
+        if (this.checkEndDate()) {
+          if (this.translate.currentLang == 'en') {
+            this.toaster.error('Add an end date.', 'Error');
+          } else {
+            this.toaster.error('أضف تاريخ الانتهاء.', 'خطأ', {
+              positionClass: 'toast-top-left'
+            });
+          }
+          return;
+        } else {
+          this.addPeriod()
+        }
+      } else {
+        // We are editing
+        this.editPeriod();
+      }
+    } else if (!this.form.dirty) {
+      
+      if (this.translate.currentLang === 'en') {
+        this.toaster.info('No changes detected.', 'Info')
+      }
+      else {
+        this.toaster.info('لم يتم اكتشاف أي تغييرات.', 'معلومه', {
+          positionClass: 'toast-top-left'
+        })
+      }
+    } else {
+      console.log('Form is invalid');
+    }
+  }
+
+  checkEndDate(): boolean {
+    for (const ele of this.fiscalPeriods) {
+      if (ele.EndDate === '')
+        return true;
+    }
+    return false
+  }
+
+  addPeriod() {
+    this.form.patchValue({
+      NumberOfPeriod: String(this.fiscalPeriods.length),
+      YearCode: String(this.form.get('YearCode')?.value),
+      FiscalPeriodDetailsVM: this.fiscalPeriods,
+      YearId: "0",
+      BranchId: "14"
+    })
+    this.isLoading = true;
+    this.financialService.addNewFiscalYear(this.form.value).pipe(
+      finalize(()=>{
+        this.isLoading = false;
+      })
+    )
+    .subscribe({
+      next: (data: FinancialResponseDTO) => {
+        if (data.Result) {
+          if (this.translate.currentLang == 'en') {
+            this.toaster.success('Added Successfully.', 'Success');
+          } else {
+            this.toaster.success('تمت الاضافه بنجاح.', 'نجاح', {
+              positionClass: 'toast-top-left'
+            });
+          }
+          setTimeout(() => {
+            window.location.reload();
+          }, 1000);
+        } else {
+          if (this.translate.currentLang == 'en') {
+            this.toaster.error('Failed to add.', 'Fail');
+          } else {
+            this.toaster.error('فشل الاضافه.', 'فشل', {
+              positionClass: 'toast-top-left'
+            });
+          }
+        }
+      },
+      error: (error) => {
+        if (this.translate.currentLang == 'en') {
+          this.toaster.error('Failed to add.', 'Fail');
+        } else {
+          this.toaster.error('فشل الاضافه.', 'فشل', {
+            positionClass: 'toast-top-left'
+          });
+        }
+      }
+    });
+  }
+  editPeriod() {
+    this.form.patchValue({
+      NumberOfPeriod: String(this.fiscalPeriods.length),
+      YearCode: String(this.form.get('YearCode')?.value),
+      YearId: String(this.form.get('YearId')?.value),
+      EndYearUser: "dms"
+    })
+    this.isLoading = true;
+    this.financialService.editExist(this.form.value).pipe(
+      finalize(()=>{
+        this.isLoading = false;
+      })
+    )
+    .subscribe({
+      next: (data: FinancialResponseDTO) => {
+        if (data.Result) {
+          if (this.translate.currentLang == 'en') {
+            this.toaster.success('Edited Successfully.', 'Success');
+          } else {
+            this.toaster.success('تم التعديل بنجاح.', 'نجاح', {
+              positionClass: 'toast-top-left'
+            });
+          }
+
+          setTimeout(() => {
+            window.location.reload();
+          }, 1000);
+        } else {
+          if (this.translate.currentLang == 'en') {
+            this.toaster.error('Failed to edit.', 'Fail');
+          } else {
+            this.toaster.error('فشل التعديل.', 'فشل', {
+              positionClass: 'toast-top-left'
+            });
+          }
+        }
+      },
+      error: (error) => {
+        if (this.translate.currentLang == 'en') {
+          this.toaster.error('Failed to edit.', 'Fail');
+        } else {
+          this.toaster.error('فشل التعديل.', 'فشل', {
+            positionClass: 'toast-top-left'
+          });
+        }
+      }
+    });
+  }
+
+  addNewPeriod() {
+    if (this.form.valid) {
+      if (this.fiscalPeriods.length === 0)
+        this.periodCounter = 1
+
+      if (this.fiscalPeriods.length > 0) {
+        if (this.fiscalPeriods[this.fiscalPeriods.length - 1].EndDate === '') {
+          if (this.translate.currentLang == 'en') {
+            this.toaster.error('Add an end date.', 'Error');
+          } else {
+            this.toaster.error('أضف تاريخ الانتهاء.', 'خطأ', {
+              positionClass: 'toast-top-left'
+            });
+          }
+          return;
+        }
+      }
+      const fiscalPeriod = {
+        ArabicName: "Fiscal Period " + this.periodCounter,
+        EnglishName: "Fiscal Period " + this.periodCounter,
+        Status: "Open",
+        StartDate: "",
+        EndDate: '',
+        PeriodId: 0,
+        Value: null,
+        YearId: 0,
+      };
+      if (this.fiscalPeriods.length === 0) {
+        // first we enter
+        fiscalPeriod.StartDate = this.form.controls['StartDate'].value
+      } else {
+        fiscalPeriod.StartDate = this.fiscalPeriods[this.fiscalPeriods.length - 1].EndDate;
+      }
+      this.fiscalPeriods.push(fiscalPeriod);
+      this.periodCounter++;
+    } else {
+      this.form.markAllAsTouched();
+      return;
+    }
+  }
+  addNewYear() {
+    // if (this.form.valid) {
+    this.form.reset();
+    this.fiscalPeriods = [];
+    this.singleYear = new FinancialFiscalYearDTO();
+    this.isAddingNewYear = true;
+    // }
+  }
+  deletePeriod(index: number) {
+    this.fiscalPeriods.splice(index, 1);
+    this.periodCounter--;
+  }
+  deleteFiscal() {
+    if (this.singleYear.YearCode === "") {
+      if (this.translate.currentLang == 'en') {
+        this.toaster.info('Select a fiscal year first.', 'Info')
+      }
+      else {
+        this.toaster.info('حدد سنة مالية أولاً.', 'معلومه', {
+          positionClass: 'toast-top-left'
+        })
+      }
+      return;
+    }
+    this.isLoading = true;
+    this.financialService.deleteFiscal(this.singleYear.YearId, 14, "dms").pipe(
+      finalize(()=>{
+        this.isLoading = false;
+      })
+    )
+    .subscribe({
+      next: (data: FinancialResponseDTO) => {
+        if (data.Result) {
+          if (this.translate.currentLang == 'en') {
+            this.toaster.success('Deleted Successfully.', 'Success');
+          } else {
+            this.toaster.success('تم الحذف بنجاح.', 'نجاح', {
+              positionClass: 'toast-top-left'
+            });
+          }
+          setTimeout(() => {
+            window.location.reload();
+          }, 1000);
+        } else {
+          if (this.translate.currentLang == 'en') {
+            this.toaster.error('Failed to delete.', 'Fail');
+          } else {
+            this.toaster.error('فشل الحذف.', 'فشل', {
+              positionClass: 'toast-top-left'
+            });
+          }
+        }
+      },
+      error: (error) => {
+        if (this.translate.currentLang == 'en') {
+          this.toaster.error('Failed to delete.', 'Fail');
+        } else {
+          this.toaster.error('فشل الحذف.', 'فشل', {
+            positionClass: 'toast-top-left'
+          });
+        }
+      }
+    });
+  }
+}

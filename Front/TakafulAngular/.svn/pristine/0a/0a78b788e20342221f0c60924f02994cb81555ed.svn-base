@@ -1,0 +1,23 @@
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { ShareholdersmodelComponent } from './shareholdersmodel.component';
+
+describe('ShareholdersmodelComponent', () => {
+  let component: ShareholdersmodelComponent;
+  let fixture: ComponentFixture<ShareholdersmodelComponent>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [ShareholdersmodelComponent]
+    })
+    .compileComponents();
+    
+    fixture = TestBed.createComponent(ShareholdersmodelComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});

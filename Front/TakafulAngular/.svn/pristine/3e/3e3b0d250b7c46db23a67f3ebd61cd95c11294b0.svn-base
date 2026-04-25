@@ -1,0 +1,18 @@
+
+
+
+export class UserData {
+
+  userCode: string  | any;
+  userPassword: string  | any;
+  userNameLatin: string  | any;
+  userNameArabic: string  | any;
+  isEmployeeFlag: string  | any;
+  departmentId: string  | any;
+  employeeId : string  | any;
+  userAdmnFlag: string | any;
+  active: string | any;
+  employeeCode : string | any ;
+
+}
+

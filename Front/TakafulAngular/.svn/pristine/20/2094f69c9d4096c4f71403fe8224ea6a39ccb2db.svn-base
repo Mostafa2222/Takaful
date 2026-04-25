@@ -1,0 +1,27 @@
+import { Component } from '@angular/core';
+import { Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
+
+@Component({
+  selector: 'app-companynature',
+  templateUrl: './companynature.component.html',
+  styleUrl: './companynature.component.css'
+})
+export class CompanynatureComponent {
+  companyType : string = "";
+  currentPath: string = '';
+  constructor(private router: Router, translate: TranslateService) {}
+  standAlone(){
+    this.companyType = "standalone";
+    localStorage.setItem('hasRelatedCompanies', "false");
+    this.currentPath = this.router.url;
+    if(this.currentPath == '/Content/RelatedCompanies'){
+      this.router.navigate(['/Content/LegalStatus']);
+    }
+  }
+  company(){
+    this.companyType = "company";
+    localStorage.setItem('hasRelatedCompanies', "true");
+
+  }
+}

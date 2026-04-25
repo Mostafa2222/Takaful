@@ -1,0 +1,61 @@
+<div class="row">
+  <div class="offset-1 col-10">
+    <div class="ambulance timeline mega nav nav-tabs" role="tablist">
+      <!-- Legal Status Step -->
+      <div class="timeline-step start"
+        [ngClass]="{'active success': activeStep === 'legal-step'}"
+        [attr.data-companytype]="companyType"
+        (click)="RouteToLegalStatus()"
+        data-bs-toggle="tab" data-bs-target="#legal-step" role="tab" aria-selected="true">
+        <span class="title">{{ "Organization.Timeline.Legal_Status.Title" | translate }}</span>
+        <i class="icon fa-solid fa-scale-balanced"></i>
+      </div>
+
+      <!-- Related Companies Step (only visible for 'Group') -->
+      <div class="timeline-step"
+        [ngClass]="{'active success': activeStep === 'relatedCompanies-step'}"
+        [ngStyle]="{'display': companyType === 'Group' ? 'block' : 'none'}"
+        (click)="RouteToRelatedCompanies()"
+        data-bs-toggle="tab" data-bs-target="#relatedCompanies-step" role="tab" aria-selected="false" tabindex="-1">
+        <span class="title">{{ "Organization.Timeline.Related_Companies.Title" | translate }}</span>
+        <i class="icon fa-solid fa-building"></i>
+      </div>
+
+      <!-- Department Definition Step -->
+      <div class="timeline-step"
+        [ngClass]="{'active success': activeStep === 'depDef-step'}"
+        (click)="RouteToDepartmentDefinition()"
+        data-bs-toggle="tab" data-bs-target="#depDef-step" role="tab" aria-selected="false" tabindex="-1">
+        <span class="title">{{ "Organization.Timeline.Department_Definition.Title" | translate }}</span>
+        <i class="icon fa-solid fa-chart-diagram fa-diagram-project"></i>
+      </div>
+
+      <!-- Location Definition Step -->
+      <div class="timeline-step"
+        [ngClass]="{'active success': activeStep === 'locDef-step'}"
+        (click)="RouteToLocationDefinition()"
+        data-bs-toggle="tab" data-bs-target="#locDef-step" role="tab" aria-selected="false" tabindex="-1">
+        <span class="title">{{ "Organization.Timeline.Location_Definition.Title" | translate }}</span>
+        <i class="icon fa-solid  fa-map-location-dot"></i>
+      </div>
+
+      <!-- Financial Step -->
+      <div class="timeline-step"
+        [ngClass]="{'active success': activeStep === 'financial-step'}"
+        (click)="RouteToFinancial()"
+        data-bs-toggle="tab" data-bs-target="#financial-step" role="tab" aria-selected="false" tabindex="-1">
+        <span class="title">{{ "Organization.Timeline.Financial.Title" | translate }}</span>
+        <i class="icon fa-solid fa-dollar-sign"></i>
+      </div>
+
+      <!-- Administration Policies Step -->
+      <div class="timeline-step end"
+        [ngClass]="{'active success': activeStep === 'policies-step'}"
+        (click)="RouteToAdministrationPolicies()"
+        data-bs-toggle="tab" data-bs-target="#policies-step" role="tab" aria-selected="false" tabindex="-1">
+        <span class="title">{{ "Organization.Timeline.Administration_Policies.Title" | translate }}</span>
+        <i class="icon fa-solid fa-screwdriver-wrench"></i>
+      </div>
+    </div>
+  </div>
+</div>

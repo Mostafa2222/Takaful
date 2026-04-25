@@ -1,0 +1,29 @@
+<!-- <div class="light-blue">
+  <div class="">
+      <div class="col-4 form-group group-color-toggle">
+          <label class="form-label">{{ "Organization.Company_Nature.Company_Nature" | translate }}</label>
+          <div class="form-inline">
+              <div class="form-check form-check-inline">
+                  <label class="form-check-label" for="nature1"  (click)="company()"><span class="badge bg-cyan">{{ "Organization.Company_Nature.Group" | translate }}</span></label>
+                  <input id="nature1" class="form-check-input"   (click)="company()" type="radio" name="nature" data-class="company">
+              </div>
+              <div class="form-check form-check-inline">
+                  <label class="form-check-label" for="nature2"  (click)="standAlone()"><span class="badge bg-pink">{{ "Organization.Company_Nature.Standalone" | translate }}</span></label>
+                  <input id="nature2" class="form-check-input"  (click)="standAlone()" type="radio" name="nature" data-class="standalone" >
+              </div>
+          </div>
+      </div>
+
+      <div class="col-4 d-none">
+          <label class="form-label"> Selected Company</label>
+          <select class="form-select">
+              <option value="" selected="">Company 1</option>
+              <option value="0">Company 2</option>
+              <option value="3">Company 3</option>
+              <option value="2">Company 4</option>
+              <option value="1">Company 5</option>
+          </select>
+      </div>
+  </div>
+</div> -->
+<app-timeline ></app-timeline>

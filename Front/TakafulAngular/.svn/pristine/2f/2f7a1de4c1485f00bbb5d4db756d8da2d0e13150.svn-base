@@ -1,0 +1,6 @@
+{
+  "apiUrl": "http://192.168.1.43:5006/org/api/",
+  "publicUrl": "http://192.168.1.43:5006/org/api/public/",
+  "swagUrl": "http://192.168.1.43:5006/org/",
+  "secUrl": "http://192.168.1.32:8080/DMS-SEC-WS/ws/security/"
+}

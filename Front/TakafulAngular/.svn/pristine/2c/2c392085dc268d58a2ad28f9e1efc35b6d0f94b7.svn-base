@@ -1,0 +1,1 @@
+<p-organizationChart [value]="nodes" [preserveSpace]="false" [collapsible]="true"  />

@@ -1,0 +1,251 @@
+<app-dynamic-dialog (selected)="selected($event)" [selectedField]="lastSelected" [data]="dialogData"
+    [selectName]="SelectName"></app-dynamic-dialog>
+<div id="pause" class="d-flex align-items-center justify-content-center" *ngIf="loading">
+    <!-- <div id="spinner"></div> -->
+    <span class="loader"></span>
+</div>
+<!-- Location Definition -->
+<div class="tab-pane fade active show" id="locDef-step" role="tabpanel">
+    <div style="display: flex; align-items: center;justify-content: space-between;">
+        <div style="display: flex; align-items: center;">
+            <h3>{{ 'Organization.Timeline.Location_Definition.Title' | translate}} </h3>
+            <div class="fa fa-plus-circle" (click)="addItem(true,false,selectedNode)"
+                style="font-size: 18px; cursor: pointer; margin: 0 10px; margin-top: -5px; color: var(--appColor);">
+            </div>
+        </div>
+        <div style="display:inline-flex; gap: 1rem; align-self: baseline;">
+            <div style="display:inline-flex; gap: 1rem; align-self: baseline;">
+                <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                    <!-- Button for downloading the template -->
+                    <button class="btn btn-primary" (click)="generateExcel()">
+                        <i class="far fa-file-excel"></i> {{ 'Organization.Timeline.Location_Definition.TEMPLATE' | translate}}
+                    </button>
+
+                    <!-- Button for uploading the file -->
+                    <button class="btn btn-primary" (click)="triggerFileUpload()">
+                        <i class="fas fa-upload"></i> {{ 'Organization.Timeline.Location_Definition.UPLOAD_FILE' | translate}}
+                    </button>
+                </div>
+
+                <!-- Hidden file input for selecting the file -->
+                <input type="file" id="file-upload" (change)="onFileSelected($event)" accept=".xls,.xlsx"
+                    style="display: none;" />
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6 col-md-6 col-lg-5 col-xl-5" style="overflow-y: scroll; height: 563px;">
+            <!-- Sticky search bar container -->
+            <div class="sticky-search">
+                <input type="text" pInputText [(ngModel)]="searchQuery" (input)="filterTree()"
+                    placeholder="{{ 'SearchCriteria.SEARCH' | translate }}"
+                    class="w-full md:w-[30rem] p-2 mb-2 border rounded" />
+            </div>
+            <p-tree [id]="'tree-' + translate.currentLang" [value]="filteredNodes" styleClass="p-0 w-full md:w-[30rem]"
+                [ngClass]="'tree-' + translate.currentLang" selectionMode="single" [(selection)]="selectedNode"
+                (onNodeSelect)="nodeSelect($event)" [contextMenu]="cm">
+            </p-tree>
+            <p-contextMenu #cm [model]="items"></p-contextMenu>
+        </div>
+        <div class="col-sm-6 col-md-6 col-lg-7 col-xl-7">
+            <div class="border border-1 border-primary border-opacity-50 rounded-2 p-3">
+                <div class="w-50 mx-auto mb-3">
+                    <div class="avatar-upload">
+                        <div class="avatar-edit">
+                            <input type="file" id="imageUpload"
+                                accept=".png, .PNG, .gif, .GIF, .jpeg, .JPEG, .jfif, .JFIF, .jpg, .JPG, .webp, .WEBP, .bmp, .BMP, .tiff, .TIFF, .heif, .HEIF, .heic, .HEIC, .raw, .RAW, .svg, .SVG, .ico, .ICO, .apng, .APNG, .exif, .EXIF"
+                                (change)="handleFileUpload($event)" />
+                            <label for="imageUpload"></label>
+                        </div>
+                        <div class="avatar-preview">
+                            <div id="imagePreview" style="display: flex; justify-content: center;">
+                                <img *ngIf="locationData.nodeSelectedLocationImageIcon"
+                                    [src]="'data:image/jpeg;base64,' + locationData.nodeSelectedLocationImageIcon"
+                                    alt="Uploaded Image" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <form [formGroup]="locationDataForm">
+                        <div class="row">
+                            <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 form-group mb-2">
+                                <label class="form-label">{{ 'Organization.Timeline.Location_Definition.PARENT_CODE' |
+                                    translate
+                                    }}</label>
+                                <input type="text" class="form-control" formControlName="nodeSelectedParentCode"
+                                    [(ngModel)]="locationData.nodeSelectedParentCode">
+                            </div>
+                            <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 form-group mb-2">
+                                <label class="form-label">{{ 'Organization.Timeline.Location_Definition.CODE' |
+                                    translate
+                                    }}<span class="text-danger"> *</span></label>
+                                <input type="text" class="form-control" formControlName="nodeSelectedCode"
+                                    [(ngModel)]="locationData.nodeSelectedCode">
+                                <div *ngIf="locationDataForm.get('nodeSelectedCode')?.touched && locationDataForm.get('nodeSelectedCode')?.hasError('required')"
+                                    class="text-danger small-text">
+                                    {{ 'validation.required' | translate }}
+                                </div>
+                                <div *ngIf="locationDataForm.get('nodeSelectedCode')?.touched && locationDataForm.get('nodeSelectedCode')?.hasError('pattern')"
+                                    class="text-danger small-text">
+                                    {{ 'MAIN_TAB_VALIDATIONS.DIGITS_ONLY' | translate }}
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 form-group mb-2">
+                                <label class="form-label">
+                                    {{ 'Organization.Timeline.Location_Definition.ENGLISH_NAME' | translate }}<span
+                                        class="text-danger"> *</span>
+                                </label>
+                                <input type="text" class="form-control" formControlName="nodeSelectedEnglishName"
+                                    [(ngModel)]="locationData.nodeSelectedEnglishName">
+                                <div *ngIf="locationDataForm.get('nodeSelectedEnglishName')?.touched && locationDataForm.get('nodeSelectedEnglishName')?.hasError('required')"
+                                    class="text-danger small-text">
+                                    {{ 'validation.required' | translate }}
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 form-group mb-2">
+                                <label class="form-label">{{ 'Organization.Timeline.Location_Definition.ARABIC_NAME' |
+                                    translate
+                                    }}<span class="text-danger"> *</span></label>
+                                <input type="text" class="form-control" formControlName="nodeSelectedArabicName"
+                                    [(ngModel)]="locationData.nodeSelectedArabicName">
+                                <div *ngIf="locationDataForm.get('nodeSelectedArabicName')?.touched && locationDataForm.get('nodeSelectedArabicName')?.hasError('required')"
+                                    class="text-danger small-text">
+                                    {{ 'validation.required' | translate }}
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-3 col-lg-3 col-xl-3 form-group mb-2">
+                                <label class="form-label">{{ 'Organization.Timeline.Location_Definition.AREA' |
+                                    translate
+                                    }}</label>
+                                <input type="number" class="form-control" formControlName="nodeSelectedAreaSquare"
+                                    [(ngModel)]="locationData.nodeSelectedAreaSquare">
+
+                                <div *ngIf="locationDataForm.get('nodeSelectedAreaSquare')?.touched && locationDataForm.get('nodeSelectedAreaSquare')?.hasError('areaOutOfRange')"
+                                    class="text-danger small-text">
+                                    {{ 'validation.areaOutOfRange' | translate: { min: locationData.nodeSelectedMinArea,
+                                    max: locationData.nodeSelectedMaxArea } }}
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-3 col-lg-3 col-xl-3 form-group mb-2">
+                                <label class="form-label">{{ 'Organization.Timeline.Location_Definition.LAND_AREA' |
+                                    translate
+                                    }}</label>
+                                <input type="number" class="form-control" formControlName="nodeSelectedLandAreaSquare"
+                                    [(ngModel)]="locationData.nodeSelectedLandAreaSquare">
+                                <div *ngIf="locationDataForm.get('nodeSelectedLandAreaSquare')?.touched && locationDataForm.get('nodeSelectedLandAreaSquare')?.hasError('areaOutOfRange')"
+                                    class="text-danger small-text">
+                                    {{ 'validation.landAreaOutOfRange' | translate: { min:
+                                    locationData.nodeSelectedMinLandArea,
+                                    max: locationData.nodeSelectedMaxLandArea } }}
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 form-group mb-2">
+                        <label class="form-label">{{ 'Organization.Timeline.Location_Definition.LOCATION_TYPE' |
+                            translate }}</label>
+                        <select [(ngModel)]="locationData.nodeSelectedLocationTypeSelected.idNum" class="form-select"
+                            data-bs-toggle="modal" data-bs-target="#exampleModal"
+                            (mousedown)="stpDialog($event,
+                            'PMT_STP_LOCATION_TYPE',
+                            'LOCATION_TYPE_ID , LOCATION_TYPE_CODE',
+                            'LATIN_NAME',
+                            'ARABIC_NAME',
+                            locationTypeBrowser,'Organization.Timeline.Location_Definition.LOCATION_TYPE','nodeSelectedLocationTypeSelected')">
+                            <option [value]="this.locationData.nodeSelectedLocationTypeSelected.idNum" selected>
+                                {{
+                                translate.currentLang === "ar"
+                                ? this.locationData.nodeSelectedLocationTypeSelected.displayedNameAr ||
+                                "-- اختر --"
+                                : this.locationData.nodeSelectedLocationTypeSelected.displayedNameEn ||
+                                "-- Select --"
+                                }}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-sm-12 col-md-3 col-lg-3 col-xl-3 form-group mb-2">
+                        <label class="form-label">{{ 'Organization.Timeline.Location_Definition.ORDER' | translate
+                            }}</label>
+                        <input type="number" class="form-control" [(ngModel)]="locationData.nodeSelectedOrderValue">
+                    </div>
+                    <div class="col-sm-12 col-md-3 col-lg-3 col-xl-3 form-group mb-2">
+                        <label class="form-label">{{ 'Organization.Timeline.Location_Definition.DIRECTION' |
+                            translate
+                            }}</label>
+                        <select [(ngModel)]="locationData.nodeSelectedDirection" class="form-select">
+                            <option [value]="null">{{'SearchCriteria.PLEASE_SELECT' | translate}}</option>
+                            <option value="R">{{ 'Organization.Timeline.Location_Definition.RIGHT' |
+                                translate
+                                }}</option>
+                            <option value="I">{{ 'Organization.Timeline.Location_Definition.LEFT' |
+                                translate
+                                }}</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-12 col-md-4 col-lg-4 col-xl-4 form-group mb-2">
+                        <label class="form-label">{{ 'Organization.Timeline.Location_Definition.FURNITURE_MODEL' |
+                            translate }}</label>
+                        <select [(ngModel)]="locationData.nodeSelectedTemplateId.idNum" class="form-select"
+                            data-bs-toggle="modal" data-bs-target="#exampleModal"
+                            (mousedown)="stpDialog($event,
+                            'DMS_ASSET_TEMPLATE_HEADER',
+                            'TEMPLATE_ID , TEMPLATE_CODE',
+                            'LATIN_NAME',
+                            'ARABIC_NAME',
+                            furnitureModelBrowser,'Organization.Timeline.Location_Definition.FURNITURE_MODEL','nodeSelectedTemplateId')">
+                            <option [value]="this.locationData.nodeSelectedTemplateId?.idNum ?? ''" selected>
+                                {{
+                                translate.currentLang === "ar"
+                                ? this.locationData.nodeSelectedTemplateId?.displayedNameAr ??
+                                "-- اختر --"
+                                : this.locationData.nodeSelectedTemplateId?.displayedNameEn ??
+                                "-- Select --"
+                                }}
+                            </option>
+                        </select>
+                    </div>
+
+
+                    <div class="col-sm-12 col-md-3 col-lg-3 col-xl-3 form-group mt-2">
+                        <div class="form-check mt-3">
+                            <input class="form-check-input" type="checkbox"
+                                [(ngModel)]="locationData.nodeSelectedNonDepartment"
+                                [checked]="locationData.nodeSelectedNonDepartment === true">
+                            <label class="form-check-label" for="">{{
+                                'Organization.Timeline.Location_Definition.NON_DEPARTMENT' | translate }}</label>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-12 col-md-3 col-lg-3 col-xl-3 form-group mt-2">
+                        <div class="form-check mt-3">
+                            <input class="form-check-input" type="checkbox"
+                                [(ngModel)]="locationData.nodeSelectedActive"
+                                [checked]="locationData.nodeSelectedActive === true">
+                            <label class="form-check-label" for="">{{
+                                'Organization.Timeline.Location_Definition.ACTIVE'
+                                | translate }}</label>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 form-group">
+                        <label class="form-label">{{ 'Organization.Timeline.Location_Definition.NOTES' | translate
+                            }}</label>
+                        <textarea class="form-control" [(ngModel)]="locationData.nodeSelectedNotes" rows="3"
+                            maxlength="4000"></textarea>
+                        <small class="form-text text-muted">
+                            {{ locationData.nodeSelectedNotes?.length || 0 }} {{
+                            'Organization.Timeline.Location_Definition.CHARACTERS_COUNT' |
+                            translate
+                            }}
+                        </small>
+                    </div>
+                </div>
+                <div class="step-toolbar">
+                    <button (click)="saveNewLocation()" class="btn btn-primary">
+                        {{ "Organization.Timeline.Department_Definition.Save" | translate}}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

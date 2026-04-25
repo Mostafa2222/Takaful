@@ -1,0 +1,6 @@
+export interface UserBranches {
+  BRANCH_ID: string ;
+  BRANCH_CODE: string ;
+  ENGLISH_DESCRIPTION: string ;
+  ARABIC_DESCRIPTION: string ;
+}

@@ -1,0 +1,187 @@
+export interface DmsStpLevelDetailsDTO {
+  purchasedNode: string | any;
+  arabicName: string | any;
+  englishName: string | any;
+
+  // Main specialty
+  sectorNatureId: number | any;
+  sectorNatureArabic: string | any;
+  sectorNatureEnglish: string | any;
+  // Main specialty - Nature of Work
+  natureOfWorkId: number | any;
+  natureOfWorkArabic: string | any;
+  natureOfWorkEnglish: string | any;
+  // Other specialty
+  otherSectorNatureId: number | any;
+  otherSectorNatureArabic: string | any;
+  otherSectorNatureEnglish: string | any;
+  // Main specialty - Nature of Work
+  otherNatureOfWorkId: number | any;
+  otherNatureOfWorkArabic: string | any;
+  otherNatureOfWorkEnglish: string | any;
+// Address
+  continent:string | any;
+  countryGroup:string | any;
+  country:string | any;
+  region:string | any;
+  state:string | any;
+  city:string | any;
+
+
+  longitude: number | any;
+  latitude: number | any;
+  capital: number | any;
+
+  currancyId: number | any;
+  currencyArabic: string | any;
+  currencyEnglish: string | any;
+
+  numberOfShares: number | any;
+  urlAddress: string | any;
+  languageId: number | any;
+  languageArabic: string | any;
+  languageEnglish: string | any;
+  defintionId: number | any;
+  definitionCode?: string | any;
+  addTransactionUser: string | any;
+
+
+  countryId: number | any;
+  cityId: number | any;
+  actAsBranch: string | any;
+  active: string | any;
+  createPOForSubBranch: string | any;
+  invoicePayForSubBranch: string | any;
+  chartTypeId: number | any;
+  chartTempId: number | any;
+  clientId: number | any;
+  levelId: number | any;
+  parentId: number | any;
+  parentAddressId: number | any;
+  dataSource: string | any;
+  img: string | any;
+
+  // dmsStpNatureOfWork: any;
+
+  // dmsStpSectorNature: any;
+
+  // levelDetailPur: any;
+}
+
+export class DmsStpLevelDetails implements DmsStpLevelDetailsDTO {
+  purchasedNode: string ;
+  arabicName: string;
+  englishName: string;
+  sectorNatureId: number;
+  sectorNatureArabic: string ;
+  sectorNatureEnglish: string ;
+  natureOfWorkId: number;
+  natureOfWorkArabic: string ;
+  natureOfWorkEnglish: string ;
+  otherSectorNatureId: number;
+  otherSectorNatureArabic: string ;
+  otherSectorNatureEnglish: string ;
+  otherNatureOfWorkId: number;
+  otherNatureOfWorkArabic: string ;
+  otherNatureOfWorkEnglish: string ;
+
+  continent:string;
+  countryGroup:string ;
+  country:string ;
+  region:string ;
+  state:string ;
+  city:string ;
+
+  longitude: number;
+  latitude: number;
+  capital: number;
+  currancyId: number;
+  currencyArabic: string ;
+  currencyEnglish: string ;
+  numberOfShares: number;
+  urlAddress: string;
+  languageId: number;
+  languageArabic: string ;
+  languageEnglish: string ;
+
+  defintionId: number;
+  definitionCode?: string;
+  addTransactionUser: string | any;
+  countryId: number;
+  cityId: number;
+  actAsBranch: string;
+  active: string;
+  createPOForSubBranch: string;
+  invoicePayForSubBranch: string;
+  chartTypeId: number;
+  chartTempId: number;
+  clientId: number;
+  levelId: number;
+  parentId: number | any;
+  parentAddressId: number | any;
+  dataSource: string;
+  img: string;
+
+
+  // dmsStpNatureOfWork: any;
+
+  // dmsStpSectorNature: any;
+
+  // levelDetailPur: any;
+  constructor() {
+    this.purchasedNode = 'N';
+    this.arabicName = 'New Company';
+    this.englishName = 'شركة جديدة';
+    this.sectorNatureId = 0;
+    this.sectorNatureArabic = '';
+    this.sectorNatureEnglish = '';
+    this.natureOfWorkId = 0;
+    this.natureOfWorkArabic = '';
+    this.natureOfWorkEnglish = '';
+    this.otherSectorNatureId = 0;
+    this.otherSectorNatureArabic = '';
+    this.otherSectorNatureEnglish = '';
+    this.otherNatureOfWorkId = 0;
+    this.otherNatureOfWorkArabic = '';
+    this.otherNatureOfWorkEnglish = '';
+    this.continent = '';
+    this.countryGroup = '';
+    this.country = '';
+    this.region = '';
+    this.state = '';
+    this.city = '';
+
+    this.longitude = 0;
+    this.latitude = 0;
+    this.capital = 0;
+    this.currancyId = 0;
+    this.addTransactionUser = ''
+    this.currencyArabic ='';
+    this.currencyEnglish ='' ;
+    this.numberOfShares = 1;
+    this.urlAddress = '';
+    this.languageId = 0;
+    this.languageArabic = '';
+    this.languageEnglish = '';
+    this.defintionId = 0;
+    this.definitionCode = '';
+    this.countryId = 0;
+    this.cityId = 0;
+    this.actAsBranch = '';
+    this.active = '';
+    this.createPOForSubBranch = '';
+    this.invoicePayForSubBranch = '';
+    this.chartTypeId = 0;
+    this.chartTempId = 0;
+    this.clientId = 1;
+    this.levelId = 0;
+    this.parentId = '';
+    this.parentAddressId = '';
+    this.dataSource = ''
+    this.img = '';
+    // this.dmsStpNatureOfWork = '';
+    // this.dmsStpSectorNature = '';
+    // this.levelDetailPur = '';
+  }
+
+}

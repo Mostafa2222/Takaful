@@ -1,0 +1,117 @@
+.login {
+  width: 250px;
+  margin: auto;
+  margin-top: 15vh;
+}
+
+.login .login-logo {
+  text-align: left;
+  padding: 20px 0
+}
+
+.login .login-logo img {
+  width: 200px
+}
+
+.login form input {
+  padding: 14px;
+  border: 1px solid #ccc !important;
+  margin-bottom: 15px;
+  height: 30px !important;
+  text-transform: unset;
+}
+
+.login form select {
+  color: #333;
+  height: 30px;
+  border: 1px solid #ccc !important;
+  height: 30px !important;
+}
+
+.login button {
+  color: #fff;
+  font-size: 14px;
+  height: 30px;
+  box-shadow: 0 10px 20px 6px rgb(0, 0, 0, .1);
+  transition: all .2s ease-in-out !important;
+  background: linear-gradient(to bottom, #4ca6fe 0%, #2666a3 63%, #2673bc 100%, #2673bc 100%);
+  padding: 0 15px;
+  line-height: 20px;
+  display: inline-block;
+  cursor: pointer;
+  text-align: center;
+  margin-top: 15px;
+}
+
+.login button:hover {
+  color: #fff;
+  box-shadow: 0 0 0px 0px rgb(0, 0, 0, .1);
+}
+
+.login button:active {
+  background-color: #ffa500
+}
+
+.checkbox .main-color {
+  display: flex;
+  align-items: center;
+}
+
+.checkbox .main-color input {
+  margin-bottom: -1px;
+}
+
+.ui-selectonemenu label.ui-selectonemenu-label {
+  font-size: 12px;
+}
+
+
+html[dir="rtl"] .ui-selectonemenu .ui-selectonemenu-label{
+  text-align: right;
+}
+html[dir="rtl"] body .ui-selectonemenu .ui-selectonemenu-label{
+  padding-left: 2.357rem;
+  padding-right:6px;
+}
+html[dir="rtl"] .ui-selectonemenu .ui-selectonemenu-trigger{
+  left: 0;
+  right: unset;
+}
+
+#customMessages {
+top: 50px;
+border: 1px solid #358ff7;
+border-radius: 5px;
+background-color: #dff0d8;
+padding: 15px;
+height: 50px;
+}
+
+#customMessages .ui-messages-success {
+color: #358ff7;
+}
+
+#customMessages .ui-messages-success .ui-messages-summary {
+font-weight: bold;
+font-size: 16px;
+}
+
+#customMessages .ui-messages-success .ui-messages-detail {
+font-size: 14px; /* Adjust detail font size */
+margin-top: 5px; /* Add some space between summary and detail */
+}
+  .login-sec input,.login-sec .form-select {height:40px;}
+ .login-sec{display: flex;padding: 0;align-items: center;}
+.login-sec img{max-width: 100%;}
+ .client-logo{margin-bottom: 20px;text-align: center;}
+ .client-logo img{width: 200px;}
+.login-form{ background: #fff; padding: 2rem; box-shadow: 5px 2px 5px #bababa6b; border-radius: 7px; }
+.login-details{text-align: center;}
+.dms-logo{  padding: 0 2rem;  }
+.dms-logo img{}
+.app-login{margin: 15px 0;display: flex;gap: 10px;justify-content: center;}
+.app-login a{border: 1px solid #d9d5d5;border-radius: 5px; padding: 5px;margin: 5px 0;background: #4053a429;}
+ .app-login img{width: 115px;}
+.login-form .input-group-text{background: #fff;border-right-color: transparent;}
+.login-form .input-group > .form-control,.login-form .input-group > .form-select{border-left-color: transparent;}
+.bg-img{background: url(../../../../../public/assets/images/bg.jpg);background-position: top left;background-repeat: no-repeat;background-size: cover;}

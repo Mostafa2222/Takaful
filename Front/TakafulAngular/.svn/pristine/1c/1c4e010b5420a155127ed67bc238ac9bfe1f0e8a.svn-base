@@ -1,0 +1,8 @@
+
+export class RestResponse {
+
+  token: string  | any;
+  status: string  | any;
+  message: string  | any;
+  success: string  | any;
+}

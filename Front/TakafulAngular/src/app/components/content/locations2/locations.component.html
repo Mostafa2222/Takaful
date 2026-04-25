@@ -1,0 +1,41 @@
+<div class="search-box">
+    <input type="text" [formControl]="searchControl" (keydown)="onKeyDown($event)"
+        placeholder="ابحث عن مدينة أو منطقة..." />
+
+    <div *ngIf="loading">Loading...</div>
+    <div class="dropdown" *ngIf="results.length > 0">
+
+        <div class="item" *ngFor="let item of results; let i = index" (click)="selectItem(item)"
+            [class.active]="i === highlightIndex">
+
+            <div class="name" [innerHTML]="highlight(item.name_ar || item.name_en)">
+            </div>
+
+            <div class="type">
+                <span *ngIf="item.type === 'CITY'">🏙️</span>
+                <span *ngIf="item.type === 'REGION'">📍</span>
+                {{ item.type }}
+            </div>
+
+        </div>
+
+    </div>
+
+    <div *ngIf="cities.length > 0">
+        <h4>المدن</h4>
+        <div *ngFor="let city of cities">
+            {{ city.name_ar || city.name_en }}
+        </div>
+    </div>
+
+    <div *ngIf="districts.length" class="section">
+        <h3>الأحياء</h3>
+
+        <div class="list">
+            <input type="text" placeholder="ابحث داخل الأحياء..." [(ngModel)]="districtSearch" (ngModelChange)="filterDistricts()"/>
+            <div class="item" *ngFor="let d of filteredDistricts">
+                {{ d.name_ar }}
+            </div>
+        </div>
+    </div>
+</div>

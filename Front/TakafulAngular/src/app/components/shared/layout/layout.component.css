@@ -1,0 +1,43 @@
+
+.app-layout {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.app-sidebar {
+  /* width: 260px; */
+  flex-shrink: 0;
+}
+
+.app-main {
+  flex: 1;
+  display: flex;
+  min-width: 0;
+  margin-inline-start: 5px;
+  flex-direction: column;
+  overflow: hidden;
+}
+[dir="rtl"] .app-main {
+  margin-right: 10px;
+  margin-left: 0;
+}
+
+[dir="ltr"] .app-main {
+  margin-left: 10px;
+  margin-right: 0;
+}
+.main-content {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.app-footer {
+  height: 60px;
+  flex-shrink: 0;
+}
+
+.app-footer {
+  background: var(--card-bg);
+  z-index: 1;
+}

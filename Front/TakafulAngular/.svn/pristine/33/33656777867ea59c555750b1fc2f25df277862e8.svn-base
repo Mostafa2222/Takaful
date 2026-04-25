@@ -1,0 +1,66 @@
+.modal-dialog {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) !important;
+    max-width: 80%;
+  }
+  
+  .modal-body {
+    max-height: 250px;
+    overflow-y: auto;
+    padding-top: 0px;
+  }
+  
+  .table {
+    margin-bottom: 0;
+    padding-top: 40px;
+  }
+  .table-wrapper {
+    max-height: 350px;
+    overflow-y: auto;
+    display: block;
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  thead {
+    position: sticky;
+    top: -0.2px;
+    background-color: white;
+  }
+  th input {
+    width: 100%;
+    padding: 5px;
+    box-sizing: border-box;
+  }
+  .pagination {
+    display: flex;
+    align-items: center;
+  }
+  
+  .pagination i {
+    cursor: pointer;
+    font-size: 1.5rem;
+    margin: 0 5px;
+    color: var(--appColor);
+  }
+  
+  .pagination i.disabled {
+    color: #ccc;
+    pointer-events: none;
+  }
+  
+  .select-placeholder {
+    text-align: center;
+    font-weight: bold;
+  }
+  .selected {
+    background-color: var(--appColor);
+  }
+  table, th, td {
+    border: 0.5px solid #ccc; 
+  }

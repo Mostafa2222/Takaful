@@ -1,0 +1,71 @@
+import { Injectable } from '@angular/core';
+
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { EnvironmentService } from '../environment.service';
+import { UserBranches } from '../../models/user-branches';
+import { UserInfo } from '../../models/UserInfo';
+import { UserAuthoritiesDTO } from '../../models/UserAuthoritiesDTO';
+
+
+@Injectable({
+  providedIn: 'root'
+})
+export class UserAuthoritiesService {
+  public urlAddress: string = this._environmentService.apiUrl;
+  public swagUrl = this._environmentService.swagUrl;
+  public publicUrl = this._environmentService.publicUrl;
+
+  constructor(public http: HttpClient, public _environmentService: EnvironmentService) { }
+
+  public GetBranches(params: any): Observable<UserBranches[]> {
+    let url = this._environmentService.publicUrl + 'findUserBranchesByUserName';
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.http.post<UserBranches[]>(url, params, { headers });
+  }
+
+  GetDefaultBranch(UserName: string, Password: string) {
+    return this.http.get(this.urlAddress + 'findDefaultBranch/' + UserName + "/" + Password);
+  }
+
+  findDefaultBranchByUserName(params: any) {
+    let url = this.publicUrl+'findDefaultBranchByUserName';
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.http.post<String>(url, params, { headers});
+  }
+  public getUserInfo(params: any): Observable<UserInfo[]>{
+    let url = this._environmentService.publicUrl+'authenticate';
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+
+    return this.http.post<UserInfo[]>(url, params, { headers});
+  }
+
+  public getUserImageFromGF(params: any): Observable<String>{
+    let url = this.publicUrl+'getUserImageFromGF';
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.http.post<String>(url, params, { headers});
+  }
+  public getUserAuthorities(params: any): Observable<UserAuthoritiesDTO[]>{
+    let url = this.swagUrl+'getUserAuthorities';
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.http.post<UserAuthoritiesDTO[]>(url, params, { headers});
+  }
+  public getUserAuthoritiesUsingView(params: any, token: any){
+    let url = this.swagUrl+'vSecurityHr';
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json'
+      ,'Authorization': "Bearer " + token});
+    return this.http.post(url, params, { headers});
+  }
+ /* public getUserDistinctAuthoritiesUsingView(params: any){
+    let url = this.urlAddress+'DistinctVSecurityHr';
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.http.post(url, params, { headers});
+  }*/
+/*
+  public getUserDistinctLevel2AuthoritiesUsingView(params: any){
+    let url = this.urlAddress+'DistinctLevel2VSecurityHr';
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.http.post(url, params, { headers});
+  }*/
+
+}

@@ -1,0 +1,98 @@
+{
+  "sidebar": {
+    "user_profile": {
+      "roles": {
+        "ADMIN": "أدمن",
+        "USER": "مستخدم",
+        "EMPLOYEE": "موظف"
+      },
+      "profile": "حسابي",
+      "settings": "الإعدادات",
+      "logout": "تسجيل الخروج"
+    },
+    "dashboard": "لوحة التحكم",
+    "home": "الصفحة الرئيسية",
+    "users_section": "إدارة المستخدمين",
+    "users": "المستخدمين",
+    "users_page": {
+      "title": "إدارة المستخدمين",
+      "add":"إضافة مستخدم جديد",
+      "users_table":{
+        "ID": "رقم المعرف",
+        "name": "الاسم الثلاثي",
+        "phone": "رقم الجوال",
+        "email": "البريد الإليكتروني",
+        "role": "الصلاحية",
+        "status": "حالة الحساب",
+        "operations": "العمليات"
+      }
+     },
+    "roles": "الصلاحيات",
+    "products_section": "المنتجات",
+    "cards": "العضويات",
+    "memberships_page": {
+      "title": "إدارة العضويات",
+      "add":"إضافة عضوية جديدة",
+      "memberships_table":{
+        "operations": "العمليات",
+        "cardsCount":"عدد البطاقات",
+        "duration": "المدة"
+      },
+      "memberships_modal":{
+        "title": "إضافة عضوية جديدة",
+        "nameAr":"الاسم بالعربية",
+        "nameEn":"الاسم بالإنجليزية",
+        "price":"السعر",
+        "cardsCount":"عدد العضويات",
+        "duration": {
+          "DAY": "يوم",
+          "WEEK": "أسبوع",
+          "MONTH": "شهر",
+          "YEAR": "سنة",
+          "CUSTOM": "مخصص"
+        },
+        "durationValue": "المدة",
+        "color":"اللون",
+        "feature":"ميزة",
+        "addFeature":"إضافة ميزة",        
+        "active": "تفعيل العضوية",
+        "cancel":"إلغاء",
+        "save":"حفظ",
+        "validation":{
+          "nameAr":"حقل مطلوب"
+        }
+      }
+     },
+    "medical_network": "الشبكة الطبية",
+    "medical_services": "الخدمات الطبية",
+    "coupons": "الكوبونات",
+    "offers": "العروض",
+    "operations_section": "العمليات",
+    "operations": "إدارة العمليات",
+    "visits": "الزيارات",
+    "clients_section": "العملاء",
+    "clients": "العملاء",
+    "verify_membership": "التحقق من العضوية",
+    "management_section": "الإدارة",
+    "departments": "الأقسام",
+    "sales": "المبيعات",
+    "merchants": "التجار",
+    "contracts": "العقود",
+    "marketing_section": "التسويق",
+    "marketing": "التسويق",
+    "support_section": "الدعم",
+    "contact": "اتصل بنا",
+    "subscriptions_section": "الاشتراكات",
+    "subscriptions": "الاشتراكات",
+    "finance_section": "المالية",
+    "accounts": "الحسابات",
+    "invoices": "الفواتير",
+    "tax": "الضريبة",
+    "reports_section": "التقارير",
+    "reports": "التقارير",
+    "locations_section": "المناطق",
+    "locations": "إدارة المناطق",
+    "system_settings": "الإعدادات",
+    "website_settings": "إدارة الموقع"
+  }
+}

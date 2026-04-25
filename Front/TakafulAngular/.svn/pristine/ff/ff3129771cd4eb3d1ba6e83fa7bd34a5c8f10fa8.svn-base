@@ -1,0 +1,421 @@
+
+/* ------------------------------------      General       ------------------------------------ */
+
+
+/* ---------------------- Start Datatable  ---------------------- */
+
+
+div.dataTables_wrapper div.dataTables_length select {
+    padding: 0 8px 0 20px;
+}
+
+.form-select {
+    background-position: left 0.25rem center;
+}
+
+.has-filters:after {
+    right: unset;
+    left: -4px;
+
+}
+
+th[colspan]:first-child:not([colspan="1"]) {
+    border-left: unset;
+    border-right: none;
+}
+
+#setupTabel div.dt-buttons {
+    float: left;
+}
+
+
+/* ---------------------- End Datatable  ---------------------- */
+
+/* ---------------------- Start Datatable Filter ---------------------- */
+
+/* ---------------------- End Datatable Filter ---------------------- */
+
+
+/* ------------------------------------      Vertical Tabs      ------------------------------------ */
+.tab-vertical .nav.nav-tabs {
+    float: right;
+    margin-right: unset;
+    margin-left: 0px;
+}
+
+.tab-vertical .nav-tabs .nav-link {
+    -moz-border-radius: 0px 4px 4px 0px;
+    border-radius: 0px 4px 4px 0px;
+}
+
+.tab-vertical .nav-tabs .nav-link {
+    border-top-right-radius: 4px !important;
+    border-top-left-radius: 0px !important;
+}
+
+
+
+
+/* ------------------------------------      scrollbar       ------------------------------------ */
+
+
+/* ------------------------------------      header       ------------------------------------ */
+
+/* .navbar-user .user-img{width: 36px;height: 36px;background: #d5d5d5;border-radius: 3px;padding: 1px;margin: 0 6px;} */
+.navbar-user img {
+    margin-right: unset;
+    margin-left: 10px;
+}
+
+
+.header-tools .badge {
+    right: unset;
+    left: -5px;
+}
+
+.searchbutton {
+    right: unset;
+    left: 4px;
+}
+
+.search {
+    right: unset;
+    left: 24px;
+}
+
+.search:focus {
+    padding: 0 0 0 16px;
+}
+
+/* ------------------------------------       sidebar       ------------------------------------ */
+.sidebar {
+    left: unset;
+    right: 0;
+}
+
+
+.sidebar-item li.active {
+    border-left: unset;
+    border-right: 4px solid var(--appColor);
+}
+
+.sidebar .dropdown-menu.show {
+    left: unset;
+    right: 50px !important;
+}
+
+.has-sub-menu {
+    margin: 5px 12px 0 0;
+    position: relative;
+}
+
+
+.has-sub-menu li:after {
+    left: unset;
+    right: -8px;
+
+}
+
+.has-sub-menu li a:before {
+    left: unset;
+    right: -10px;
+    transform: rotate(-45deg);
+}
+
+.side-menu h3:after {
+    left: unset;
+    right: 0;
+}
+
+.side-menu h3 {
+    padding-left: unset;
+    padding-right: 5px;
+}
+
+.pin-menu:before {
+    right: unset;
+    left: 3px;
+}
+
+.pin-menu.pined:before {
+    right: unset;
+    left: 2px;
+}
+
+.first-menu li {
+    margin: 1px 8px 0 0;
+}
+
+/* .first-menu li a:hover{ color: #666 !important; } */
+.first-menu li .dropdown-item {
+    padding-left: unset;
+    padding-right: 7px;
+}
+
+.first-menu>li>a:before {
+    left: unset;
+    right: -7px;
+    transform: rotate(-45deg);
+}
+
+/* ------------------------------------       main-content       --------------------------------- */
+.main-content {
+    margin-right: 50px;
+    margin-left: 5px;
+}
+
+.breadcrumb-item:nth-last-child(2)::after {
+    float: left;
+    padding-left: unset;
+    padding-right: var(--bs-breadcrumb-item-padding-x);
+}
+
+.page-content {
+    padding: 0 10px 50px 0;
+}
+
+.page-content.ml-menushow {
+    margin-left: unset;
+    margin-right: 290px;
+}
+
+/* ------------------------------------      footer      ------------------------------------ */
+footer {
+    margin-right: 0;
+    margin-left: 0;
+}
+
+ul.social:before {
+    border-left: unset;
+    border-right: 1px solid #bcbdbd;
+    padding-right: unset;
+    padding-left: 7px;
+}
+
+/* ------------------------------------      Media      ------------------------------------ */
+@media (max-width: 576px) {
+
+    .breadcrumb h2 {
+        margin: -1px 3px 0 0;
+    }
+
+
+    .sidebar-item li.active {
+        border-right: unset;
+    }
+
+    .sidebar .dropdown-menu.show {
+        left: unset !important;
+        right: 1% !important;
+    }
+
+    .main-content {
+        margin-left: unset;
+        margin-right: 0;
+    }
+
+    footer {
+        margin-right: 0;
+        margin-left: 0;
+    }
+
+    ul.social::before {
+        border-left: unset;
+        border-right: none;
+    }
+
+    .filter-tags {
+        right: unset !important;
+        left: 0 !important;
+    }
+}
+
+/* ------------------------------------      Start Callout      ------------------------------------ */
+
+.callout {
+    border-left: unset;
+    border-right: 0.25rem solid var(--bd-callout-border, var(--bs-gray-300));
+}
+/* ------------------------------------      End Callout      ------------------------------------ */
+
+/* ------------------------------------  ------------------------------------ */
+.tag {
+    background: #fff;
+    border: 1px solid var(--appColor);
+    display: flex;
+    justify-content: space-between;
+    margin-top: 5px;
+}
+
+.tag-icon {
+    margin-right: unset;
+    margin-left: 5px;
+}
+
+
+.filter-tags {
+    right: unset;
+    left: 128px;
+}
+
+/* ------------------------------------  ------------------------------------ */
+
+
+/* ------------------------------------------------------------------------------------  menu by Yousef --------------------------------------------------------------- */
+
+
+/***** Toggle menu wrapper *****/
+.toggle-menu-wrapper {
+    margin-right: unset;
+    margin-left: 15px;
+    padding-left: unset;
+    padding-right: 4px;
+}
+
+
+.toggle-menu-wrapper .toggle-menu.opened span:nth-child(1) {
+    transform: rotate(-45deg) translate(-10px, 9px);
+}
+
+.toggle-menu-wrapper .toggle-menu.opened span:nth-child(3) {
+    transform: rotate(45deg) translate(7px, 8px);
+}
+
+
+/***** End Toggle menu wrapper *****/
+/***** Large Menu *****/
+/* To turn on large menu add menu-lg class to body and dropdown-menu class to has-sub-menu */
+
+@media (min-width: 768px) {
+    .menu-lg .main-content {
+        margin-left: unset !important;
+        margin-right: 300px !important;
+    }
+
+    .menu-lg .sidebar-item li>a {
+        text-align: right;
+    }
+
+    .menu-lg .sidebar-item li>a h3 {
+        margin-left: unset;
+        margin-right: 10px;
+    }
+
+
+    .menu-lg .sidebar-item li a.dropdown-toggle::before,
+    .menu-lg .sidebar-item li a.dropdown-item.s-sub::after {
+        right: unset;
+        left: 15px;
+        transform: rotate(180deg);
+    }
+
+    .menu-lg .sidebar-item li a.dropdown-item.s-sub::after {
+        top: 11px;
+    }
+
+    .menu-lg .sidebar-item li a.dropdown-toggle.show::before,
+    .menu-lg .sidebar-item li a.dropdown-item.s-sub.show::after {
+        -webkit-transform: rotate(-90deg);
+        transform: rotate(90deg);
+    }
+
+    .menu-lg .sidebar-item>li>.dropdown-menu {
+        padding-left: unset;
+        padding-right: 50px;
+    }
+
+}
+
+/***** End Large Menu *****/
+/***** Pin Menu *****/
+/* Add pinned-menu class to body and show class to dropdown-menu side-menu */
+@media (min-width: 768px) {
+    .pinned-menu .pin-menu:before {
+        transform: rotate(-90deg);
+    }
+
+    .pinned-menu .main-content {
+        margin-left: unset !important;
+        margin-right: 350px !important;
+    }
+}
+
+
+/***** End Pin Menu *****/
+/* To add DMSBlueBlue Effect add DMSBlueBlue class to body */
+
+body.DMSBlueBlue .sidebar-item li {
+    border-left: unset;
+    border-right: 4px solid transparent;
+}
+
+@media (min-width: 576px) {
+    body.DMSBlueBlue .sidebar-item li.active,
+    body.DMSBlueBlue .sidebar-item>li:hover {
+        border-left-color: unset;
+        border-right-color: #ffc356;
+    }
+}
+
+body.DMSBlueBlue.menu-lg .sidebar-item>li>.dropdown-menu {
+    padding-left: unset;
+    padding-right: 0
+}
+
+
+body.DMSBlueBlue .sidebar-item li .first-menu li {
+    margin: 1px 8px 0 0;
+}
+
+body.DMSBlueBlue.menu-lg .sidebar-item .first-menu li .dropdown-item {
+    padding-left: unset !important;
+    padding-right: 48px !important;
+}
+
+body.DMSBlueBlue.menu-lg .sidebar-item .first-menu li {
+    padding-left: unset;
+    padding-right: 0;
+}
+
+body.DMSBlue .page-title {
+    padding-left: unset;
+    padding-right: 10px;
+}
+
+body.DMSBlue .sidebar-item li {
+    border-left: unset;
+    border-right: none;
+    padding: 0;
+    margin: 0;
+
+}
+.side-menu ul li
+{
+  margin-left: 5px;
+}
+body.DMSBlue.menu-lg .sidebar-item>li>.dropdown-menu {
+    padding-left: unset;
+    padding-right: 0;
+}
+
+body.DMSBlue.menu-lg .sidebar-item .first-menu li .dropdown-item {
+    padding-left: unset !important;
+    padding-right: 48px !important;
+}
+
+body.DMSBlue .main-content {
+    margin-left: unset;
+    margin-right: 45px;
+}
+
+@media (max-width: 576px) {
+    body.DMSBlue .main-content {
+        margin-left: unset;
+        margin-right: 0;
+    }
+}
+
+.keycolor li{
+    margin-right: unset;
+    margin-left: 3px;
+}

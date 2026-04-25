@@ -1,0 +1,558 @@
+import { Component, ElementRef, EventEmitter, Output, ViewChild } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
+import { ToastrService } from 'ngx-toastr';
+import { MenuItem, TreeNode } from 'primeng/api';
+import { TreeRestService } from '../../../services/TreeServices/tree-rest';
+import { LocationData } from '../../../models/location-data';
+import { OrganizationStructureDTO } from '../../../DTO/OrganizationStructureDTO';
+import { finalize } from 'rxjs/operators';
+import { DmsStpLevelDetails, DmsStpLevelDetailsDTO } from '../../../DTO/DmsStpLevelDetailsDTO';
+import { DmsStpLevelDescriptionDTO } from '../../../DTO/DmsStpLevelDescriptionDTO';
+import { LegalStatusRestService } from '../../../services/LegalStatusServices/legal-status.service';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { DataSharingService } from '../../../services/DataSharingServices/DataSharingService';
+import { ContextMenu } from 'primeng/contextmenu';
+import { UserData } from '../../../models/UserData';
+
+@Component({
+  selector: 'app-address-group-model',
+  templateUrl: './address-group-model.component.html',
+  styleUrl: './address-group-model.component.css'
+})
+export class AddressGroupModelComponent {
+  loggedUser?: UserData | any
+  treeData: any[] = [];
+  filteredNodes: TreeNode[] = [];
+  loading: boolean = false;
+  selectedBranch: DmsStpLevelDetailsDTO | any;
+  parentGroupDefintionId: number | any;
+  levelsDescriptions: DmsStpLevelDescriptionDTO[] | any;
+  errorMessage = '';
+  searchQuery: string = '';
+  nodes: TreeNode[] = [];
+  locationData: LocationData = new LocationData();
+  @Output() valueEmitted = new EventEmitter<OrganizationStructureDTO[]>();
+  @ViewChild('closeButton') myButton!: ElementRef;
+  @ViewChild('cm') cm?: ContextMenu;
+  selectedNode: OrganizationStructureDTO | any;
+
+  /*---------Form Logic -----------*/
+  dmsStpLevelDetails: DmsStpLevelDetailsDTO | any = {};
+  addressForm!: FormGroup<any> | any;
+  codeWidth: number = 0
+  /*-------------- Nodes variables --*/
+  contextMenuNode: TreeNode | any;
+  items: MenuItem[] = [];
+  nodesIds: number[] = []
+
+  constructor(private _legalStatusService: LegalStatusRestService,
+    private toaster: ToastrService,
+    public translate: TranslateService,
+    private _treeRest: TreeRestService,
+    private dataSharingService: DataSharingService) {
+    this.initializeRelatedCompaniesForm(false);
+  }
+  ngOnInit() {
+
+  }
+  ngAfterViewInit(): void {
+    this.loggedUser = JSON.parse(localStorage.getItem('userData') || '{}');
+    if (localStorage.getItem("token")) {
+      const selected = localStorage.getItem('selectedBranch');
+      // alert(selected)
+      if (selected != undefined) {
+        this.selectedBranch = JSON.parse(selected) as DmsStpLevelDetailsDTO;
+      }
+      this.populateTree(this.selectedBranch.defintionId)
+      this.dataSharingService.sharedData$.subscribe((data) => {
+        this.parentGroupDefintionId = data;
+      });
+      this.getLevelsDescriptions()
+    }
+  }
+  populateTree(nodeId: number) {
+    this.initializeRelatedCompaniesForm(false);
+    this.loading = true;
+    this._treeRest.getAllTreeNodesUsingDefinitionId(nodeId)
+      .pipe(
+        finalize(() => {
+          this.loading = false;
+        })
+      )
+      .subscribe(
+        (res: any) => {
+          if (res) {
+            this.treeData = res;
+            this.nodes = this.mapToTreeNode(this.treeData);
+            this.filteredNodes = this.nodes.map((node, index) => ({
+              ...node,
+              styleClass: index === 0 ? 'first-top-node' : ''
+            }));
+            if (this.nodes.length > 0) {
+              //  this.selectedNode = this.nodes[0];
+              // this.nodeSelect({ node: this.selectedNode });
+            }
+          }
+        },
+        (err) => {
+          console.error(err);
+        }
+      );
+
+  }
+  mapToTreeNode(data: any[]): TreeNode[] {
+    return data.map((node) => ({
+      label: this.translate.currentLang === 'en' ? `${node.englishName}` : `${node.arabicName}`,
+      data: node, // Pass the full object as data
+      expanded: false, // Set true if you want it expanded by default
+      icon: node.actAsBranch != null && node.actAsBranch == 'Y' ? 'icon fa-solid fa-building' : 'pi pi-fw pi-home',
+      children: node.children ? this.mapToTreeNode(node.children) : [],
+    }));
+  }
+
+  collapseTree() {
+    this.filteredNodes.forEach(node => this.collapseNode(node));
+  }
+
+  collapseNode(node: any) {
+    node.expanded = false;
+    if (node.children) {
+      node.children.forEach((child: any) => this.collapseNode(child));
+    }
+  }
+
+  filterTree() {
+    if (!this.searchQuery) {
+      this.filteredNodes = this.nodes.map((node, index) => ({
+        ...node,
+        styleClass: index === 0 ? 'first-top-node' : ''
+      }));
+      return;
+    }
+
+    const query = this.searchQuery.toLowerCase();
+
+    const filterNodes = (nodes: TreeNode[], parentExpanded = false): TreeNode[] => {
+      return nodes
+        .map(node => {
+          const label = (node.label || '').toLowerCase();
+          let expanded = parentExpanded; // Expand parent if a child matches
+
+          if (label.includes(query)) {
+            expanded = true; // Ensure the matched node is expanded
+            return { ...node, expanded, children: node.children || [] };
+          }
+
+          const filteredChildren = filterNodes(node.children || [], expanded);
+
+          if (filteredChildren.length > 0) {
+            expanded = true; // Expand if any child matches
+            return { ...node, expanded, children: filteredChildren };
+          }
+
+          return null;
+        })
+        .filter(node => node !== null) as TreeNode[];
+    };
+
+    this.filteredNodes = filterNodes(this.nodes);
+  }
+
+  handleFileUpload(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      const file = input.files[0];
+      const reader = new FileReader();
+      reader.onload = (e: ProgressEvent<FileReader>) => {
+        const base64String = e.target?.result as string;
+        const base64Data = base64String.split(',')[1];
+        this.locationData.nodeSelectedLocationImageIcon = base64Data;
+      };
+      reader.onerror = (error) => {
+        console.error('Error reading file:', error);
+        this.toaster.error(this.translate.instant('File upload failed'), 'Error');
+      };
+      reader.readAsDataURL(file);
+    } else {
+      this.toaster.warning(this.translate.instant('No file selected'), 'Warning');
+    }
+  }
+  getLevelsDescriptions() {
+    this._legalStatusService.GetLevelsDescriptions().subscribe(
+      (data: any) => {
+        if (data && data.length > 0) {
+          this.levelsDescriptions = data.map((level: any) => ({ ...level }));
+        } else {
+          this.levelsDescriptions = [];
+        }
+        // this.addLabel(); // Ensure labels are set only after data is available
+      },
+      (error) => {
+        console.error('Error fetching levels descriptions:', error);
+      }
+    );
+  }
+  /*---------------- Form Logic ------------------ */
+  initializeRelatedCompaniesForm(isActive: boolean): void {
+    this.addressForm = new FormGroup({
+      arabicName: new FormControl({ value: this.dmsStpLevelDetails.arabicName, disabled: !isActive }
+        , [Validators.required]),
+      englishName: new FormControl({ value: this.dmsStpLevelDetails.englishName, disabled: !isActive },
+        [Validators.required]),
+      definitionCode: new FormControl({ value: this.dmsStpLevelDetails.definitionCode, disabled: !isActive },
+        [Validators.required, Validators.pattern('^[a-zA-Z0-9]+$')])
+    },
+    );
+  }
+  blockDash(event: KeyboardEvent): void {
+    const key = event.key;
+    const isValid = /^[a-zA-Z0-9]$/.test(key);
+    if (!isValid) {
+      event.preventDefault();
+    }
+  }
+  blockPaste(event: ClipboardEvent): void {
+    const pastedInput: string = event.clipboardData?.getData('text') || '';
+    if (!/^[a-zA-Z0-9]*$/.test(pastedInput)) {
+      event.preventDefault();
+    }
+  }
+  onSubmit() {
+    this.dmsStpLevelDetails.clientId = 1
+    //  this.dmsStpLevelDetails.actAsBranch = this.addressForm.get('actAsBranch')?.value;
+    this.dmsStpLevelDetails.purchasedNode = 'N';
+    this.dmsStpLevelDetails.addTransactionUser = this.loggedUser.userNameLatin[1]
+    const combinedDto = {
+      dmsStpLevelDetailsDto: this.dmsStpLevelDetails
+    };
+    this.addressForm.markAllAsTouched();
+    if (this.addressForm.valid) {
+
+      if (this.dmsStpLevelDetails.defintionId) {
+        this._legalStatusService.editExistingDmsStpLevelDetails(combinedDto).
+          subscribe((response: any) => {
+            if (response.message === "Edited") {
+              this.loadData()
+              if (this.translate.currentLang == 'en') {
+                this.toaster.success('Data Edited Successfully', 'Success');
+
+              }
+              else {
+                this.toaster.success('تم التعديل بنجاح', 'نجاح', {
+                  positionClass: 'toast-top-left'
+                })
+              }
+            }
+          },
+            (error: any) => {
+              if (this.translate.currentLang == 'en') {
+                this.toaster.error('Failed to Edit', 'Error')
+              }
+              else {
+                this.toaster.error('فشل في التعديل ', 'خطأ', {
+                  positionClass: 'toast-top-left'
+                })
+              }
+              console.error('Error occurred:', error);
+            });
+        this.load()
+      }
+      else {
+        this._legalStatusService.SaveDmsStpLevelDetails(combinedDto).
+          subscribe((response: any) => {
+            if (response.message === "Saved") {
+              // this.router.navigate(['/stp-levels']);
+              // if standalone = > navigate to Department Definition
+              // else navigate to related companies
+              this.loadData()
+              if (this.translate.currentLang == 'en') {
+                this.toaster.success('Data Saved Successfully', 'Success');
+              }
+              else {
+                this.toaster.success('تم الإضافة بنجاح', 'نجاح', {
+                  positionClass: 'toast-top-left'
+                })
+              }
+              // this.router.navigate(['/Employee/EmployeeList']);
+            }
+          },
+            (error: any) => {
+              if (this.translate.currentLang == 'en') {
+                this.toaster.error('Failed to Add', 'Error')
+              }
+              else {
+                this.toaster.error('فشل في الإضافة ', 'خطأ', {
+                  positionClass: 'toast-top-left'
+                })
+              }
+              console.error('Error occurred:', error);
+            });
+
+        this.load()
+      }
+
+
+    } else {
+      if (this.translate.currentLang == 'en') {
+        this.toaster.error('Missing Values', 'Fail')
+      }
+      else {
+        this.toaster.error('حقول فارغة', 'خطأ', {
+          positionClass: 'toast-top-left'
+        })
+      }
+      console.warn('Invalid Form 2', this.addressForm.controls)
+    }
+  }
+  load(): void {
+    this.loading = true;
+    setTimeout(() => this.loading = false, 20000);
+  }
+
+  loadData() {
+    if (localStorage.getItem("token")) {
+      this.populateTree(this.parentGroupDefintionId);
+      this.initializeRelatedCompaniesForm(false);
+      this.dmsStpLevelDetails = {}
+    }
+  }
+
+  /*-------------- Nodes Actions -------- */
+  // Capture the node that was right-clicked
+  onNodeRightClick(event: any) {
+    if (event?.node && event?.originalEvent) {
+      this.contextMenuNode = event.node;
+
+      const pathToNode = this.findPathToNode(this.treeData, event.node.data.defintionId);
+      if (pathToNode.length < this.levelsDescriptions.length) {
+        this.updateContextMenuItems(this.levelsDescriptions[pathToNode.length], this.levelsDescriptions[pathToNode.length - 1], pathToNode.length);
+      } else if (pathToNode.length == this.levelsDescriptions.length) {
+        this.items = [];
+        this.nodesIds = [];
+        this.fillNodesIds(this.contextMenuNode);
+        this.codeWidth = this.levelsDescriptions[this.levelsDescriptions.length - 1].segmentWidth;
+        // Get current language
+        const currentLang = this.translate.currentLang;
+        const labels = {
+          selectAddress: currentLang === 'ar' ? 'اختيار كعنوان' : 'Select As Address',
+          // addChild: currentLang === 'ar' ? `إضافة ${this.levelsDescriptions[this.levelsDescriptions.length - 1].arabicName}` : `Add ${this.levelsDescriptions[this.levelsDescriptions.length - 1].englishName}`,
+          editCurrent: currentLang === 'ar' ? `تعديل ${this.levelsDescriptions[this.levelsDescriptions.length - 1].arabicName}` : `Edit ${this.levelsDescriptions[this.levelsDescriptions.length - 1].englishName}`,
+          deleteCurrent: currentLang === 'ar' ? `حذف ${this.levelsDescriptions[this.levelsDescriptions.length - 1].arabicName}` : `Delete ${this.levelsDescriptions[this.levelsDescriptions.length - 1].englishName}`
+        };
+        if (this.contextMenuNode) {
+          this.items.push(
+            {
+              label: labels.selectAddress,
+              icon: 'pi pi-map-marker',
+              command: () => this.selectNode(this.contextMenuNode)
+            },
+            // {
+            //   label: labels.addChild,
+            //   icon: 'pi pi-plus',
+            //   command: () => this.addChildNode(this.contextMenuNode, childNode.levelId)
+            // },
+            {
+              label: labels.editCurrent,
+              icon: 'pi pi-pencil',
+              command: () => this.editNode(this.contextMenuNode)
+            },
+            {
+              label: labels.deleteCurrent,
+              icon: 'pi pi-trash',
+              command: () => this.deleteNode()
+            }
+          );
+        }
+      }
+
+      event.originalEvent.preventDefault(); // Prevent default browser menu
+
+      // Ensure correct positioning
+      setTimeout(() => {
+        if (this.cm && this.cm['el']?.nativeElement) {
+          this.cm.show(event.originalEvent);
+        } else {
+          console.warn('ContextMenu is not yet ready.');
+        }
+      }, 0);
+    }
+  }
+
+  // Dynamically update context menu items
+  updateContextMenuItems(childNode: any, currentNode: any, length: any) {
+    this.items = [];
+    this.nodesIds = [];
+    this.fillNodesIds(this.contextMenuNode);
+    this.codeWidth = childNode.segmentWidth;
+
+    // Get current language
+    const currentLang = this.translate.currentLang;
+
+    // Set labels based on language
+    const labels = {
+      selectAddress: currentLang === 'ar' ? 'اختيار كعنوان' : 'Select As Address',
+      addChild: currentLang === 'ar' ? `إضافة ${childNode.arabicName}` : `Add ${childNode.englishName}`,
+      editCurrent: currentLang === 'ar' ? `تعديل ${currentNode.arabicName}` : `Edit ${currentNode.englishName}`,
+      deleteCurrent: currentLang === 'ar' ? `حذف ${currentNode.arabicName}` : `Delete ${currentNode.englishName}`
+    };
+
+    if (this.contextMenuNode) {
+      if (length === 1) {
+        this.items.push(
+          {
+            label: labels.selectAddress,
+            icon: 'pi pi-map-marker',
+            command: () => this.selectNode(this.contextMenuNode)
+          },
+          {
+            label: labels.addChild,
+            icon: 'pi pi-plus',
+            command: () => this.addChildNode(this.contextMenuNode, childNode.levelId)
+          },
+          {
+            label: labels.editCurrent,
+            icon: 'pi pi-pencil',
+            command: () => this.editNode(this.contextMenuNode)
+          }
+        );
+      } else {
+        this.items.push(
+          {
+            label: labels.selectAddress,
+            icon: 'pi pi-map-marker',
+            command: () => this.selectNode(this.contextMenuNode)
+          },
+          {
+            label: labels.addChild,
+            icon: 'pi pi-plus',
+            command: () => this.addChildNode(this.contextMenuNode, childNode.levelId)
+          },
+          {
+            label: labels.editCurrent,
+            icon: 'pi pi-pencil',
+            command: () => this.editNode(this.contextMenuNode)
+          },
+          {
+            label: labels.deleteCurrent,
+            icon: 'pi pi-trash',
+            command: () => this.deleteNode()
+          }
+        );
+      }
+    }
+  }
+
+  fillNodesIds(selectedNode: any) {
+    const collectIds = (node: any) => {
+      this.nodesIds.push(selectedNode.data.defintionId);
+      if (node.children && node.children.length > 0) {
+        node.children.forEach((child: any) => {
+          //collectIds(child);
+          this.nodesIds.push(child.defintionId);
+        });
+      }
+    };
+    collectIds(selectedNode.data);
+  }
+  addChildNode(selected: TreeNode, nodeLevel: any) {
+    if (selected) {
+      this.dmsStpLevelDetails = {}
+      this.dmsStpLevelDetails.parentId = selected.data.defintionId
+      this.dmsStpLevelDetails.levelId = nodeLevel
+      if (nodeLevel === 5) {
+        this.dmsStpLevelDetails.actAsBranch = 'Y';
+        this.dmsStpLevelDetails.purchasedNode = 'Y'
+      } else {
+        this.dmsStpLevelDetails.actAsBranch = 'N';
+        this.dmsStpLevelDetails.purchasedNode = 'N'
+      }
+    }
+    this.contextMenuNode = {} as TreeNode<any>;
+    this.initializeRelatedCompaniesForm(true)
+  }
+
+  deleteNode() {
+    this.loading = true;
+    this.nodesIds.reverse()
+    this._legalStatusService.deleteExistingLevelDetails(this.nodesIds).subscribe(
+      (response) => {
+        if (response) {
+          if (response.message === "Deleted") {
+            this.loadData()
+            if (this.translate.currentLang == 'en') {
+              this.toaster.success('Data Deleted Successfully', 'Success');
+            }
+            else {
+              this.toaster.success('تم الحذف', '', {
+                positionClass: 'toast-top-left'
+              })
+            }
+          }
+        }
+      },
+      (error) => {
+        if (this.translate.currentLang === 'en') {
+          this.toaster.error('Failed to Delete', 'Error');
+        } else {
+          this.toaster.error('فشل في الحذف ', 'خطأ', {
+            positionClass: 'toast-top-left'
+          });
+        }
+        console.error('Error occurred:', error);
+        this.loading = false;
+      }
+    );
+  }
+
+  editNode(selected: any) {
+
+    this.initializeRelatedCompaniesForm(true)
+    if (selected) {
+      this.dmsStpLevelDetails = selected.data
+    }
+  }
+  handleCurrentNode(event: any) {
+    this.selectedNode = event.node.data
+    this.dmsStpLevelDetails = this.selectedNode
+  }
+  selectNode(event: any) {
+
+    this.selectedNode = event.data;
+    // this.selectedNode = event.node
+    const pathToNode = this.findPathToNode(this.treeData, this.selectedNode.defintionId);
+    const combinedPath = pathToNode.map((node, index) => ({
+      ...node,
+      description: this.levelsDescriptions[index] || ''
+    }));
+    this.valueEmitted.emit(combinedPath);
+    this.collapseTree();
+    this.myButton.nativeElement.click();
+  }
+  findPathToNode(rootNodes: OrganizationStructureDTO[], selectedNodeId: number): OrganizationStructureDTO[] {
+    let path: OrganizationStructureDTO[] = [];
+    function search(node: OrganizationStructureDTO, currentPath: OrganizationStructureDTO[]): boolean {
+      currentPath.push(node);
+
+      // If this is the selected node, return true
+      if (node.defintionId === selectedNodeId) {
+        path = [...currentPath]; // Save the path
+        return true;
+      }
+
+      for (let child of node.children || []) {
+        if (search(child, currentPath)) {
+          return true;
+        }
+      }
+
+      currentPath.pop();
+      return false;
+    }
+
+    for (let root of rootNodes) {
+      if (search(root, [])) break;
+    }
+
+    return path;
+  }
+}

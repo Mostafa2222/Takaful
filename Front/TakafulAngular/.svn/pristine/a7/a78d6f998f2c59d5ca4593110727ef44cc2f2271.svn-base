@@ -1,0 +1,176 @@
+import { Component, OnInit } from '@angular/core';
+import { BrowserDataDto } from '../../../DTO/browserDataDTO';
+import { BrowserService } from '../../../services/common Services/browser.service';
+import { TranslateService } from '@ngx-translate/core';
+import { FinancialBasicDataDTO } from '../../../DTO/FinancialBasicDataDTO';
+import { FinancialService } from '../../../services/financial.service';
+import { ToastrService } from 'ngx-toastr';
+import { DmsStpLevelDetailsDTO } from '../../../DTO/DmsStpLevelDetailsDTO';
+import { FinancialBasicDto } from '../../../DTO/financial-basic-data-dto';
+import { finalize } from 'rxjs';
+
+@Component({
+  selector: 'app-financial',
+  templateUrl: './financial.component.html',
+  styleUrl: './financial.component.css'
+})
+export class FinancialComponent implements OnInit {
+  selectedValue!: BrowserDataDto;
+  dialogData: BrowserDataDto[] = [];
+  selectName: string = '';
+  financialBasicData: FinancialBasicDataDTO;
+  currencyBrowserData: BrowserDataDto[] = [];
+  templateTypeBrowserData: BrowserDataDto[] = [];
+  templateBrowserData: BrowserDataDto[] = [];
+  tableName: string = '';
+  lastSelected!: BrowserDataDto;
+  isLoading = true;
+  createPO = false;
+  invoice = false;
+  selectedBranch!: DmsStpLevelDetailsDTO;
+  basicDTO: FinancialBasicDto = new FinancialBasicDto();
+  isCheckedSub = false;
+  isCheckedInvoice = false;
+
+  constructor(
+    private _getTablesServices: BrowserService,
+    public translate: TranslateService,
+    private financialService: FinancialService,
+    private toaster: ToastrService
+  ) {
+    this.financialBasicData = this.initializeFinancialData();
+  }
+
+  ngOnInit(): void {
+    this.getSelectedBranch();
+    if (this.selectedBranch?.defintionId) {
+      this.loadFinancialBasicData();
+    }
+  }
+
+  private initializeFinancialData(): FinancialBasicDataDTO {
+    return {
+      currency: { idNum: 0, displayedNameEn: '', displayedNameAr: '' },
+      type: { idNum: 0, displayedNameEn: '', displayedNameAr: '' },
+      template: { idNum: 0, displayedNameEn: '', displayedNameAr: '' }
+    };
+  }
+
+  private loadFinancialBasicData() {
+    this.financialService.retreiveFinancialBasic(this.selectedBranch.defintionId)
+      .pipe(finalize(() => (this.isLoading = false)))
+      .subscribe({
+        next: (data: FinancialBasicDto) => {
+          this.basicDTO = data;
+          this.mapFinancialData(true);
+          this.isCheckedSub = data.createPOForSubBranch === 'Y';
+          this.isCheckedInvoice = data.invoicePayForSubBranch === 'Y';
+        },
+        error: (error) => console.error(`Error fetching financial data: `, error)
+      });
+  }
+
+  private mapFinancialData(toFinancialData: boolean) {
+    const mapFields = [
+      { key: 'currency', id: 'currancyId', en: 'currencyLatinName', ar: 'currencyArabicName' },
+      { key: 'type', id: 'chartTypeId', en: 'typeLatinName', ar: 'typeArabicName' },
+      { key: 'template', id: 'chartTempId', en: 'templateLatinName', ar: 'templateArabicName' }
+    ] as const;
+  
+    for (const field of mapFields) {
+      const key = field.key as keyof FinancialBasicDataDTO;
+      const idField = field.id as keyof FinancialBasicDto;
+      const enField = field.en as keyof FinancialBasicDto;
+      const arField = field.ar as keyof FinancialBasicDto;
+  
+      if (toFinancialData) {
+        this.financialBasicData[key].idNum = Number(this.basicDTO[idField]) || 0;
+        this.financialBasicData[key].displayedNameEn = String(this.basicDTO[enField]) || '';
+        this.financialBasicData[key].displayedNameAr = String(this.basicDTO[arField]) || '';
+      } else {
+        (this.basicDTO as any)[idField] = this.financialBasicData[key].idNum || null;  
+        (this.basicDTO as any)[enField] = this.financialBasicData[key].displayedNameEn;
+        (this.basicDTO as any)[arField] = this.financialBasicData[key].displayedNameAr;
+      }
+    }
+  }
+  
+  
+
+  getSelectedBranch() {
+    const selected = localStorage.getItem('selectedBranch');
+    if (selected) {
+      this.selectedBranch = JSON.parse(selected) as DmsStpLevelDetailsDTO;
+    }
+  }
+
+  stpDialog(event: MouseEvent, tableName: string, idColumnName: string, latinName: string, arabicName: string, targetArray: BrowserDataDto[], selectName: string, selected: BrowserDataDto) {
+    event.preventDefault();
+    this.dialogData = targetArray;
+    this.selectName = selectName;
+    this.lastSelected = selected;
+    if (targetArray.length === 0) {
+      this.fetchData(tableName, idColumnName, latinName, arabicName, targetArray);
+    }
+  }
+
+  handleDialogDep(event: MouseEvent, targetArray: BrowserDataDto[], selectName: string, selected: BrowserDataDto) {
+    event.preventDefault();
+    this.dialogData = targetArray;
+    this.selectName = selectName;
+    this.lastSelected = selected;
+  }
+
+  handleDependant(code: number) {
+    this.financialService.fetchChildData(code, 1).subscribe({
+      next: (data) => (this.templateBrowserData = data),
+      error: (error) => console.error(`Error fetching dependent data: `, error)
+    });
+  }
+
+  private fetchData(table: string, idColumnName: string, latinName: string, arabicName: string, targetArray: BrowserDataDto[]): void {
+    this._getTablesServices.getTable(table, idColumnName, latinName, arabicName, 1).subscribe({
+      next: (data) => {
+        targetArray.push(...data);
+        this.tableName = table;
+      },
+      error: (error) => console.error(`Error fetching data: `, error)
+    });
+  }
+
+  selected(event: any) {
+    const { idNum, code, displayedNameAr, displayedNameEn } = event;
+    Object.assign(this.lastSelected, { idNum, displayedNameEn, displayedNameAr });
+
+    if (this.lastSelected === this.financialBasicData.type) {
+      this.templateBrowserData = [];
+      Object.assign(this.financialBasicData.template, { idNum: 0, displayedNameEn: '', displayedNameAr: '' });
+
+      if (code) this.handleDependant(code);
+    }
+  }
+
+  saveBasicData() {
+    if (!this.selectedBranch?.defintionId) return;
+
+    this.mapFinancialData(false);
+    this.basicDTO.createPOForSubBranch = this.isCheckedSub ? 'Y' : 'N';
+    this.basicDTO.invoicePayForSubBranch = this.isCheckedInvoice ? 'Y' : 'N';
+
+    this.isLoading = true;
+    this.financialService.editBasicData(this.basicDTO)
+      .pipe(finalize(() => (this.isLoading = false)))
+      .subscribe({
+        next: () => {
+          if (this.translate.currentLang == 'en') {
+            this.toaster.success('Added Successfully.', 'Success');
+          } else {
+            this.toaster.success('تمت الاضافه بنجاح.', 'نجاح', {
+              positionClass: 'toast-top-left'
+            });
+          }
+        },
+        error: (error) => console.error(`Error saving data: `, error)
+      });
+  }
+}

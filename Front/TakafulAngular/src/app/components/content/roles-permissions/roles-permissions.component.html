@@ -1,0 +1,35 @@
+<div class="layout">
+  <div class="roles">
+    <h3>Roles</h3>
+
+    <div
+      *ngFor="let role of roles"
+      (click)="selectRole(role)"
+      [class.active]="role === selectedRole"
+      class="role-item"
+    >
+      {{ role.name }}
+    </div>
+  </div>
+
+  <div class="permissions" *ngIf="selectedRole">
+    <h3>صلاحيات {{ selectedRole.name }}</h3>
+
+    <div *ngFor="let group of groups" class="group">
+      <h4>{{ group.group }}</h4>
+
+      <div class="perm-grid">
+        <div
+          *ngFor="let p of group.permissions"
+          class="perm-card"
+          [class.active]="selectedPermissions.includes(p.code)"
+          (click)="togglePermission(p.code)"
+        >
+          {{ p.nameAr }}
+        </div>
+      </div>
+    </div>
+
+    <button (click)="save()" class="btn bg-primary text-light">Save</button>
+  </div>
+</div>

@@ -1,0 +1,54 @@
+/* You can add global styles to this file, and also import other style files */
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+/* @font-face {
+  font-family: "Cairo";
+  src: url("/public/assets/fonts/Cairo/static/Cairo-Regular.ttf")
+    format("truetype");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Cairo";
+  src: url("/public/assets/fonts/Cairo/static/Cairo-Bold.ttf")
+    format("truetype");
+  font-weight: 700;
+  font-style: normal;
+} */
+.card-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+}
+.employee-card-mini {
+    width: calc(95% - 10px);
+    margin-bottom: 20px;
+}
+.no-data-message {
+    text-align:center;
+    color: #888;
+    font-size: 20px;
+
+    font-weight: bold; /* Add this line to make the text bold */
+    text-transform: capitalize;
+
+}
+.img
+{
+    object-fit: cover;
+}
+
+
+select,
+input {
+  font-size: 12px !important;
+  background: white;
+  line-height: 1rem !important;
+  /* padding: 4px 20px 4px 20px !important; */
+  height: 25px !important;
+}
+
+input[type="checkbox"] {
+  height: 12px !important;
+  padding: 0px !important;
+}

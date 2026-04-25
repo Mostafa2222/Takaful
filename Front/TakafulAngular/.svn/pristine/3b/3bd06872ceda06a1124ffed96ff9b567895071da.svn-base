@@ -1,0 +1,46 @@
+export interface OrganizationStructureDTO {
+  actAsBranch?: string;
+  active?: string;
+  addTransactionDate?: string;
+  addTransactionUser?: string;
+  approveDate?: string;
+  approveNumber?: string;
+  approveUser?: string;
+  arabicName?: string;
+  capital?: number;
+  chartTempId?: number;
+  chartTypeId?: number;
+  cityId?: number;
+  clientId?: number;
+  countryId?: number;
+  createPoForSubBranch?: string;
+  currancyId?: number;
+  dataSource?: string;
+  definitionCode?: string;
+  defintionId?: number;
+  deleteTransactionDate?: string;
+  deleteTransactionUser?: string;
+  englishName?: string;
+  invoicePayForSubBranch?: string;
+  languageId?: number;
+  lastTransactionAction?: string;
+  lastTransactionDate?: string;
+  lastTransactionUser?: string;
+  latitude?: number;
+  levelId?: number;
+  longitude?: number;
+  natureOfWorkId?: number;
+  numberOfShares?: number;
+  otherNatureOfWorkId?: number;
+  otherSectorNatureId?: number;
+  parentId?: number;
+  reasonId?: number;
+  sectorNatureId?: number;
+  urlAddress?: string;
+  parentCode?: string;
+  parentNames?: { [key: string]: string }[]; // List of key-value pairs
+
+  parentHierarchy?: OrganizationStructureDTO[]; // Parent hierarchy list
+  children?: OrganizationStructureDTO[]; // Child nodes
+  parent?: OrganizationStructureDTO; // Parent reference
+}

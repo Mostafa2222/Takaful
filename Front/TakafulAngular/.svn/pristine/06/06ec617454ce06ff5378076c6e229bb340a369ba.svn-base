@@ -1,0 +1,13 @@
+import { Component } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
+
+@Component({
+  selector: 'app-pagetitle',
+  templateUrl: './pagetitle.component.html',
+  styleUrl: './pagetitle.component.css'
+})
+export class PagetitleComponent {
+constructor(
+    public translate: TranslateService
+  ) {}
+}

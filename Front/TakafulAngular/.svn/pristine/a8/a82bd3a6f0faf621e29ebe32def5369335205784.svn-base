@@ -1,0 +1,98 @@
+import { Component, EventEmitter, Output } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
+import * as L from 'leaflet';
+
+@Component({
+  selector: 'app-map',
+  templateUrl: './map.component.html',
+  styleUrl: './map.component.css'
+})
+export class MapComponent {
+  map: L.Map | any;
+  markerLayer: L.LayerGroup | any;
+  selectedLatLng: [number, number] | null = null;
+  @Output() coordinatesSelected = new EventEmitter<string>();
+
+  constructor(public translate: TranslateService) {}
+
+  ngAfterViewInit(): void {
+    document.getElementById('search-btn')?.addEventListener('click', () => this.handleSearch());
+    document.getElementById('emit-btn')?.addEventListener('click', () => this.emitCoordinates());
+  }
+  handleSearch(): void {
+    const searchInput = (document.getElementById('search-input') as HTMLInputElement)?.value.trim();
+    if(searchInput){
+      this.searchLocation(searchInput);
+    }
+    else{
+      alert(this.translate.currentLang === 'ar'
+        ? 'لم يتم ادخال موقع. الرجاء النقر على الخريطة ثم الضغط علي "اختر" أو البحث عن موقع أولاً.'
+        : 'No location inserted. Please click on the map or search for a location first.'
+      );
+    }
+  }
+
+  ngOnInit(): void {
+    this.initMap();
+  }
+
+  initMap(): void {
+    this.map = L.map('map', {
+      center: [51.505, -0.09],
+      zoom: 13,
+    });
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(this.map);
+    this.markerLayer = L.layerGroup().addTo(this.map);
+
+    this.map.on('click', (e: L.LeafletMouseEvent) => {
+      this.selectedLatLng = [e.latlng.lat, e.latlng.lng];
+
+      // Clear previous markers
+      this.markerLayer.clearLayers();
+      // Add new marker
+      L.marker(this.selectedLatLng).addTo(this.markerLayer)
+        .bindPopup(`${this.translate.currentLang === 'ar' ? 'خطوط العرض'  : 'Latitude'} : ${this.selectedLatLng[0]}<br> ${this.translate.currentLang === 'ar' ? 'خطوط الطول'  : 'Longitude'}: ${this.selectedLatLng[1]}`)
+        .openPopup();
+    });
+  }
+
+  searchLocation(query: string): void {
+    fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${query}`)
+      .then(response => response.json())
+      .then(data => {
+        if (data.length > 0) {
+          const latlng: [number, number] = [parseFloat(data[0].lat), parseFloat(data[0].lon)];
+          this.map.setView(latlng, 13);
+          this.markerLayer.clearLayers();
+          L.marker(latlng).addTo(this.markerLayer);
+
+          // Store the selected location
+          this.selectedLatLng = latlng;
+
+          // Emit coordinates
+          // this.coordinatesSelected.emit(`${latlng[0]}, ${latlng[1]}`);
+        }
+      })
+      .catch(error => {
+        console.error(this.translate.currentLang === 'ar' ? 'خطأ في البحث عن الموقع:' : 'Error searching location:', error);
+      });
+  }
+
+  emitCoordinates(): void {
+    if (this.selectedLatLng) {
+      this.coordinatesSelected.emit(`${this.selectedLatLng[1]}, ${this.selectedLatLng[0]}`);
+    } else {
+      alert(this.translate.currentLang === 'ar'
+        ? 'لم يتم تحديد موقع. الرجاء النقر على الخريطة ثم الضغط علي "اختر" أو البحث عن موقع أولاً.'
+        : 'No location selected. Please click on the map or search for a location first.'
+      );
+    }
+  }
+
+  refreshMap(): void {
+    if (this.map) {
+      this.map.invalidateSize(); // Fixes display issues inside the modal
+    }
+  }
+}

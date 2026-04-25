@@ -1,0 +1,110 @@
+<div class="location-container">
+
+    <div class="column" *ngFor="let level of levels; let i = index">
+  
+      <!-- HEADER -->
+      <div class="header">
+        {{ getLevelName(i) }}
+        <button class="btn add-btn" (click)="openAddModal(i)">
+            <i class="fa fa-plus"></i>
+          </button>
+      </div>
+  
+      <!-- SEARCH -->
+      <input
+        type="text"
+        [(ngModel)]="searchTerms[i]"
+        placeholder="بحث..."
+      />
+  
+      <!-- LIST -->
+      <div class="list">
+  
+        <div class="item"
+             *ngFor="let item of filter(level, searchTerms[i])"
+             (click)="selectItem(item, i)"
+             [class.active]="selected[i]?.id === item.id">
+  
+          <!-- FLAG -->
+          <span *ngIf="i === 0" class="flag">
+            {{
+            item.code === 'SA' ? '🇸🇦' :
+            item.code === 'EG' ? '🇪🇬' :
+            item.code === 'AE' ? '🇦🇪' :
+            item.code === 'KW' ? '🇰🇼' :
+            item.code === 'QA' ? '🇶🇦' :
+            item.code === 'BH' ? '🇧🇭' :
+            item.code === 'OM' ? '🇴🇲' :
+            item.code === 'YE' ? '🇾🇪' :
+            item.code === 'JO' ? '🇯🇴' :
+            item.code === 'LB' ? '🇱🇧' :
+            item.code === 'SY' ? '🇸🇾' :
+            item.code === 'IQ' ? '🇮🇶' :
+            item.code === 'IR' ? '🇮🇷' :
+            item.code === 'TR' ? '🇹🇷' :
+            item.code === 'IL' ? '🇮🇱' :
+            item.code === 'PS' ? '🇵🇸' :
+            '🌍'
+            }} </span>
+            
+  
+          {{ getName(item) }}
+  
+        </div>
+  
+      </div>
+  
+    </div>
+  
+  </div>
+
+
+  <div class="modal" *ngIf="showModal">
+
+    <div class="modal-card">
+  
+      <h3>
+        إضافة {{ getLevelName(currentLevel) }}
+      </h3>
+  
+      <form (ngSubmit)="submit()">
+  
+        <input
+          [(ngModel)]="form.nameAr"
+          name="nameAr"
+          placeholder="الاسم بالعربي"
+          required
+        />
+  
+        <input
+          [(ngModel)]="form.nameEn"
+          name="nameEn"
+          placeholder="Name English"
+          required
+        />
+  
+        <!-- يظهر بس في الدولة -->
+        <input
+          *ngIf="currentType === 'COUNTRY'"
+          [(ngModel)]="form.code"
+          name="code"
+          placeholder="Country Code (SA)"
+        />
+  
+        <div class="actions">
+  
+          <button class="cancel" type="button" (click)="showModal = false">
+            إلغاء
+          </button>
+  
+          <button type="submit" class="save">
+            حفظ
+          </button>
+  
+        </div>
+  
+      </form>
+  
+    </div>
+  
+  </div>

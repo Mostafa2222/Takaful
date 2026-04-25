@@ -1,0 +1,99 @@
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+
+import { ActivatedRoute, Router } from '@angular/router';
+//import {PermissionsVm} from '../Models/permissions-vm';
+import { BehaviorSubject, observable, Subject } from 'rxjs';
+//import {BranchDataVm} from '../Models/BranchData-vm';
+
+
+import { forkJoin, of } from 'rxjs';
+import { delay } from 'rxjs/operators';
+import { UserAuthoritiesService } from './user-authorities.service';
+import { jwtDecode } from 'jwt-decode';
+import { ToastrService } from 'ngx-toastr';
+import { DefaultLogo, UserInfo } from '../../models/UserInfo';
+import { UserAuthoritiesDTO } from '../../models/UserAuthoritiesDTO';
+import { EnvironmentService } from '../environment.service';
+import { RestResponse } from '../../models/RestResponse';
+import { UserData } from '../../models/UserData';
+import { CookieService } from 'ngx-cookie-service';
+import { EncryptionService } from './encryption.service';
+import { DataExtractionService } from '../common Services/DataExtraction.service';
+import { TreeRestService } from '../TreeServices/tree-rest';
+@Injectable({
+  providedIn: 'root'
+})
+export class UserAuthenticationsService {
+
+  public isLoggedIn = false
+  public userData: UserData = new UserData()
+  public branchId?: number
+  public userDefaultBranchId: any
+  ApplicationUser: UserInfo = new UserInfo();
+  response: RestResponse = new RestResponse();
+  userDefaultLogo: DefaultLogo = new DefaultLogo();
+  module: string = "EMP";
+  public userAuthorities: any;
+  public urlSecurityAddress: string = this._environmentService.secUrl;
+
+  constructor(private http: HttpClient,
+    private router: Router,
+    private toaster: ToastrService,
+    private _environmentService: EnvironmentService,
+    public _userAuthorities: UserAuthoritiesService,
+    private dataExtractionService: DataExtractionService,
+    private _treeRest: TreeRestService,
+    private _encryptionService: EncryptionService,
+    private _cookie: CookieService) { }
+
+  GetUserData(UserData: any) {
+    this.ApplicationUser = new UserInfo()
+    this.ApplicationUser.UserDefaultLogo = this.userDefaultLogo;
+    let urlPath = this._environmentService.secUrl;
+    const params = {
+      userName: UserData.username.value,
+      userPassword: UserData.password.value
+    };
+
+    return this._userAuthorities.getUserInfo(params).subscribe
+      (
+        (res: any) => {
+          this.response = res as RestResponse;
+          if (this.response.status != "ACCEPTED") {
+            this.toaster.error(this.response.message, "Error");
+            return;
+          }
+          else {
+            of(null).pipe(delay(1500)).subscribe(() => {
+                const tokenInfo = this.getDecodedAccessToken(this.response.token)
+                this.isLoggedIn = true
+                this.userData = this.dataExtractionService.extractData(tokenInfo.sub)
+                this._cookie.set('employeeId', this._encryptionService.encrypt(this.userData.employeeId[1]))
+                localStorage.removeItem("userData");
+                localStorage.setItem('userData', JSON.stringify(this.userData))
+                localStorage.removeItem("token");
+                localStorage.setItem('token', this.response.token)
+                localStorage.setItem('userLogo', JSON.stringify(this.userDefaultLogo?.UserLogo))
+
+                of(null).pipe(delay(1500)).subscribe(() => {
+                  this.router.navigate(['/Content/LegalStatus']);
+                });
+                return true;
+            });
+          }
+        },
+        (error: HttpErrorResponse) => {
+          this.toaster.error("Username Or Password is Wrong", "Error");
+        }
+      );
+  }
+  getDecodedAccessToken(token: string | any): any {
+    try {
+      return jwtDecode(token);
+    } catch (Error) {
+      return null;
+    }
+  }
+
+}

@@ -1,0 +1,10 @@
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-generic-tree-setup',
+  templateUrl: './generic-tree-setup.component.html',
+  styleUrl: './generic-tree-setup.component.css'
+})
+export class GenericTreeSetupComponent {
+
+}

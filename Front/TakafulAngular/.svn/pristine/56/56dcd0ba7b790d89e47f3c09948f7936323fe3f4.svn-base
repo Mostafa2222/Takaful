@@ -1,0 +1,23 @@
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { AddressSetupModelComponent } from './address-setup-model.component';
+
+describe('AddressSetupModelComponent', () => {
+  let component: AddressSetupModelComponent;
+  let fixture: ComponentFixture<AddressSetupModelComponent>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [AddressSetupModelComponent]
+    })
+    .compileComponents();
+    
+    fixture = TestBed.createComponent(AddressSetupModelComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});

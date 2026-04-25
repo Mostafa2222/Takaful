@@ -1,0 +1,304 @@
+import { Component, OnInit } from '@angular/core';
+import { LayoutService } from '../../../services/common Services/layout.service';
+import { HttpErrorResponse } from '@angular/common/http';
+// import { UserBranches } from '../../../models/user-branches';
+import { EnvironmentService } from '../../../services/environment.service';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
+// import { UserAuthoritiesService } from '../../../services/AuthServices/user-authorities.service';
+// import { UserAuthenticationsService } from '../../../services/AuthServices/user-authentications.service';
+import { Router } from '@angular/router';
+import { UserAuthoritiesService } from '../../../services/AuthServices/user-authorities.service';
+import { UserAuthenticationsService } from '../../../services/AuthServices/user-authentications.service';
+import { UserBranches } from '../../../models/user-branches';
+import { delay, of } from 'rxjs';
+import { DmsStpLevelDetails, DmsStpLevelDetailsDTO } from '../../../DTO/DmsStpLevelDetailsDTO';
+import { TreeRestService } from '../../../services/TreeServices/tree-rest';
+import { LegalStatusRestService } from '../../../services/LegalStatusServices/legal-status.service';
+
+@Component({
+  selector: 'app-login',
+  templateUrl: './login.component.html',
+  styleUrl: './login.component.css'
+})
+export class LoginComponent {
+
+  isLoading = false;
+  isStandAlone: boolean | any;
+  //authorizedBranches: UserBranches[] = [];
+  public authorizedBranches: DmsStpLevelDetailsDTO[] = [];
+  selectedBranch!: DmsStpLevelDetailsDTO;
+  public userAuthorities: any;
+  userLoginForm = new FormGroup({
+    "username": new FormControl("", [Validators.required]),
+    "password": new FormControl("", [Validators.required]),
+    "branch": new FormControl("", [Validators.required])
+  })
+  constructor(public _layoutService: LayoutService, private router: Router,
+    public _userAuthorities: UserAuthoritiesService,
+    public _userAuthentications: UserAuthenticationsService,
+    public _environmentService: EnvironmentService,
+    private toaster: ToastrService,
+    private _treeRestService: TreeRestService,
+    private _legalStatusService: LegalStatusRestService,
+  ) {
+    _layoutService.hasNav = false
+    _layoutService.hasSidebar = false
+    _layoutService.hasFooter = true
+
+    if (!localStorage.getItem("SessionTimeOut") && localStorage.getItem("SessionTimeOut") == "1") {
+      this.toaster.info('Session Timeout', 'warning')
+    }
+    localStorage.removeItem("SessionTimeOut");
+
+  }
+  ngOnInit(): void {
+    this.authorizedBranches = [];
+    this._treeRestService.getAllLevelDetails().subscribe
+      (
+        (res: any) => {
+          const levelsData = JSON.stringify(res);
+          const levels = JSON.parse(levelsData);
+          this.authorizedBranches = levels;
+          localStorage.removeItem("hasRelatedCompanies")
+          if (this.authorizedBranches.length < 0) {
+            this.isStandAlone = false;
+          } else {
+            this.isStandAlone = true;
+          }
+          if (!localStorage.getItem("token")) {
+          }
+          else {
+            this.router.navigate([`/Content/LegalStatus`]);
+          }
+        },
+        (error: HttpErrorResponse) => {
+        }
+      );
+
+  }
+
+  login() {
+    if (!this.userLoginForm.valid) {
+      this.handleFormErrors();
+      return;
+    }
+
+    const selectedBranch = this.userLoginForm.get('branch')?.value;
+    localStorage.removeItem("selectedBranch");
+    localStorage.removeItem("hasRelatedCompanies");
+
+    switch (selectedBranch) {
+      case 'standalone':
+        this.handleStandaloneBranch();
+        break;
+
+      case 'Group':
+        this.handleGroupBranch();
+        break;
+
+      default:
+        this.handleExistingBranch(selectedBranch);
+        break;
+    }
+
+    this._userAuthentications.GetUserData(this.userData);
+    this.load();
+  }
+
+  private handleStandaloneBranch() {
+    // Create initial Group
+    const groupDetails = this.createNewDmsDetails('New Group', 'مجموعة جديدة', 1);
+    this.saveDmsDetails(groupDetails).subscribe((groupResponse: any) => {
+      if (groupResponse.message === "Saved") {
+        // Create Standalone Company under the Group
+        const companyDetails = this.createNewDmsDetails('New Company', 'شركة جديدة', 1, groupResponse.savedEntity.defintionId);
+        this.saveDmsDetails(companyDetails).subscribe((companyResponse: any) => {
+          if (companyResponse.message === "Saved") {
+            this.selectedBranch = companyResponse.savedEntity;
+            localStorage.setItem("selectedBranch", JSON.stringify(this.selectedBranch));
+          }
+        }, this.handleError);
+      }
+    }, this.handleError);
+
+    localStorage.setItem('hasRelatedCompanies', 'standalone');
+  }
+
+  private handleGroupBranch() {
+    const groupDetails = this.createNewDmsDetails('New Group', 'مجموعة جديدة', 1);
+    this.saveDmsDetails(groupDetails).subscribe((response: any) => {
+      if (response.message === "Saved") {
+        this.selectedBranch = response.savedEntity;
+        localStorage.setItem("selectedBranch", JSON.stringify(this.selectedBranch));
+      }
+    }, this.handleError);
+
+    localStorage.setItem('hasRelatedCompanies', 'Group');
+  }
+
+  private handleExistingBranch(selectedBranch: any) {
+    this.selectedBranch = this.getSelected(selectedBranch);
+
+    if (
+      this.selectedBranch.actAsBranch === 'Y' &&
+      this.selectedBranch.active === 'Y' &&
+      this.selectedBranch.parentId &&
+      this.selectedBranch.parentId !== 0
+    ) {
+      localStorage.setItem('hasRelatedCompanies', 'standalone');
+    } else {
+      localStorage.setItem('hasRelatedCompanies', 'Group');
+    }
+
+    localStorage.setItem("selectedBranch", JSON.stringify(this.selectedBranch));
+  }
+
+  private createNewDmsDetails( englishName: string, arabicName: string,levelId: number, parentId?: number): DmsStpLevelDetails {
+    const details = new DmsStpLevelDetails();
+    details.arabicName = arabicName;
+    details.englishName = englishName;
+    details.levelId = levelId;
+    details.addTransactionUser = this.userLoginForm.get('username')?.value;
+    if (parentId) details.parentAddressId = parentId;
+    return details;
+  }
+
+  private saveDmsDetails(details: DmsStpLevelDetails) {
+    return this._legalStatusService.SaveDmsNewStandaloneOrGroupStpLevelDetails({ dmsStpLevelDetailsDto: details });
+  }
+
+  private handleFormErrors() {
+    if (this.userData.username.invalid) {
+      this.toaster.error('Username cannot be empty', 'warning');
+    }
+    if (this.userData.password.invalid) {
+      this.toaster.error('Password cannot be empty', 'warning');
+    }
+    if (this.userData.branch.invalid) {
+      this.toaster.error('Branch must be selected', 'warning');
+    }
+  }
+
+  private handleError(error: any) {
+    this.toaster.error(error, 'Error');
+  }
+
+
+  // login() {
+  //   if (this.userLoginForm.valid) {
+  //     const selectedBranch = this.userLoginForm.get('branch')?.value;
+  //     localStorage.removeItem("selectedBranch")
+  //     localStorage.removeItem("hasRelatedCompanies")
+  //     if (selectedBranch == 'standalone') {
+  //       /*------- For first time standalone or group definition */
+  //       const newDetails = new DmsStpLevelDetails();
+  //       newDetails.arabicName = 'New Group';
+  //       newDetails.englishName = 'مجموعة جديدة';
+  //       newDetails.levelId = 1;
+  //       const combinedDto = {
+  //         dmsStpLevelDetailsDto: newDetails
+  //       };
+  //       this._legalStatusService.SaveDmsNewStandaloneOrGroupStpLevelDetails(combinedDto).
+  //         subscribe((response: any) => {
+  //           if (response.message === "Saved") {
+  //             newDetails.arabicName = 'New Company';
+  //             newDetails.englishName = 'شركة جديدة';
+  //             newDetails.parentId = response.savedEntity.defintionId;
+  //             const combinedDtoSub = {
+  //               dmsStpLevelDetailsDto: newDetails
+  //             };
+  //             this._legalStatusService.SaveDmsNewStandaloneOrGroupStpLevelDetails(combinedDtoSub).
+  //               subscribe((response: any) => {
+  //                 if (response.message === "Saved") {
+  //                   this.selectedBranch = response.savedEntity
+  //                   localStorage.setItem("selectedBranch", JSON.stringify(this.selectedBranch));
+  //                 }
+  //               },
+  //                 (error: any) => {
+  //                   this.toaster.error(error, 'Error')
+  //                 });
+  //           }
+  //         },
+  //           (error: any) => {
+  //             this.toaster.error(error, 'Error')
+  //           });
+  //       localStorage.setItem('hasRelatedCompanies', selectedBranch);
+  //     }
+  //     else if (selectedBranch == 'Group') {
+  //       const newDetails = new DmsStpLevelDetails();
+  //       newDetails.arabicName = 'New Group';
+  //       newDetails.englishName = 'مجموعة جديدة';
+  //       newDetails.levelId = 1;
+  //       const combinedDto = {
+  //         dmsStpLevelDetailsDto: newDetails
+  //       };
+  //       this._legalStatusService.SaveDmsNewStandaloneOrGroupStpLevelDetails(combinedDto).
+  //         subscribe((response: any) => {
+  //           if (response.message === "Saved") {
+  //             this.selectedBranch = response.savedEntity
+  //             localStorage.setItem("selectedBranch", JSON.stringify(this.selectedBranch));
+
+  //           }
+  //         },
+  //           (error: any) => {
+  //             this.toaster.error(error, 'Error')
+  //           });
+  //       localStorage.setItem('hasRelatedCompanies', selectedBranch);
+  //     } else {
+  //       this.selectedBranch = this.getSelected(selectedBranch);
+  //       if (this.selectedBranch.actAsBranch === 'Y'
+  //         && this.selectedBranch.active === 'Y'
+  //         && this.selectedBranch.parentId != undefined
+  //         && this.selectedBranch.parentId != 0) {
+  //         localStorage.setItem('hasRelatedCompanies', 'standalone');
+  //       }
+  //       else {
+  //         localStorage.setItem('hasRelatedCompanies', 'Group');
+  //       }
+  //       localStorage.setItem("selectedBranch", JSON.stringify(this.selectedBranch))
+  //     }
+
+  //     this._userAuthentications.GetUserData(this.userData)
+  //     this.load()
+  //   }
+  //   else {
+  //     if (this.userData.username.invalid) {
+  //       this.toaster.error('Username cannot be empty', 'warning')
+  //     }
+  //     if (this.userData.password.invalid) {
+  //       this.toaster.error('Password cannot be empty', 'warning')
+  //     }
+  //     if (this.userData.branch.invalid) {
+  //       this.toaster.error('Branch must be selected', 'warning')
+  //     }
+  //   }
+  // }
+  ngOnDestroy() {
+    this._layoutService.hasNav = true
+    this._layoutService.hasSidebar = true
+    this._layoutService.hasFooter = true
+  }
+
+  get userData() {
+    return this.userLoginForm.controls
+  }
+
+
+  load(): void {
+    this.isLoading = true;
+    setTimeout(() => this.isLoading = false, 3000);
+  }
+  getSelected(id: any): DmsStpLevelDetailsDTO {
+    let selectedBranch!: DmsStpLevelDetailsDTO;
+
+    this.authorizedBranches.forEach((ele) => {
+      if (ele.defintionId == id) {
+        selectedBranch = ele;
+      }
+    });
+
+    return selectedBranch;
+  }
+
+}

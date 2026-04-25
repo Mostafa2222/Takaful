@@ -1,0 +1,81 @@
+$(document).ready(function () {
+
+    $('.autoDataTablized').each(function () {
+        var autoTabalized = dataTablizer($(this));
+        FilterDatatable(autoTabalized);
+    });
+
+
+
+    $('body').on('shown.bs.tab', '.nav-tabs .nav-item .nav-link', function() {
+        $(".row[data-masonry]").masonry();
+    });
+
+    var tabIdFromUrl = window.location.hash;
+    if (tabIdFromUrl) {
+        var activeTabBtn = $('[data-bs-target="' + tabIdFromUrl + '"]');
+        if (activeTabBtn) {
+            var tab = new bootstrap.Tab(activeTabBtn);
+            tab.show();
+        }
+    }
+
+});
+
+
+/************************        Open Regular Calculated Dropdowns [Order Actions List, Patient Info ]     **************************/
+$(document).ready(function() {
+    $('body').on('click', '.openpopup', function() {
+
+        var btn         = $(this);
+        var popup       = $(this).siblings('.dropdown-menu');
+        var parent      = $(this).parent('.dropdown');
+
+        $(".openpopup").not(this).siblings('.dropdown-menu').removeClass("show");
+
+        if(popup.hasClass("show")){
+            popup.removeClass("show");
+            $(parent).parent("td").removeClass("z-index-2");
+            //$(".right-content").removeClass("z-index-1050");
+        }else{
+            popupPosition(popup,btn);
+            popup.addClass("show");
+            $(parent).parent("td").addClass("z-index-2");
+            //$(".right-content").addClass("z-index-1050");
+        }
+    });
+
+
+//Close Dropdowns on scroll or click outside
+    $("body *").not('.scrollable-list , .side-menu').add(window).on('scroll', function(e) {
+        $('.dropdown-menu').removeClass("show");
+        //$(".right-content").removeClass("z-index-1050");
+    });
+
+    $(window).on('resize click', function(e) {
+        if ($(e.target).closest('.openpopup').length === 0 /*&& $(e.target).closest('.actions-list.dropdown-menu').length === 0*/) {
+            $('.openpopup +.dropdown-menu').removeClass("show");
+            //$(".right-content").removeClass("z-index-1050");
+        }
+    });
+});
+
+
+
+/**/
+var btn         = $("bs-openpopup");
+var popup       = $("bs-openpopup").siblings('.dropdown-menu');
+var parent      = $(this).parent('.dropdown');
+
+var dropdown = new bootstrap.Dropdown(popup, {
+    popperConfig: function (defaultBsPopperConfig) {
+        // var newPopperConfig = {...}
+        // use defaultBsPopperConfig if needed...
+        // return newPopperConfig
+    }
+})
+
+
+
+
+/**/

@@ -1,0 +1,28 @@
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { AdministrationPoliciesComponent } from './administration-policies/administration-policies.component';
+import { DepartmentDefinitionComponent } from './department-definition/department-definition.component';
+import { FinancialComponent } from './financial/financial.component';
+import { LegalStatusComponent } from './legal-status/legal-status.component';
+import { LocationDefinitionComponent } from './location-definition/location-definition.component';
+import { RelatedCompaniesComponent } from './related-companies/related-companies.component';
+import { TreeOrgChartComponent } from '../../helper/tree-org-chart/tree-org-chart.component';
+
+
+const routes: Routes = [
+
+  // {path:"" , component:LegalStatusComponent},
+  {path:"LegalStatus" , component:LegalStatusComponent},
+  {path:"AdministrationPolicies" , component:AdministrationPoliciesComponent},
+  {path:"DepartmentDefinition" , component:DepartmentDefinitionComponent},
+  {path: 'treeOrgChart', component: TreeOrgChartComponent},
+  {path:"Financial" , component:FinancialComponent},
+  {path:"LocationDefinition" , component:LocationDefinitionComponent},
+  {path:"RelatedCompanies" , component:RelatedCompaniesComponent}
+];
+
+@NgModule({
+    imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule]
+})
+export class ContentRoutingModule { }

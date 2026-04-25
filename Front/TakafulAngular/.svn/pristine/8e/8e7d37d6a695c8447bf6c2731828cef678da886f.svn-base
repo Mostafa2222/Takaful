@@ -1,0 +1,56 @@
+export interface ItemType {
+  itemTypeId: number;
+  latinName: string;
+  arabicName: string;
+}
+
+export interface LevelDetailsPurDTO {
+  definitionId: number;
+  automaticPoNumber: string;
+  automaticReqNumber: string;
+  automaticConsNumber: string;
+  automaticQutNumber: string;
+  autoClosPoTotalQtyRecived: boolean;
+  autoSendQutReqVen: string;
+  automaticShowEmployeePr: string;
+  prOnlyDepartmentEmployee: string;
+  linkWithBudget: string;
+  validatePlannedBudget: string;
+  showItemBalance: string;
+  approvePrIsMendatory: string;
+  approvePoIsMendatory: string;
+  approvVendorSelectMendatory: string;
+  approveTenderIssueMendatory: string;
+  prMendatoryForPoCreation: string;
+  releasePrWhenClosPoManual: string;
+  printPoWithoutApproval: string;
+  whenToValidatePlanedBudget: string;
+  levelPlanedBudgetValidation: string;
+  whenToDecreaseBudget: string;
+  chckPrNoItemsQualityOnPo: string;
+  chckQuotationNumItemsOnPo: string;
+  doNotChangePrDate: string;
+  allowPoForItemInWaregouse: string;
+  validatePriceChangeInPo: string;
+  validatPriceChngInPoPlist: string;
+  averageConsumptionPeriod: string;
+  validateDueDateForPo: string;
+  validateUserForItems: string;
+  supplierApprovePoMandatory: string;
+  showDetailPosIfOpenItem: string;
+  showDetailPrsIfOpenItem: string | null;
+  lastTransactionAction: string;
+  lastTransactionUser: string | null;
+  lastTransactionDate: string | null;
+  addTransactionUser: string;
+  addTransactionDate: string;
+  deleteTransactionUser: string | null;
+  deleteTransactionDate: string | null;
+  approveNumber: string | null;
+  approveDate: string | null;
+  approveUser: string | null;
+  consolIndividualPur: string;
+  valueOfPurchases: number;
+  itemTypeForConsolidated: string | null;
+  itemTypeStp: ItemType;
+}

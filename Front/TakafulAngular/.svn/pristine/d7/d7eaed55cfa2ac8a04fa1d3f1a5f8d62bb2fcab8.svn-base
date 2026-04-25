@@ -1,0 +1,440 @@
+<!-- address setup Modal -->
+<div class="modal fade" id="addressModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h1 class="modal-title fs-5">{{"Organization.Timeline.Legal_Status.Address.Address_Setup" | translate}}
+              </h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+              <div class="table-responsive">
+                  <table class="table table-striped table-hover table-sm">
+                      <colgroup>
+                          <col>
+                          <col>
+                          <col>
+                          <col>
+                          <col>
+                          <col>
+                          <col>
+                          <col>
+                          <col>
+                      </colgroup>
+                      <thead>
+                          <tr>
+                              <th>{{"Organization.Timeline.Legal_Status.Address.Level"| translate}}</th>
+                              <th>{{"Organization.Timeline.Legal_Status.Address.English_Name"| translate}}</th>
+                              <th>{{"Organization.Timeline.Legal_Status.Address.Arabic_Name"| translate}}</th>
+                              <th>{{"Organization.Timeline.Legal_Status.Address.Segment_Width"| translate}}</th>
+                              <th>{{"Organization.Timeline.Legal_Status.Address.Transactional"| translate}}</th>
+                              <th>{{"Organization.Timeline.Legal_Status.Address.Organizational_Chart"| translate}}
+                              </th>
+                              <th>{{"Organization.Timeline.Legal_Status.Address.Purchasing"| translate}}</th>
+                              <th>{{"Organization.Timeline.Legal_Status.Address.Inventory"| translate}}</th>
+                              <th>{{"Organization.Timeline.Legal_Status.Address.Edit"| translate}}</th>
+                              <th>{{"Organization.Timeline.Legal_Status.Address.Delete"| translate}}</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                          <tr *ngFor="let level of levelsDescriptions; let i = index">
+                              <td class="text-center">{{ level.levelId }}</td>
+
+                              <td>
+                                  <input *ngIf="selectedLevelId === level.levelId" [(ngModel)]="level.englishName"
+                                      class="form-control" />
+                                  <span *ngIf="selectedLevelId !== level.levelId">{{ level.englishName }}</span>
+                              </td>
+                              <td>
+                                  <input *ngIf="selectedLevelId === level.levelId" [(ngModel)]="level.arabicName"
+                                      class="form-control" />
+                                  <span *ngIf="selectedLevelId !== level.levelId">{{ level.arabicName }}</span>
+                              </td>
+                              <td class="text-center">
+                                  <input *ngIf="selectedLevelId === level.levelId" type="number"
+                                      [(ngModel)]="level.segmentWidth"  style="width: 5rem;" class="form-control text-center" />
+                                  <span *ngIf="selectedLevelId !== level.levelId">{{ level.segmentWidth }}</span>
+                              </td>
+                              <td class="text-center">
+                                  <input *ngIf="selectedLevelId === level.levelId" type="checkbox"
+                                      [(ngModel)]="level.transactionalBool" />
+                                  <span *ngIf="selectedLevelId !== level.levelId">{{ level.transactional }}</span>
+                              </td>
+                              <td class="text-center">
+                                  <input *ngIf="selectedLevelId === level.levelId" type="checkbox"
+                                      [(ngModel)]="level.organizationChartBool" />
+                                  <span *ngIf="selectedLevelId !== level.levelId">{{ level.organizationChart }}</span>
+                              </td>
+                              <td class="text-center">
+                                  <input *ngIf="selectedLevelId === level.levelId" type="checkbox"
+                                      [(ngModel)]="level.purchasingBool" />
+                                  <span *ngIf="selectedLevelId !== level.levelId">{{ level.purchasing }}</span>
+                              </td>
+                              <td class="text-center">
+                                  <input *ngIf="selectedLevelId === level.levelId" type="checkbox"
+                                      [(ngModel)]="level.inventoryBool" />
+                                  <span *ngIf="selectedLevelId !== level.levelId">{{ level.inventory }}</span>
+                              </td>
+                              <!-- <td class="text-center">
+                      <button *ngIf="selectedLevelId !== level.levelId" class="btn btn-primary btn-sm" [disabled]="i < 5"  (click)="editRow(level.levelId)">Edit</button>
+                      <button *ngIf="selectedLevelId === level.levelId" class="btn btn-success btn-sm" (click)="saveEditedRow(level)">Save</button>
+                      <button *ngIf="selectedLevelId === level.levelId" class="btn btn-secondary btn-sm" (click)="cancelEdit()">Cancel</button>
+
+                    </td>
+                    <td class="text-center"><button class="text-danger delete-row fa fa-trash-alt" [disabled]="i < 5" (click)="deleteRow(level.levelId)">Delete</button></td> -->
+
+                              <td class="text-center">
+                                  <button style="border: none;background:none;" [disabled]="i < maxLevelId"
+                                      *ngIf="selectedLevelId !== level.levelId"
+                                      [ngClass]="{'text-primary' : i >= maxLevelId }"
+                                      class=" row-edit fa fa-pencil-alt" (click)="editRow(level.levelId)"></button>
+                                  <button *ngIf="selectedLevelId === level.levelId"
+                                    class="btn btn-success btn-sm"
+                                      (click)="saveEditedRow(level)">
+                                      <i class="fa-solid fa-check text-light"></i>
+                                    </button>
+                                  <button *ngIf="selectedLevelId === level.levelId"
+                                  class="btn btn-danger btn-sm"
+                                      (click)="cancelEdit()">
+                                      <i class="fa-solid fa-xmark text-light"></i></button>
+                              </td>
+                              <td class="text-center"><button style="border: none;background:none;"
+                                      [disabled]="i < maxLevelId" [ngClass]="{'text-danger' : i >= maxLevelId }"
+                                      class=" delete-row fa fa-trash-alt" (click)="deleteRow(level.levelId)"></button>
+                              </td>
+                          </tr>
+
+                          <!-- New Row (For Adding New Entry) -->
+                          <tr>
+                              <td class="text-center">{{"Organization.Timeline.Legal_Status.Address.New"| translate}}
+                              </td>
+                              <td>
+                                <input
+                                  type="text"
+                                  [(ngModel)]="newLevel.englishName"
+                                  class="form-control"
+                                  placeholder="{{'Organization.Timeline.Legal_Status.Address.English_Name' | translate}}"
+                                  (input)="newLevel.englishName = newLevel.englishName.trimStart()"
+                                />
+                              </td>
+
+                              <td>
+                                <input
+                                  type="text"
+                                  [(ngModel)]="newLevel.arabicName"
+                                  class="form-control"
+                                  placeholder="{{'Organization.Timeline.Legal_Status.Address.Arabic_Name' | translate}}"
+                                  (input)="newLevel.arabicName = newLevel.arabicName.trimStart()"
+                                />
+                              </td>
+
+                              <td class=""><input type="number" min="0" [(ngModel)]="newLevel.segmentWidth"
+                                      class="form-control text-center" style="max-width: 5rem;"
+                                      placeholder="{{'Organization.Timeline.Legal_Status.Address.Segment_Width'| translate}}" />
+                              </td>
+                              <td class="text-center"><input type="checkbox"
+                                      [(ngModel)]="newLevel.transactionalBool" /></td>
+                              <td class="text-center"><input type="checkbox"
+                                      [(ngModel)]="newLevel.organizationChartBool" /></td>
+                              <td class="text-center"><input type="checkbox" [(ngModel)]="newLevel.purchasingBool" />
+                              </td>
+                              <td class="text-center"><input type="checkbox" [(ngModel)]="newLevel.inventoryBool" />
+                              </td>
+                              <td class="text-center"><a href="#" (click)="addRow()" class="btn btn-primary">
+                                <i class="fa fa-floppy-disk"></i>
+                                  </a></td>
+                          </tr>
+
+                      </tbody>
+                  </table>
+              </div>
+
+          </div>
+          <!-- <div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">{{"Organization.Timeline.Legal_Status.Address.Close"| translate}}</button>
+            <button type="button" (click)="saveAllLevels()" class="btn btn-primary" data-bs-dismiss="modal">{{"Organization.Timeline.Legal_Status.Address.Save"| translate}}</button>
+            <button type="button" (click)="submitToBackend()" class="btn btn-success" data-bs-dismiss="modal">{{"Organization.Timeline.Legal_Status.Address.Submit"| translate}}</button>
+          </div> -->
+      </div>
+  </div>
+</div>
+<!-- <div class="table-responsive">
+            <table
+                class="table KeyShareholders-table table-striped table-hover table-sm autoDataTablized form-block"
+                data-colreorder="false" data-paging="true" data-pagelength="5" data-ordering="true"
+                data-nonorderable="nonOrderable">
+                <colgroup>
+                    <col>
+                    <col>
+                    <col>
+                    <col>
+                    <col>
+                    <col>
+                    <col>
+                    <col>
+                    <col>
+                    <col style="width: 5%;">
+                  </colgroup>
+                <thead>
+                    <tr>
+
+                        <th class="searchableTh" data-searchtype="text">
+                            {{"Organization.Timeline.Financial.Under_Construct.Project_Code"
+                            |
+                            translate}}</th>
+                        <th class="searchableTh" data-searchtype="text">
+                            {{"Organization.Timeline.Financial.Under_Construct.English_Desc"
+                            |
+                            translate}}</th>
+                        <th class="searchableTh" data-searchtype="text">
+                            {{"Organization.Timeline.Financial.Under_Construct.Arabic_Desc"
+                            |
+                            translate}}</th>
+                        <th class="searchableTh" data-searchtype="text">
+                            {{"Organization.Timeline.Financial.Under_Construct.Project_Year"
+                            |
+                            translate}}</th>
+                        <th class="searchableTh" data-searchtype="text">
+                            {{"Organization.Timeline.Financial.Under_Construct.Start_Project_Date"
+                            |
+                            translate}}</th>
+                        <th class="searchableTh" data-searchtype="text">
+                            {{"Organization.Timeline.Financial.Under_Construct.End_Project_Date"
+                            |
+                            translate}}</th>
+                        <th class="searchableTh" data-searchtype="text">
+                            {{"Organization.Timeline.Financial.Under_Construct.Emp_Id"
+                            |
+                            translate}}</th>
+                        <th class="searchableTh" data-searchtype="text">
+                            {{"Organization.Timeline.Financial.Under_Construct.Closing"
+                            |
+                            translate}}</th>
+                        <th class="searchableTh" data-searchtype="text">
+                            {{"Organization.Timeline.Financial.Under_Construct.Project_Note"
+                            |
+                            translate}}</th>
+                        <th data-orderable="false"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="not-saved d-none addNew">
+
+                        <td class="row-inline-editable" data-search="">219</td>
+                        <td class="row-inline-editable active" data-search=""><span class="editable">
+                            </span><input type="text" class="form-control" value=""></td>
+                        <td class="row-inline-editable active" data-search=""><span class="editable">
+                            </span><input type="text" class="form-control" value=""></td>
+                        <td class="row-inline-editable active" data-search=""><span class="editable">
+                            </span><input type="text" class="form-control" value=""></td>
+                        <td class="row-inline-editable active" data-search=""><span class="editable">
+                            </span><input type="text" class="form-control from" value=""></td>
+                        <td class="row-inline-editable active" data-search=""><span class="editable">
+                            </span><input type="text" class="form-control to" value=""></td>
+                        <td class="row-inline-editable active" data-search=""><span class="editable">
+                            </span><input type="text" class="form-control" value=""></td>
+                        <td class="row-inline-editable active" data-search=""><span class="editable">
+                            </span><input type="text" class="form-control" value=""></td>
+                        <td class="row-inline-editable active" data-search=""><span class="editable">
+                            </span><input type="text" class="form-control" value=""></td>
+                            <td class="text-center">
+                              <a href="#" class="text-primary row-edit fa fa-save"></a>
+                              <a href="#" class="text-danger delete-row fa fa-trash-alt"></a>
+                          </td>
+                    </tr>
+                    <tr>
+
+                        <td class="row-inline-editable" data-search="219">219</td>
+                        <td class="row-inline-editable" data-search="New Builiding"><span class="editable">
+                                New Builiding</span><input type="text" class="form-control"
+                                value="New Builiding"></td>
+                        <td class="row-inline-editable" data-search="مبنى جديد"><span class="editable"> مبنى
+                                جديد</span><input type="text" class="form-control" value="مبنى جديد"></td>
+                        <td class="row-inline-editable" data-search="2024"><span class="editable">2024
+                            </span><input type="text" class="form-control" value="2024"></td>
+                        <td class="row-inline-editable" data-search="01/10/2024"><span
+                                class="editable">01/10/2024 </span><input type="text"
+                                class="form-control from" value="01/10/2024"></td>
+                        <td class="row-inline-editable" data-search="31/12/2024"><span
+                                class="editable">31/12/2024 </span><input type="text"
+                                class="form-control to" value="31/12/2024"></td>
+                        <td class="row-inline-editable" data-search="5"><span class="editable">5
+                            </span><input type="text" class="form-control" value="5"></td>
+                        <td class="row-inline-editable" data-search=""><span class="editable"> </span><input
+                                type="text" class="form-control" value=""></td>
+                        <td class="row-inline-editable" data-search="test note test note"><span
+                                class="editable">test note test note </span><input type="text"
+                                class="form-control" value="test note test note"></td>
+                    </tr>
+                    <tr>
+                        <td class="text-center">
+                            <a href="#" class="text-primary row-edit fa fa-pencil-alt"></a>
+                            <a href="#" class="text-danger delete-row fa fa-trash-alt"></a>
+                        </td>
+                        <td class="row-inline-editable" data-search="219">219</td>
+                        <td class="row-inline-editable" data-search="New Builiding"><span class="editable">
+                                New Builiding</span><input type="text" class="form-control"
+                                value="New Builiding"></td>
+                        <td class="row-inline-editable" data-search="مبنى جديد"><span class="editable"> مبنى
+                                جديد</span><input type="text" class="form-control" value="مبنى جديد"></td>
+                        <td class="row-inline-editable" data-search="2024"><span class="editable">2024
+                            </span><input type="text" class="form-control" value="2024"></td>
+                        <td class="row-inline-editable" data-search="01/10/2024"><span
+                                class="editable">01/10/2024 </span><input type="text"
+                                class="form-control from" value="01/10/2024"></td>
+                        <td class="row-inline-editable" data-search="31/12/2024"><span
+                                class="editable">31/12/2024 </span><input type="text"
+                                class="form-control to" value="31/12/2024"></td>
+                        <td class="row-inline-editable" data-search="5"><span class="editable">5
+                            </span><input type="text" class="form-control" value="5"></td>
+                        <td class="row-inline-editable" data-search=""><span class="editable"> </span><input
+                                type="text" class="form-control" value=""></td>
+                        <td class="row-inline-editable" data-search="test note test note"><span
+                                class="editable">test note test note </span><input type="text"
+                                class="form-control" value="test note test note"></td>
+                    </tr>
+                    <tr>
+                        <td class="text-center">
+                            <a href="#" class="text-primary row-edit fa fa-pencil-alt"></a>
+                            <a href="#" class="text-danger delete-row fa fa-trash-alt"></a>
+                        </td>
+                        <td class="row-inline-editable" data-search="219">219</td>
+                        <td class="row-inline-editable" data-search="New Builiding"><span class="editable">
+                                New Builiding</span><input type="text" class="form-control"
+                                value="New Builiding"></td>
+                        <td class="row-inline-editable" data-search="مبنى جديد"><span class="editable"> مبنى
+                                جديد</span><input type="text" class="form-control" value="مبنى جديد"></td>
+                        <td class="row-inline-editable" data-search="2024"><span class="editable">2024
+                            </span><input type="text" class="form-control" value="2024"></td>
+                        <td class="row-inline-editable" data-search="01/10/2024"><span
+                                class="editable">01/10/2024 </span><input type="text"
+                                class="form-control from" value="01/10/2024"></td>
+                        <td class="row-inline-editable" data-search="31/12/2024"><span
+                                class="editable">31/12/2024 </span><input type="text"
+                                class="form-control to" value="31/12/2024"></td>
+                        <td class="row-inline-editable" data-search="5"><span class="editable">5
+                            </span><input type="text" class="form-control" value="5"></td>
+                        <td class="row-inline-editable" data-search=""><span class="editable"> </span><input
+                                type="text" class="form-control" value=""></td>
+                        <td class="row-inline-editable" data-search="test note test note"><span
+                                class="editable">test note test note </span><input type="text"
+                                class="form-control" value="test note test note"></td>
+                    </tr>
+                    <tr>
+                        <td class="text-center">
+                            <a href="#" class="text-primary row-edit fa fa-pencil-alt"></a>
+                            <a href="#" class="text-danger delete-row fa fa-trash-alt"></a>
+                        </td>
+                        <td class="row-inline-editable" data-search="219">219</td>
+                        <td class="row-inline-editable" data-search="New Builiding"><span class="editable">
+                                New Builiding</span><input type="text" class="form-control"
+                                value="New Builiding"></td>
+                        <td class="row-inline-editable" data-search="مبنى جديد"><span class="editable"> مبنى
+                                جديد</span><input type="text" class="form-control" value="مبنى جديد"></td>
+                        <td class="row-inline-editable" data-search="2024"><span class="editable">2024
+                            </span><input type="text" class="form-control" value="2024"></td>
+                        <td class="row-inline-editable" data-search="01/10/2024"><span
+                                class="editable">01/10/2024 </span><input type="text"
+                                class="form-control from" value="01/10/2024"></td>
+                        <td class="row-inline-editable" data-search="31/12/2024"><span
+                                class="editable">31/12/2024 </span><input type="text"
+                                class="form-control to" value="31/12/2024"></td>
+                        <td class="row-inline-editable" data-search="5"><span class="editable">5
+                            </span><input type="text" class="form-control" value="5"></td>
+                        <td class="row-inline-editable" data-search=""><span class="editable"> </span><input
+                                type="text" class="form-control" value=""></td>
+                        <td class="row-inline-editable" data-search="test note test note"><span
+                                class="editable">test note test note </span><input type="text"
+                                class="form-control" value="test note test note"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div> -->
+<!-- <style>
+                #add-root-node {
+                    cursor: pointer;
+                    color: #007bff;
+                    font-size: 16px;
+                    margin-bottom: 10px;
+                }
+
+                #add-root-node:hover {
+                    color: #0056b3;
+                }
+            </style>
+            <div class="row">
+                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-5">
+                    <fieldset class="scheduler-border p-2">
+                        <a id="add-root-node" href="#" class="bt-icon px-1" title="New"><i class="fa fa-plus-circle"></i></a>
+                        <div id="address-tree">
+                            <ul>
+                                <li>Africa
+                                    <ul>
+                                        <li>North Africa
+                                            <ul>
+                                                <li> Egypt
+                                                    <ul>
+                                                        <li>Cairo Governorate
+                                                            <ul>
+                                                                <li>Cairo</li>
+                                                            </ul>
+                                                        </li>
+                                                    </ul>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>Asia
+                                    <ul>
+                                        <li>South Asia
+                                            <ul>
+                                                <li>India
+                                                    <ul>
+                                                        <li>Maharashtra
+                                                            <ul>
+                                                                <li>Mumbai</li>
+                                                            </ul>
+                                                        </li>
+                                                    </ul>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+
+                    </fieldset>
+                </div>
+                <div class="col-sm-12 col-md-6 col-lg-8 col-xl-7">
+                    <div class="border border-1 border-primary border-opacity-50 rounded-2 p-3">
+                        <div class="row">
+                            <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 form-group mb-2">
+                                <label class="form-label">level Name (Arabic)</label>
+                                <input type="text" class="form-control">
+                            </div>
+                            <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 form-group mb-2">
+                                <label class="form-label">level Name (English)</label>
+                                <input type="text" class="form-control">
+                            </div>
+                            <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 form-group mb-2">
+                                <label class="form-label">Parent</label>
+                                <select class="form-select">
+                                    <option value="" selected>Continent</option>
+                                    <option value="0">Country Group</option>
+                                    <option value="3">Country</option>
+                                    <option value="2">State</option>
+                                    <option value="1">City</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 form-group mb-2">
+                                <div class="form-check mt-4">
+                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                    <label class="form-check-label" for="flexCheckDefault">Active</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div> -->

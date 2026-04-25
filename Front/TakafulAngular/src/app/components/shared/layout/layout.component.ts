@@ -1,0 +1,36 @@
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { LayoutService } from '../../../services/Common-Services/layout.service';
+import { TreeRestService } from '../../../services/TreeServices/tree-rest';
+
+@Component({
+  selector: 'app-layout',
+  templateUrl: './layout.component.html',
+  styleUrl: './layout.component.css'
+})
+export class LayoutComponent implements OnInit{
+
+  constructor(
+    private router:Router,
+    public _layoutService:LayoutService,private _treeRest:TreeRestService) {
+  }
+    addTreeToStorage() {
+      this._treeRest.getTreeNodesUsingView().subscribe(
+        (res: any) => {
+          // localStorage.removeItem("Tree");
+          // localStorage.setItem("Tree", JSON.stringify(res));
+        },
+        err => {
+          console.error(err);
+        });
+    }
+  ngOnInit() {
+      if (localStorage.getItem('token') === null) {
+        this.router.navigate(['/Login']);
+      }
+      else{
+        // this.router.navigate(['/Content/LegalStatus']);
+       // this.addTreeToStorage()
+      }
+  }
+}

@@ -1,0 +1,93 @@
+import { Injectable } from '@angular/core';
+import { EnvironmentService } from './environment.service';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { FinancialFiscalYearDTO } from '../DTO/financialFiscalYearDTO';
+import { FinancialFiscalPeriodDTO } from '../DTO/financial-fiscal-period-dto';
+import { FinancialResponseDTO } from '../DTO/financial-response-dto';
+import { BrowserDataDto } from '../DTO/browserDataDTO';
+import { FinancialBasicDto } from '../DTO/financial-basic-data-dto';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class FinancialService {
+
+  constructor(private http: HttpClient, public _environmentService: EnvironmentService) { }
+
+  public apiUrl: string = this._environmentService.apiUrl;
+
+  getFiscalYears(branchId: number): Observable<FinancialFiscalYearDTO[]> {
+    let url = `${this.apiUrl}organization/financial/fiscalYear/${branchId}`;
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json'
+      , 'Authorization': `Bearer ${localStorage.getItem('token')}`
+    });
+    return this.http.get<FinancialFiscalYearDTO[]>(url, { headers });
+  }
+
+  getFiscalPeriods(branchId: number, yearId: number): Observable<FinancialFiscalPeriodDTO[]> {
+    let url = `${this.apiUrl}organization/financial/fiscalYear/getFiscalPeriods/${branchId}/${yearId}`;
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json'
+      , 'Authorization': `Bearer ${localStorage.getItem('token')}`
+    });
+    return this.http.get<FinancialFiscalPeriodDTO[]>(url, { headers });
+  }
+
+  deleteFiscal(yearId: number, branchId: number, userName: string): Observable<FinancialResponseDTO> {
+    let url = `${this.apiUrl}organization/financial/fiscalYear/deleteFiscal/${yearId}/${branchId}/${userName}`;
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json'
+      , 'Authorization': `Bearer ${localStorage.getItem('token')}`
+    });
+    return this.http.get<FinancialResponseDTO>(url, { headers });
+  }
+
+  addNewFiscalYear(form: any): Observable<FinancialResponseDTO> {
+    let url = `${this.apiUrl}organization/financial/fiscalYear/addNew`;
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    });
+    return this.http.post<FinancialResponseDTO>(url, form, { headers });
+  }
+
+  editExist(form: any): Observable<FinancialResponseDTO> {
+    let url = `${this.apiUrl}organization/financial/fiscalYear/editExist`;
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    });
+    return this.http.post<FinancialResponseDTO>(url, form, { headers });
+  }
+
+  fetchChildData(code: number, branchId: number): Observable<BrowserDataDto[]> {
+    let url = `${this.apiUrl}organization/financial/fiscal/child/${code}/${branchId}`;
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json'
+      , 'Authorization': `Bearer ${localStorage.getItem('token')}`
+    });
+    return this.http.get<BrowserDataDto[]>(url, { headers });
+  }
+
+  editBasicData(dto: FinancialBasicDto): Observable<FinancialBasicDto> {
+    let url = `${this.apiUrl}organization/financial/basicData/edit`;
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    });
+    return this.http.post<FinancialBasicDto>(url, dto, { headers });
+  }
+
+  retreiveFinancialBasic(definitionId: number): Observable<FinancialBasicDto> {
+    if (definitionId == null)
+      definitionId = 0;
+    let url = `${this.apiUrl}organization/financial/basicData/retreive/${definitionId}`;
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json'
+      , 'Authorization': `Bearer ${localStorage.getItem('token')}`
+    });
+    return this.http.get<FinancialBasicDto>(url, { headers });
+  }
+}

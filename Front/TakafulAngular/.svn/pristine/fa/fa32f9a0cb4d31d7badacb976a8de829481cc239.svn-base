@@ -1,0 +1,152 @@
+
+@font-face {
+  font-family: 'time-font';
+  src:  url('time-font.eot?eh4337');
+  src:  url('time-font.eot?eh4337#iefix') format('embedded-opentype'),
+    url('time-font.ttf?eh4337') format('truetype'),
+    url('time-font.woff?eh4337') format('woff'),
+    url('time-font.svg?eh4337#time-font') format('svg');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+[class^="attend-icon-"],
+[class*=" attend-icon-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'time-font' !important;
+  speak: never;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.attend-icon-Time:before {
+  content: "\e900";
+}
+
+.attend-icon-time-calculated:before {
+  content: "\e901";
+}
+
+.attend-icon-time-free:before {
+  content: "\e902";
+}
+
+.attend-icon-time-free2:before {
+  content: "\e903";
+}
+
+.attend-icon-time-static-2:before {
+  content: "\e904";
+}
+
+.attend-icon-time-list:before {
+  content: "\e905";
+}
+
+.attend-icon-time-static:before {
+  content: "\e906";
+}
+
+.attend-icon-down:before {
+  content: "\e908";
+}
+
+.attend-icon-up:before {
+  content: "\e909";
+}
+
+.attend-icon-atten-in-vacation:before {
+  content: "\e910";
+}
+
+.attend-icon-vacation:before {
+  content: "\e90a";
+}
+
+.attend-icon-late:before {
+  content: "\e90b";
+}
+
+.attend-icon-excuse:before {
+  content: "\e90c";
+}
+
+.attend-icon-absent:before {
+  content: "\e90d";
+}
+
+.attend-icon-leave:before {
+  content: "\e90e";
+}
+
+.attend-icon-mission:before {
+  content: "\e90f";
+}
+
+.attend-icon-atten-in-vacation2:before {
+  content: "\e907";
+}
+
+.attend-icon-absent-2:before {
+  content: "\e911";
+}
+
+.attend-icon-employees:before {
+  content: "\e912";
+}
+
+.attend-icon-Present:before {
+  content: "\e913";
+}
+
+.attend-icon-plug-out:before {
+  content: "\e914";
+}
+
+.attend-icon-plug-in:before {
+  content: "\e915";
+}
+
+.attend-icon-finger-print-machine:before {
+  content: "\e916";
+}
+
+.attend-icon-database-time:before {
+  content: "\e917";
+}
+
+.attend-icon-day-off:before {
+  content: "\e918";
+}
+
+.attend-icon-dayoff:before {
+  content: "\e919";
+}
+
+.attend-icon-mob-fingerprint:before {
+  content: "\e91c";
+}
+
+.attend-icon-clockify:before {
+  content: "\e91a";
+}
+
+.attend-icon-no-schedule:before {
+  content: "\e91b";
+}
+
+.attend-icon-invalid-atten:before {
+  content: "\e91d";
+}
+
+.attend-icon-no-fingerprint:before {
+  content: "\e91e";
+}

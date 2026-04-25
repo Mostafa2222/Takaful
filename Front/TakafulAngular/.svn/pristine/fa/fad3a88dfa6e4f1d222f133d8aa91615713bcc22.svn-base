@@ -1,0 +1,69 @@
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
+import { TreeNode } from '../../../models/tree-node.model';
+import { UserPermissions } from '../../../models/UserPermissions';
+import { TreeRestService } from '../../../services/TreeServices/tree-rest';
+
+
+@Component({
+  selector: 'app-sidebar',
+  templateUrl: './sidebar.component.html',
+  styleUrl: './sidebar.component.css'
+})
+export class SidebarComponent {
+  screenTypeNodes: TreeNode[] = [];
+  @Input() depth: number = 1;
+  IsClosed: boolean = false;
+  treeNodes: UserPermissions[] = [];
+
+  toggleSideNav: boolean = false;
+  @Output() sideWidth = new EventEmitter();
+
+  constructor(public translate: TranslateService,private _treeRest:TreeRestService) {
+  }
+  ngOnInit(): void {
+    // this.addTreeToStorage()
+    // this.drawTree()
+  }
+  // addTreeToStorage() {
+  //   this._treeRest.getTreeNodesUsingView().subscribe(
+  //     (res: any) => {
+  //       localStorage.removeItem("Tree");
+  //       localStorage.setItem("Tree", JSON.stringify(res));
+
+  //     },
+  //     err => {
+  //       console.error(err);
+  //     });
+  // }
+  drawTree() {
+  }
+  updateToggle() {
+    const width = this.toggleSideNav ? 260 : 45 as any;
+    this.toggleSideNav = !this.toggleSideNav
+    this.sideWidth!.emit(width);
+  }
+  toggleDropDown(type: string) {
+    this.toggleSideNav = false;
+    this.sideWidth!.emit(260 as any);
+  }
+  toggleNav() {
+    if (this.toggleSideNav) {
+      this.updateToggle()
+    }
+  }
+
+  closeToggle(screenName: any) {
+    this.toggleSideNav = true
+    localStorage.setItem("urlRouting",screenName)
+    const menuElement = document.querySelector('.DMSBlueBlue.menu-lg');
+    if (this.toggleSideNav) {
+      if (menuElement) {
+        menuElement.classList.remove('menu-lg');
+        document.querySelector('.toggle-menu')?.classList.remove('opened');
+      }
+
+    }
+
+  }
+}

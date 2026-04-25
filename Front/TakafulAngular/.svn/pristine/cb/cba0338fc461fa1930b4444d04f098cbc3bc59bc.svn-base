@@ -1,0 +1,229 @@
+import { Component, EventEmitter, Output, ViewChild } from '@angular/core';
+import { DmsStpShareholdersDTO } from '../../../DTO/DmsStpLevelDescriptionDTO';
+import { LegalStatusRestService } from '../../../services/LegalStatusServices/legal-status.service';
+import { TranslateService } from '@ngx-translate/core';
+import { ToastrService } from 'ngx-toastr';
+import { DmsStpLevelDetailsDTO } from '../../../DTO/DmsStpLevelDetailsDTO';
+
+@Component({
+  selector: 'app-shareholdersmodel',
+  templateUrl: './shareholdersmodel.component.html',
+  styleUrl: './shareholdersmodel.component.css'
+})
+export class ShareholdersmodelComponent {
+  currentLang: string = 'en';
+  clientId: number = 1;
+  numberOfShares: number = 1;
+  shareholders: DmsStpShareholdersDTO[] = [];
+  selectedShareId: number | null = null;
+  newShareholder: DmsStpShareholdersDTO = this.getEmptyShareholder();
+  dmsStpLevelDetails: DmsStpLevelDetailsDTO | any = {};
+  sessionDmsStpLevelDetails: DmsStpLevelDetailsDTO | any = {};
+  newEntry: DmsStpShareholdersDTO[] | any;
+  sumAllocated: number | any;
+  @Output() allocated = new EventEmitter<number>();
+  @Output() emittedShareholdersLength = new EventEmitter<number>();
+
+  constructor(
+    private _legalStatusService: LegalStatusRestService,
+    public translate: TranslateService
+  ) { }
+  ngOnInit(): void {
+    this.translate.onLangChange.subscribe((event: { lang: string; }) => {
+      this.currentLang = event.lang;
+    });
+    this.currentLang = this.translate.currentLang || 'en';
+    const s = localStorage.getItem("selectedBranch")
+    if (s) {
+      try {
+        //  this.dmsStpLevelDetails = JSON.parse(s) as DmsStpLevelDetailsDTO;
+        this.sessionDmsStpLevelDetails = typeof s === "string" ? JSON.parse(s) : s;
+        this._legalStatusService
+          .GetLevelsDetailsById(this.sessionDmsStpLevelDetails.defintionId)
+          .subscribe((res: any) => {
+            this.dmsStpLevelDetails = res.level;
+            this._legalStatusService.GetShareholders(this.dmsStpLevelDetails.defintionId).subscribe(
+              (data: any) => {
+                this.shareholders = data.length > 0 ? data.map((s: any) => ({ ...s })) : [];
+                this.emittedShareholdersLength.emit(this.shareholders.length);
+                // this.recalculatePercentages();
+              },
+              (error) => {
+                this.shareholders = [];
+                this._legalStatusService.showToast('error', 'Error fetching shareholders.', 'خطأ في جلب المساهمين', 'Error', 'خطأ');
+              }
+            );
+          });
+      } catch (error) {
+        console.error("Error parsing selectedBranch from localStorage", error);
+      }
+    } else {
+      console.warn("No selectedBranch found in localStorage.");
+    }
+
+  }
+  getShareholders(numberOfShares: number) {
+    this.numberOfShares = numberOfShares;
+  }
+
+  editRow(shareId: number) {
+    this.selectedShareId = shareId;
+  }
+
+  saveEditedRow(shareholder: DmsStpShareholdersDTO) {
+    if (!shareholder.shareNameEnglish || !shareholder.shareNameArabic || !shareholder.shares) {
+      this._legalStatusService.showToast('warning', 'Please fill all fields before saving.', 'يرجى ملء جميع الحقول قبل الحفظ.', 'Warning', 'تحذير');
+      return;
+    }
+    if (!Number.isInteger(shareholder.shares) || shareholder.shares <= 0) {
+      this._legalStatusService.showToast('warning', 'Shares must be a positive whole number.', 'يجب أن تكون الحصص عددًا صحيحًا موجبًا.', 'Warning', 'تحذير');
+      return;
+    }
+    if (!this.validateTotalShares()) return; // Prevent save if invalid total shares
+    shareholder.percentage = this.calculatePercentage(shareholder.shares);
+    const updatedShareholder: DmsStpShareholdersDTO = {
+      ...shareholder,
+      clientId: this.clientId,
+      definitionId: this.dmsStpLevelDetails.defintionId
+    };
+
+    this._legalStatusService.editExistingShareholder(updatedShareholder).subscribe(
+      (response) => {
+        if (response.message === "Edited") {
+          this.selectedShareId = null;
+          this._legalStatusService.showToast('success', 'Shareholder updated successfully.', 'تم تحديث المساهم بنجاح.', 'Success', 'نجاح');
+        }
+      },
+      (error: any) => {
+        this._legalStatusService.showToast('error', 'Failed to edit data. Please try again.', 'فشل تعديل البيانات. حاول مرة أخرى.', 'Error', 'خطأ');
+      }
+    );
+  }
+  cancelEdit() {
+    this.selectedShareId = null;
+  }
+  addRow() {
+    if (!this.validateTotalShares()) {
+      this.newShareholder = this.getEmptyShareholder();
+      return;
+    }
+    this.newShareholder.percentage = this.calculatePercentage(this.newShareholder.shares);
+    this.shareholders.forEach((ele: DmsStpShareholdersDTO) => {
+
+
+      this._legalStatusService.saveShareholder(ele).subscribe(
+        (response) => {
+          if (response.message === "Saved") {
+          }
+          else {
+            this.newShareholder = this.getEmptyShareholder();
+          }
+        },
+        (error: any) => {
+          this._legalStatusService.showToast('error', error, error, 'Error', 'قشل');
+        }
+      );
+    });
+
+  }
+  addRow2() {
+    if (!this.newShareholder.shareNameEnglish || !this.newShareholder.shareNameArabic || !this.newShareholder.shares) {
+      this._legalStatusService.showToast('warning', 'Please fill all fields before adding.', 'يرجى ملء جميع الحقول قبل الإضافة.', 'Warning', 'تحذير');
+      return;
+    }
+    if (!Number.isInteger(this.newShareholder.shares) || this.newShareholder.shares <= 0) {
+      this._legalStatusService.showToast('warning', 'Shares must be a positive whole number.', 'يجب أن تكون الحصص عددًا صحيحًا موجبًا.', 'Warning', 'تحذير');
+      return;
+    }
+    if (!this.validateTotalShares()) {
+      this.newShareholder = this.getEmptyShareholder();
+      return;
+    }
+    this.newShareholder.percentage = this.calculatePercentage(this.newShareholder.shares);
+
+    const newId = this.shareholders.length > 0
+      ? Math.max(...this.shareholders.map((s: any) => s.shareId)) + 1
+      : 1;
+
+    const newEntry2: DmsStpShareholdersDTO = {
+      ...this.newShareholder,
+      shareId: newId,
+      clientId: this.clientId,
+      definitionId: this.dmsStpLevelDetails.defintionId
+    };
+    debugger;
+    this.shareholders.push(newEntry2);
+    this.emittedShareholdersLength.emit(this.shareholders.length)
+    const sum = this.shareholders.reduce((sum, s) => sum + s.shares, 0);
+    this.allocated.emit(sum)
+    this.newShareholder = this.getEmptyShareholder();
+    this.recalculatePercentages();
+    this.newEntry = this.shareholders;
+  }
+  deleteRow(shareId: number) {
+    debugger;
+    const deleted = this.shareholders.filter((s: any) => s.shareId === shareId);
+    this.shareholders = this.shareholders.filter((s: any) => s.shareId !== shareId);
+    const sum = this.shareholders.reduce((sum, s) => sum + s.shares, 0);
+    this.sumAllocated -=  deleted[0].shares;
+
+    this._legalStatusService.deleteExistingShareholder(shareId).subscribe(
+      (response) => {
+        if (response.message === "Deleted") {
+          this.recalculatePercentages();
+          this.emittedShareholdersLength.emit(this.shareholders.length)
+          this.allocated.emit(sum)
+          this._legalStatusService.showToast('success', 'Shareholder deleted successfully.', 'تم حذف المساهم بنجاح.', 'Success', 'نجاح');
+        }
+      },
+      (error: any) => {
+        this._legalStatusService.showToast('error', 'Failed to delete data. Please try again.', 'فشل حذف البيانات. حاول مرة أخرى.', 'Error', 'خطأ');
+      }
+    )
+  }
+  private getEmptyShareholder(): DmsStpShareholdersDTO {
+    return {
+      shareId: 0,
+      clientId: 1,
+      definitionId: 0,
+      percentage: 0,
+      shareNameEnglish: '',
+      shareNameArabic: '',
+      shares: 0
+    };
+  }
+  calculatePercentage(shares: number): number {
+    return this.numberOfShares > 0 ? parseFloat(((shares / this.numberOfShares) * 100).toFixed(2)) : 0;
+  }
+
+  recalculatePercentages() {
+    this.shareholders.forEach(shareholder => {
+      shareholder.percentage = this.calculatePercentage(shareholder.shares);
+    });
+  }
+
+  validateTotalShares(): boolean {
+    // const totalAllocatedShares = this.shareholders.reduce((sum, s) => sum + s.shares, 0) + this.newShareholder.shares;
+    // this.sumAllocated = totalAllocatedShares;
+    // console.log('totalAllocatedShares: ',totalAllocatedShares);
+    // console.log('this.numberOfShares: ',this.numberOfShares);
+
+    // if (totalAllocatedShares > this.numberOfShares) {
+    //   this._legalStatusService.showToast('error',
+    //     'Total shares exceed the allowed number.',
+    //     'مجموع الحصص تجاوز العدد المسموح به.',
+    //     'Error', 'خطأ');
+    //   return false;
+    // }
+    return true;
+  }
+
+  // // Method to display toast with localization :
+  // private showToast(type: 'success' | 'warning' | 'error', enMessage: string, arMessage: string, enTitle: string,
+  //   arTitle: string) {
+  //   const message = this.translate.currentLang === 'en' ? enMessage : arMessage;
+  //   const options = this.translate.currentLang === 'ar' ? { positionClass: 'toast-top-left' } : {};
+  //   const title = this.translate.currentLang === 'en' ? enTitle : arTitle;
+  //   this.toaster[type](message, title.charAt(0).toUpperCase() + title.slice(1), options);
+  // }
+}

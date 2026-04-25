@@ -1,0 +1,58 @@
+export class UserAuthoritiesDTO{
+  PAGE_TYPE: string;
+  SCREEN_TYPE_ENGLISH: string;
+    SCREEN_TYPE_ARABIC: string;
+    ENGLISH_NAME: string;
+    ARABIC_NAME: string;
+    PAGE_URL: string;
+    INSERT: string;
+    DELETE:string;
+    UPDATE:string;
+    RETRIEVE:string;
+    PRINT:string;
+    DEFAULT_PAGE:string;
+    LEVEL_CODE:string;
+    LINK_BEHAVIOR:string;
+    LINK_VISIBILITY:string;
+    GROUP_NAME_AR:string;
+    GROUP_NAME_EN:string;
+    IS_PARENT:string;
+    constructor(
+      PAGE_TYPE: string,
+      SCREEN_TYPE_ENGLISH: string,
+        SCREEN_TYPE_ARABIC: string,
+        ENGLISH_NAME: string,
+        ARABIC_NAME: string,
+        PAGE_URL: string,
+        INSERT: string,
+        DELETE:string,
+        UPDATE:string,
+        RETRIEVE:string,
+        PRINT:string,
+        DEFAULT_PAGE:string,
+        LEVEL_CODE:string,
+        LINK_BEHAVIOR:string,
+        LINK_VISIBILITY:string,
+        GROUP_NAME_AR:string,
+        GROUP_NAME_EN:string,
+        IS_PARENT:string){
+      this.PAGE_TYPE = PAGE_TYPE;
+      this.SCREEN_TYPE_ENGLISH = SCREEN_TYPE_ENGLISH;
+      this.SCREEN_TYPE_ARABIC = SCREEN_TYPE_ARABIC;
+      this.ENGLISH_NAME = ENGLISH_NAME;
+      this.ARABIC_NAME = ARABIC_NAME;
+      this.PAGE_URL = PAGE_URL;
+      this.INSERT = INSERT;
+      this.DELETE = DELETE;
+      this.UPDATE = UPDATE;
+      this.RETRIEVE = RETRIEVE;
+      this.PRINT = PRINT;
+      this.DEFAULT_PAGE = DEFAULT_PAGE;
+      this.LEVEL_CODE = LEVEL_CODE;
+      this.LINK_BEHAVIOR = LINK_BEHAVIOR;
+      this.LINK_VISIBILITY = LINK_VISIBILITY;
+      this.GROUP_NAME_AR = GROUP_NAME_AR;
+      this.GROUP_NAME_EN = GROUP_NAME_EN;
+      this.IS_PARENT = IS_PARENT;
+    }
+}

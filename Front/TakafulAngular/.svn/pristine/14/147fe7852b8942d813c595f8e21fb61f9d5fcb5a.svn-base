@@ -1,0 +1,392 @@
+/********************************** Header **********************************/
+
+.logo {
+    display: inline-block;
+    height: 40px;
+    max-width: 152px;
+}
+
+.logo img {
+    width: 100%;
+    text-align: left;
+    vertical-align: middle;
+}
+
+.branchList {
+    float: left;
+    margin-bottom: 0px;
+}
+
+.branchList li {
+    display: inline-block;
+    color: #fff;
+    -webkit-transition: all ease 0.3s;
+    transition: all ease 0.3s;
+}
+
+.branchList li a {
+    color: inherit;
+    line-height: 40px;
+    font-size: 12px;
+    text-transform: uppercase;
+    padding: 0px 15px 0px 15px;
+    display: inline-block;
+}
+
+.branchList li.dropdown {
+    border-left: 1px solid #1a3a5a;
+}
+
+.branchList li:focus,
+.branchList li:hover {
+    background-color: #1c3c5d;
+}
+
+.branchList li a .caret {
+    border-top: 4px solid #ffffff;
+}
+
+
+.head {
+    width: 100%;
+    display: block;
+    margin-bottom: 0;
+    border-radius: 0px;
+    border: none;
+    z-index: 1;
+    background: rgba(38, 83, 126, 1);
+    background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(38, 83, 126, 1)), color-stop(100%, rgba(26, 57, 89, 1)));
+    background: -webkit-gradient(linear, left top, left bottom, from(rgba(38, 83, 126, 1)), to(rgba(26, 57, 89, 1)));
+    background: linear-gradient(to bottom, rgba(38, 83, 126, 1) 0%, rgba(26, 57, 89, 1) 100%);
+}
+
+.navbar.head {
+    position: static;
+}
+
+.nav>li>a:focus,
+.nav>li>a:hover,
+.head .open>a,
+.head .open>a:hover,
+.head .open>a:focus {
+    background-color: #254a6d;
+}
+
+ul.nav-head li a {
+    color: #fff;
+    line-height: 40px;
+    padding: 0 15px;
+    font-size: 12px;
+    -webkit-transition: all ease 0.3s;
+    transition: all ease 0.3s;
+}
+
+ul.nav-head li {
+    border-left: 1px solid #1a3a5a;
+}
+
+ul.nav-head li:first-child {
+    border-left: none;
+}
+
+ul.nav-head li {
+    border-left: 1px solid #1a3a5a;
+    -webkit-transition: all ease 0.3s;
+    transition: all ease 0.3s;
+}
+
+ul.nav-head li:hover,
+ul.nav-head li.active {
+    background-color: #1c3c5d;
+}
+
+.smenu li a {
+    height: 25px;
+    line-height: 23px !important;
+    padding: 0 15px;
+    font-size: 12px;
+    text-transform: capitalize;
+    display: block;
+    -webkit-transition: all ease 0.3s;
+    transition: all ease 0.3s;
+}
+
+.smenu li {
+    height: 25px !important;
+    display: block;
+    float: none;
+}
+
+.smenu li:hover {
+    background-color: #254a6d !important;
+}
+
+.lang a {
+    font-size: 17px !important;
+    line-height: 36px !important;
+}
+
+.notification a {
+    position: relative;
+}
+
+.notification a span {
+    position: absolute;
+    bottom: 22px;
+    right: 8px;
+    background: #fe5353;
+    line-height: 15px;
+    border-radius: 100%;
+    text-align: center;
+    padding: 0px 0px;
+    font-size: 10px;
+    color: #fff;
+    font-weight: bold;
+    height: 15px;
+    width: 15px;
+}
+
+.alert-view {
+  width: 250px;
+  padding: 10px;
+  max-height: 400px;
+  background: #fff;
+  position: absolute;
+  top: 40px;
+  right: -100px;
+  border: 1px solid #aaa;
+  -webkit-box-shadow: 0px 0px 10px 0px rgba(50, 50, 50, 0.75);
+  box-shadow: 0px 0px 10px 0px rgba(50, 50, 50, 0.75);
+  z-index: 999;
+}
+
+.alert-view:aftet {
+    content: ' ';
+    position: absolute;
+    top: -11px;
+    background-size: 16px;
+    z-index: 999999999999999999999999999999999999999999999999;
+    display: block;
+    height: 12px;
+    width: 16px;
+    left: 45%;
+}
+
+.alert-view * {
+    font-size: 11px;
+}
+
+.alert-messages {
+    width: 100%;
+    max-height: 370px;
+    margin-bottom: 9px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.alert-message {
+    border-bottom: 1px dashed #26537f;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    cursor: pointer;
+    width: 100%;
+}
+
+.alert-message:hover * {
+    text-decoration: underline;
+}
+
+.alert-name,
+.alert-date {
+    color: #26537f;
+    font-weight: bold;
+}
+
+.alert-details {
+    font-weight: normal;
+    margin-top: 10px;
+    height: 30px;
+    line-height: 16px;
+    overflow: hidden;
+    width: 100%;
+}
+
+.alert-all {
+    display: block;
+    width: 100%;
+    background: #eef6fa !important;
+    color: #26537f !important;
+    height: 30px;
+    line-height: 30px !important;
+    text-align: center;
+    font-weight: bold;
+    position: inherit !important;
+    bottom: 0;
+    left: 0;
+}
+
+.alert-all:hover {
+    text-decoration: underline;
+}
+
+header ul li a .glyphicon {
+    font-size: 14px;
+}
+
+.navbar {
+    min-height: 40px;
+}
+
+.navbar-toggle {
+    border-radius: 3px;
+    padding: 5px 8px;
+    background-color: transparent;
+    border-color: rgba(221, 221, 221, 0) !important;
+    transition: all 0.4s;
+    -webkit-transition: all 0.4s;
+    -moz-transition: all 0.4s;
+    -o-transition: all 0.4s;
+    -ms-transition: all 0.4s;
+}
+
+.navbar-toggle .icon-bar {
+    display: block;
+    width: 22px;
+    height: 2px;
+    border-radius: 1px;
+    background-color: #fff !important;
+}
+
+.navbar-collapse {
+    -webkit-background: -webkit-gradient(linear, left top, left bottom, from(#26537e), to(#1a3a59));
+    -webkit-background: linear-gradient(top, #26537e 0%, #1a3a59 100%);
+    background: -webkit-gradient(linear, left top, left bottom, from(#26537e), to(#1a3a59));
+    background: linear-gradient(to bottom, #26537e 0%, #1a3a59 100%);
+}
+
+header a:hover,
+header a:focus {
+    text-decoration: none;
+}
+
+.dropdown-menu>li>a:focus,
+.dropdown-menu>li>a:hover {
+    color: #ffbb00;
+    text-decoration: none;
+    background-color: transparent;
+}
+
+
+/************************************** Main Content **********************************************/
+
+.main-content {
+    width: 100%;
+    margin: 1px auto;
+}
+
+
+
+/*********************************** Footer ***************************************/
+
+footer {
+    height: 40px;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: #26537e;
+    background: -webkit-gradient(linear, left top, left bottom, from(#26537e), to(#1a3a59));
+    background: linear-gradient(to bottom, #26537e 0%, #1a3a59 100%);
+    filter: progid: DXImageTransform.Microsoft.gradient(startColorstr='#26537e', endColorstr='#1a3a59', GradientType=0);
+    text-align: center;
+}
+
+footer span {
+    line-height: 40px;
+    color: #fff;
+    font-size: 11px;
+    font-family: Verdana;
+}
+/************************************** Sub Header (Page Title) ***************************************/
+.actions a
+{
+    display: inline-block;
+    line-height: 40px;
+    height: 40px;
+    width: 40px;
+    position: relative;
+    text-align: center;
+    font-size: 16px;
+    color: #0463bf;
+    transition: all ease 0.3s;
+}
+.pageTitle {
+    padding: 0 15px !important;
+    height: 40px !important;
+    list-style: none !important;
+    background: #ffffff !important;
+    background: linear-gradient(to bottom, #ffffff 0%, #bedaf6 100%) !important;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#bedaf6', GradientType=0) !important;
+    position: fixed !important;
+    top: 41px !important;
+    /* right: 0px !important; */
+}
+
+.pageTitle h2 {
+    margin-bottom: 0px;
+    margin-top: 0px;
+    line-height: 40px;
+    display: inline-block;
+    color: #296dac;
+    -webkit-transition: all ease 0.3s;
+    transition: all ease 0.3s;
+    font-size: 16px;
+}
+
+.pageTitle .actions a.inactive {
+    color: #b7b7b7;
+}
+
+.pageTitle .actions .inactive:focus,
+.pageTitle .actions .inactive:hover {
+    cursor: no-drop;
+    background: transparent;
+}
+
+/*************** page Action ***************/
+
+.actions {
+    flex: auto;
+    direction: rtl;
+    display: inline-block;
+    /* z-index: 999999; */
+    position: relative;
+}
+  
+/*************** Profile ***************/
+
+.profile_panel {
+    margin: 15vh;
+}
+
+.profile_content h3 {
+    font-size: 24px;
+    color: #0487dc;
+}
+
+.profile_content .user_data li {
+    position: relative;
+    padding: 10px;
+    list-style: none;
+    font-size: 18px;
+    color: #333;
+}
+
+.profile_content .user_data li i {
+    margin-right: 10px;
+}
+
+.profile_content .user_data li a {
+    text-decoration: underline;
+    color: #0163a3
+}

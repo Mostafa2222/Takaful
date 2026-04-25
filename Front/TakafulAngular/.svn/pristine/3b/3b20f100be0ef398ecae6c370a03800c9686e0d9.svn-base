@@ -1,0 +1,69 @@
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { BrowserDataDto } from '../../DTO/browserDataDTO';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { EnvironmentService } from '../environment.service';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class BrowserService {
+  broswer: string = "browser"
+  constructor(private _http: HttpClient, private _environment: EnvironmentService) {
+
+  }
+  getTable(tableName: string, idName: string, displayedNameEn: string, displayedNameAr: string, branchId?: number): Observable<BrowserDataDto[]> {
+    let url = `${this._environment.apiUrl}organization/${this.broswer}/${tableName}/${idName}/${displayedNameEn}/${displayedNameAr}`;
+    let params = new HttpParams();
+    if (branchId !== undefined && branchId !== null) {
+      params.set('branchId', branchId)
+    }
+    let headers = new HttpHeaders({
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    });
+
+    return this._http.get<BrowserDataDto[]>(url, { headers });
+  }
+  getSelectedBrowserData( idValue: any, tableName: string, idName: string, displayedNameEn: string,
+    displayedNameAr: string, codeName: string,branchId?: number): Observable<BrowserDataDto> {
+    const url = `${this._environment.apiUrl}organization/${this.broswer}/record`;
+
+    let headers = new HttpHeaders({
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    });
+
+    let params = new HttpParams()
+      .set('idValue', idValue).set('tableName',
+        tableName).set('idName', idName).set('displayedNameEn', displayedNameEn).set('displayedNameAr',
+          displayedNameAr).set('codeName', codeName);
+          if (branchId !== undefined && branchId !== null) {
+            params = new HttpParams()
+      .set('branchId', branchId.toString()).set('idValue', idValue).set('tableName',
+        tableName).set('idName', idName).set('displayedNameEn', displayedNameEn).set('displayedNameAr',
+          displayedNameAr).set('codeName', codeName);
+          }
+
+    return this._http.get<BrowserDataDto>(url, { headers, params });
+  }
+
+
+  getTableForBrowserInfo(branchId: number, tableName: string, idName: string, displayedNameEn: string, displayedNameAr: string, targetTable: string) {
+    const url = `${this._environment.apiUrl}${this.broswer}/${branchId}/${tableName}/${idName}/${displayedNameEn}/${displayedNameAr}/${targetTable}`;
+    let headers = new HttpHeaders({
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    });
+
+    return this._http.get<BrowserDataDto[]>(url, { headers });
+  }
+
+
+  getTableForChild(branchId: number, tableName: string, idName: string, displayedNameEn: string, displayedNameAr: string, targetTable: string,
+    parentId: number, parentIdColumnName: string) {
+    const url = `${this._environment.apiUrl}${this.broswer}/${branchId}/${tableName}/${idName}/${displayedNameEn}/${displayedNameAr}/${targetTable}/${parentId}/${parentIdColumnName}`;
+    let headers = new HttpHeaders({
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    });
+
+    return this._http.get<BrowserDataDto[]>(url, { headers });
+  }
+}

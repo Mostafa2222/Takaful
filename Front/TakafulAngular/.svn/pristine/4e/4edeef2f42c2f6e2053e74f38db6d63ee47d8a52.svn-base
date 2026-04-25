@@ -1,0 +1,578 @@
+<!-- Administration & Policies -->
+<app-dynamic-dialog (selected)="onItemSelect($event)" [selectedField]="selectedValue" [data]="dialogData"
+    [selectName]="SelectName"></app-dynamic-dialog>
+<div class="tab-pane fade active show" id="policies-step" role="tabpanel">
+    <h3>{{ "Organization.Timeline.Administration_Policies.Title" | translate }}</h3>
+    <div class="border border-1 border-primary border-opacity-50 rounded-2 p-2 mb-3">
+        <div class="row">
+            <div class="col-6">
+                <div class="form-check">
+                    <label class="form-check-label" for="Consolidated">
+                        {{
+                        "Organization.Timeline.Administration_Policies.consolidatedPurchases.Title" | translate
+                        }}
+                    </label>
+                    <input id="Consolidated" [(ngModel)]="levelDetailsPurDTO.consolIndividualPur"
+                        class="form-check-input consolidated-btn" type="radio" value="C">
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-check">
+                    <label class="form-check-label" for="Individual">{{
+                        "Organization.Timeline.Administration_Policies.individualPurchases" | translate }}</label>
+                    <input id="Individual" [(ngModel)]="levelDetailsPurDTO.consolIndividualPur"
+                        class="form-check-input individual-btn" type="radio" value="I">
+                </div>
+            </div>
+            <div class="col-7 form-group consolidated-item dnone">
+                <label class="form-check-label" for="itemTypeId">
+                    {{
+                    "Organization.Timeline.Administration_Policies.consolidatedPurchases.itemTypeForConsolidated" |
+                    translate
+                    }}</label>
+                <select id="itemTypeId" [(ngModel)]="itemsTypeValues.idNum" ng class="form-select"
+                    data-bs-toggle="modal" data-bs-target="#exampleModal" (mousedown)="stpDialog($event,
+                            'INV_STP_ITEM_TYPE',
+                            'ITEM_TYPE_ID , ITEM_TYPE_CODE',
+                            currencyBrowserData, 'Organization.Timeline.Administration_Policies.itemsName')">
+                    <option [value]="itemsTypeValues.idNum" selected>
+                        {{
+                        translate.currentLang === "ar"
+                        ? this.itemsTypeValues.displayedNameAr ||
+                        levelDetailsPurDTO.itemTypeStp.arabicName
+                        : this.itemsTypeValues.displayedNameEn ||
+                        levelDetailsPurDTO.itemTypeStp?.latinName
+                        }}
+                    </option>
+
+                </select>
+
+            </div>
+            <div class="col-5 form-group consolidated-item dnone">
+                <label for="valueOfPurchases">{{
+                    "Organization.Timeline.Administration_Policies.consolidatedPurchases.valueOfPurchases" |
+                    translate }}</label>
+                <div class="d-flex align-items-center" id="valueOfPurchases">
+                    <input type="text" class="form-control" [(ngModel)]="levelDetailsPurDTO.valueOfPurchases">
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+        <!-- Serialization Policy -->
+        <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="Serialization-Heading">
+                <h4 class="panel-title"> <a class="collapsed" data-bs-toggle="collapse" href="#Serialization"
+                        aria-expanded="true" aria-controls="">{{
+                        "Organization.Timeline.Administration_Policies.serializationPolicy.Title" | translate }}</a>
+                </h4>
+            </div>
+            <div id="Serialization" class="panel-collapse collapse show" role="tabpanel"
+                aria-labelledby="Serialization-Heading">
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-sm-6 col-md-4 col-lg-3 form-group">
+                            <label for="automaticPoNumber">{{
+                                "Organization.Timeline.Administration_Policies.serializationPolicy.automaticPurchaseOrderNo"
+                                | translate }}</label>
+                            <select id="automaticPoNumber" [(ngModel)]="levelDetailsPurDTO.automaticPoNumber"
+                                class="form-select">
+                                <option value="N">{{
+                                    "Organization.Timeline.Administration_Policies.none"
+                                    | translate }}</option>
+                                <option value="C">{{
+                                    "Organization.Timeline.Administration_Policies.company"
+                                    | translate }}</option>
+                                <option value="CY">{{
+                                    "Organization.Timeline.Administration_Policies.companyAndYear"
+                                    | translate }}</option>
+                                <option value="V">{{
+                                    "Organization.Timeline.Administration_Policies.supplier"
+                                    | translate }}</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-6 col-md-4 col-lg-3 form-group">
+                            <label for="automaticReqNumber">{{
+                                "Organization.Timeline.Administration_Policies.serializationPolicy.automaticRequisitionNo"
+                                | translate }}</label>
+                            <select id="automaticReqNumber" [(ngModel)]="levelDetailsPurDTO.automaticReqNumber"
+                                class="form-select">
+                                <option value="N">{{
+                                    "Organization.Timeline.Administration_Policies.none"
+                                    | translate }}</option>
+                                <option value="C">{{
+                                    "Organization.Timeline.Administration_Policies.company"
+                                    | translate }}</option>
+                                <option value="CY">{{
+                                    "Organization.Timeline.Administration_Policies.companyAndYear"
+                                    | translate }}</option>
+                                <option value="D">{{
+                                    "Organization.Timeline.Administration_Policies.Department"
+                                    | translate }}</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-6 col-md-4 col-lg-3 form-group">
+                            <label id="automaticConsNumber">{{
+                                "Organization.Timeline.Administration_Policies.serializationPolicy.automaticConsolidationNo"
+                                | translate }}</label>
+                            <select [(ngModel)]="levelDetailsPurDTO.automaticConsNumber" class="form-select"
+                                for="automaticConsNumber">
+                                <option value="N">{{
+                                    "Organization.Timeline.Administration_Policies.none"
+                                    | translate }}</option>
+                                <option value="C">{{
+                                    "Organization.Timeline.Administration_Policies.company"
+                                    | translate }}</option>
+                                <option value="CY">{{
+                                    "Organization.Timeline.Administration_Policies.companyAndYear"
+                                    | translate }}</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-6 col-md-4 col-lg-3 form-group">
+                            <label for="automaticQutNumber">{{
+                                "Organization.Timeline.Administration_Policies.serializationPolicy.automaticQuotationNo"
+                                | translate }}</label>
+                            <select [(ngModel)]="levelDetailsPurDTO.automaticQutNumber" id="automaticQutNumber"
+                                class="form-select">
+                                <option value="N">{{
+                                    "Organization.Timeline.Administration_Policies.none"
+                                    | translate }}</option>
+                                <option value="C">{{
+                                    "Organization.Timeline.Administration_Policies.company"
+                                    | translate }}</option>
+                                <option value="CY">{{
+                                    "Organization.Timeline.Administration_Policies.companyAndYear"
+                                    | translate }}</option>
+                                <option value="V">{{
+                                    "Organization.Timeline.Administration_Policies.supplier"
+                                    | translate }}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Automatic Action -->
+        <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="Automatic-Heading">
+                <h4 class="panel-title"><a class="collapsed" data-bs-toggle="collapse" href="#Automatic"
+                        aria-expanded="true" aria-controls="Automatic-Detail">{{
+                        "Organization.Timeline.Administration_Policies.Automaticaction.Title" | translate }}</a>
+                </h4>
+            </div>
+            <div id="Automatic" class="panel-collapse collapse show" role="tabpanel"
+                aria-labelledby="Automatic-Heading">
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-sm-6 col-md-6 col-lg-6 form-group">
+                            <div class="form-check">
+                                <label class="form-check-label" for="autoClosPoTotalQtyRecived">
+                                    {{
+                                    "Organization.Timeline.Administration_Policies.Automaticaction.automaticClosePOifTotalQuantitydelivered"
+                                    | translate }}
+                                </label>
+                                <input class="form-check-input" type="checkbox" id="autoClosPoTotalQtyRecived"
+                                    [(ngModel)]="levelDetailsPurDTO.autoClosPoTotalQtyRecived"
+                                    [checked]="levelDetailsPurDTO.autoClosPoTotalQtyRecived === true">
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-6 col-lg-6 form-group">
+                            <div class="form-check">
+                                <label class="form-check-label" for="autoSendQutReqVen">
+                                    {{
+                                    "Organization.Timeline.Administration_Policies.Automaticaction.automaticSendingRequestforQuotationToSuppliers"
+                                    | translate }}
+                                </label>
+                                <input class="form-check-input" type="checkbox" id="autoSendQutReqVen"
+                                    [(ngModel)]="levelDetailsPurDTO.autoSendQutReqVen"
+                                    [checked]="levelDetailsPurDTO.autoSendQutReqVen === true">
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-6 col-lg-6 form-group">
+                            <div class="form-check">
+                                <label class="form-check-label" for="automaticShowEmployeePr">
+                                    {{
+                                    "Organization.Timeline.Administration_Policies.Automaticaction.automaticShowEmployeePurchaseRequisition"
+                                    | translate }}
+
+                                </label>
+                                <input class="form-check-input" type="checkbox" id="automaticShowEmployeePr"
+                                    [(ngModel)]="levelDetailsPurDTO.automaticShowEmployeePr"
+                                    [checked]="levelDetailsPurDTO.automaticShowEmployeePr === true">
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-6 col-lg-6 form-group">
+                            <div class="form-check">
+                                <label class="form-check-label" for="prOnlyDepartmentEmployee">
+                                    {{
+                                    "Organization.Timeline.Administration_Policies.Automaticaction.employeeMustbeinDepartmentInPurchaseRequisition"
+                                    | translate }}
+
+                                </label>
+                                <input class="form-check-input" type="checkbox" id="prOnlyDepartmentEmployee"
+                                    [(ngModel)]="levelDetailsPurDTO.prOnlyDepartmentEmployee"
+                                    [checked]="levelDetailsPurDTO.prOnlyDepartmentEmployee === true">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Purchasing Linked With -->
+        <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="Purchasing-Heading">
+                <h4 class="panel-title">
+                    <a class="collapsed" data-bs-toggle="collapse" href="#Purchasing" aria-expanded="false"
+                        aria-controls="Purchasing-Detail">
+                        {{"Organization.Timeline.Administration_Policies.purchasingLinkedWith.Title" | translate }}
+                    </a>
+                </h4>
+            </div>
+            <div id="Purchasing" class="panel-collapse collapse" role="tabpanel" aria-labelledby="Automatic-Heading">
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-sm-6 col-md-6 col-lg-4 form-group">
+                            <div class="form-check">
+                                <label class="form-check-label" for="validatePlannedBudget">
+                                    {{"Organization.Timeline.Administration_Policies.purchasingLinkedWith.validatePlannedBudget"
+                                    |
+                                    translate }}</label>
+                                <input class="form-check-input" type="checkbox" id="validatePlannedBudget"
+                                    [(ngModel)]="levelDetailsPurDTO.validatePlannedBudget"
+                                    [checked]="levelDetailsPurDTO.validatePlannedBudget === true">
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-6 col-lg-4 form-group">
+                            <div class="form-check">
+                                <label class="form-check-label" for="linkWithBudget">
+                                    {{"Organization.Timeline.Administration_Policies.purchasingLinkedWith.linkWithBudget"
+                                    |
+                                    translate }}</label>
+                                <input class="form-check-input" type="checkbox" id="linkWithBudget"
+                                    [(ngModel)]="levelDetailsPurDTO.linkWithBudget"
+                                    [checked]="levelDetailsPurDTO.linkWithBudget === true">
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-6 col-lg-4 form-group">
+                            <div class="form-check">
+                                <label class="form-check-label" for="showItemBalance">
+                                    {{"Organization.Timeline.Administration_Policies.purchasingLinkedWith.showItemBalance"
+                                    |
+                                    translate }}</label>
+                                <input class="form-check-input" type="checkbox" id="showItemBalance"
+                                    [(ngModel)]="levelDetailsPurDTO.showItemBalance"
+                                    [checked]="levelDetailsPurDTO.showItemBalance === true">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Approval Policy -->
+        <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="Approval-Heading">
+                <h4 class="panel-title">
+                    <a class="collapsed" data-bs-toggle="collapse" href="#Approval" aria-expanded="false"
+                        aria-controls="Approval-Detail">
+                        {{"Organization.Timeline.Administration_Policies.approvalPolicy.Title" |
+                        translate }}</a>
+                </h4>
+            </div>
+            <div id="Approval" class="panel-collapse collapse" role="tabpanel" aria-labelledby="Approval-Heading">
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-sm-6 col-md-6 col-lg-4 form-group">
+                            <div class="form-check">
+                                <label class="form-check-label" for="approvePrIsMendatory">
+                                    {{"Organization.Timeline.Administration_Policies.approvalPolicy.approvingPurchaseRequisitionIsMandatory"
+                                    |
+                                    translate }}
+                                </label>
+                                <input class="form-check-input" type="checkbox" id="approvePrIsMendatory"
+                                    [(ngModel)]="levelDetailsPurDTO.approvePrIsMendatory"
+                                    [checked]="levelDetailsPurDTO.approvePrIsMendatory === true">
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-6 col-lg-4 form-group">
+                            <div class="form-check">
+                                <label class="form-check-label" for="approvePoIsMendatory">
+                                    {{"Organization.Timeline.Administration_Policies.approvalPolicy.approvingPurchaseOrderIsMandatory"
+                                    |
+                                    translate }}
+                                </label>
+                                <input class="form-check-input" type="checkbox" id="approvePoIsMendatory"
+                                    [(ngModel)]="levelDetailsPurDTO.approvePoIsMendatory"
+                                    [checked]="levelDetailsPurDTO.approvePoIsMendatory === true">
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-6 col-lg-4 form-group">
+                            <div class="form-check">
+                                <label class="form-check-label" for="approvVendorSelectMendatory">
+                                    {{"Organization.Timeline.Administration_Policies.approvalPolicy.approvingSupplierSelectionIsMandatory"
+                                    |
+                                    translate }}
+                                </label>
+                                <input class="form-check-input" type="checkbox" id="approvVendorSelectMendatory"
+                                    [(ngModel)]="levelDetailsPurDTO.approvVendorSelectMendatory"
+                                    [checked]="levelDetailsPurDTO.approvVendorSelectMendatory === true">
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-6 col-lg-4 form-group">
+                            <div class="form-check">
+                                <label class="form-check-label" for="approveTenderIssueMendatory">
+                                    {{"Organization.Timeline.Administration_Policies.approvalPolicy.approvingIssuedTenderIsMandatory"
+                                    |
+                                    translate }}
+                                </label>
+                                <input class="form-check-input" type="checkbox" id="approveTenderIssueMendatory"
+                                    [(ngModel)]="levelDetailsPurDTO.approveTenderIssueMendatory"
+                                    [checked]="levelDetailsPurDTO.approveTenderIssueMendatory === true">
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-6 col-lg-4 form-group">
+                            <div class="form-check">
+                                <label class="form-check-label" for="prMendatoryForPoCreation">
+                                    {{"Organization.Timeline.Administration_Policies.approvalPolicy.prIsMandatoryWhenCreatingPo"
+                                    |
+                                    translate }}
+                                </label>
+                                <input class="form-check-input" type="checkbox" id="prMendatoryForPoCreation"
+                                    [(ngModel)]="levelDetailsPurDTO.prMendatoryForPoCreation"
+                                    [checked]="levelDetailsPurDTO.prMendatoryForPoCreation === true">
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-6 col-lg-4 form-group">
+                            <div class="form-check">
+                                <label class="form-check-label" for="releasePrWhenClosPoManual">
+                                    {{"Organization.Timeline.Administration_Policies.approvalPolicy.releasePrWhenManuallyClosingPo"
+                                    |
+                                    translate }}
+                                </label>
+                                <input class="form-check-input" type="checkbox" id="releasePrWhenClosPoManual"
+                                    [(ngModel)]="levelDetailsPurDTO.releasePrWhenClosPoManual"
+                                    [checked]="levelDetailsPurDTO.releasePrWhenClosPoManual === true">
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-6 col-lg-4 form-group">
+                            <div class="form-check">
+                                <label class="form-check-label" for="printPoWithoutApproval">
+                                    {{"Organization.Timeline.Administration_Policies.approvalPolicy.userCanPrintPoWithoutApproval"
+                                    |
+                                    translate }}
+                                </label>
+                                <input class="form-check-input" type="checkbox" id="printPoWithoutApproval"
+                                    [(ngModel)]="levelDetailsPurDTO.printPoWithoutApproval"
+                                    [checked]="levelDetailsPurDTO.printPoWithoutApproval === true">
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-6 col-lg-4 form-group">
+                            <div class="form-check">
+                                <label class="form-check-label" for="supplierApprovePoMandatory">
+                                    {{"Organization.Timeline.Administration_Policies.approvalPolicy.supplierApprovePoMandatory"
+                                    |
+                                    translate }}
+                                </label>
+                                <input class="form-check-input" type="checkbox" id="supplierApprovePoMandatory"
+                                    [(ngModel)]="levelDetailsPurDTO.supplierApprovePoMandatory"
+                                    [checked]="levelDetailsPurDTO.supplierApprovePoMandatory === true">
+                            </div>
+                        </div>
+                        <div class="clear"></div>
+                        <div class="col-12 col-md-4 col-md-4 form-group">
+                            <label for="whenToValidatePlanedBudget">
+                                {{"Organization.Timeline.Administration_Policies.approvalPolicy.whenToValidatePlannedBudget"
+                                |
+                                translate }}</label>
+                            <select [(ngModel)]="levelDetailsPurDTO.whenToValidatePlanedBudget" class="form-select"
+                                id="whenToValidatePlanedBudget">
+                                <option value="I">
+                                    {{"Organization.Timeline.Administration_Policies.issuingPO"
+                                    |translate }}</option>
+                                <option value="A">
+                                    {{"Organization.Timeline.Administration_Policies.approvingPR" |translate }}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col-12 col-md-4 col-md-4 form-group">
+                            <label for="levelPlanedBudgetValidation">
+                                {{"Organization.Timeline.Administration_Policies.approvalPolicy.levelOfPlannedBudgetValidation"
+                                |
+                                translate }}</label>
+                            <select [(ngModel)]="levelDetailsPurDTO.levelPlanedBudgetValidation" class="form-select"
+                                id="levelPlanedBudgetValidation">
+                                <option value="V">{{"Organization.Timeline.Administration_Policies.value"
+                                    |translate
+                                    }}</option>
+                                <option value="Q">{{"Organization.Timeline.Administration_Policies.quantity"
+                                    |translate }}</option>
+                                <option value="QV">
+                                    {{"Organization.Timeline.Administration_Policies.quantityAndValue" |translate }}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col-12 col-md-4 col-md-4 form-group">
+                            <label
+                                for="whenToDecreaseBudget">{{"Organization.Timeline.Administration_Policies.approvalPolicy.whenToDecreaseTheBudget"
+                                |
+                                translate }}</label>
+                            <select [(ngModel)]="levelDetailsPurDTO.whenToDecreaseBudget" class="form-select"
+                                id="whenToDecreaseBudget">
+                                <option value="CPO" selected="selected">
+                                    {{"Organization.Timeline.Administration_Policies.inCreatingPO" |translate }}
+                                </option>
+                                <option value="RPO">{{"Organization.Timeline.Administration_Policies.inReceivingPO"
+                                    |translate }}</option>
+                                <option value="CPR">{{"Organization.Timeline.Administration_Policies.inCreatingPR"
+                                    |translate }}</option>
+                                <option value="PDR">
+                                    {{"Organization.Timeline.Administration_Policies.inCreatingPRAndDR"
+                                    |translate }}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Validations and Checks -->
+        <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="Validations-Heading">
+                <h4 class="panel-title">
+                    <a class="collapsed" data-bs-toggle="collapse" href="#Validations" aria-expanded="flase"
+                        aria-controls="Validations-Detail">{{"Organization.Timeline.Administration_Policies.validationsAndChecks.Title"
+                        |
+                        translate }}</a>
+                </h4>
+            </div>
+            <div id="Validations" class="panel-collapse collapse" role="tabpanel" aria-labelledby="Validations-Heading">
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-sm-6 col-md-6 col-lg-4 form-group">
+                            <div class="form-check">
+                                <label class="form-check-label" for="chckPrNoItemsQualityOnPo">
+                                    {{"Organization.Timeline.Administration_Policies.validationsAndChecks.checkPoRequestNoAndQualityOfItemsOnPo"
+                                    |
+                                    translate }}
+                                </label>
+                                <input class="form-check-input" type="checkbox" id="chckPrNoItemsQualityOnPo"
+                                    [(ngModel)]="levelDetailsPurDTO.chckPrNoItemsQualityOnPo"
+                                    [checked]="levelDetailsPurDTO.chckPrNoItemsQualityOnPo === true">
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-6 col-lg-4 form-group">
+                            <div class="form-check">
+                                <label class="form-check-label" for="chckQuotationNumItemsOnPo">
+                                    {{"Organization.Timeline.Administration_Policies.validationsAndChecks.checkQuotNoAndQuotItemsOnPo"
+                                    |
+                                    translate }}
+                                </label>
+                                <input class="form-check-input" type="checkbox" id="chckQuotationNumItemsOnPo"
+                                    [(ngModel)]="levelDetailsPurDTO.chckQuotationNumItemsOnPo"
+                                    [checked]="levelDetailsPurDTO.chckQuotationNumItemsOnPo === true">
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-6 col-lg-4 form-group">
+                            <div class="form-check">
+                                <label class="form-check-label" for="allowPoForItemInWaregouse">
+                                    {{"Organization.Timeline.Administration_Policies.validationsAndChecks.allowPoForItemsInWarehouse"
+                                    |
+                                    translate }}
+                                </label>
+                                <input class="form-check-input" type="checkbox" id="allowPoForItemInWaregouse"
+                                    [(ngModel)]="levelDetailsPurDTO.allowPoForItemInWaregouse"
+                                    [checked]="levelDetailsPurDTO.allowPoForItemInWaregouse === true">
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-6 col-lg-4 form-group">
+                            <div class="form-check">
+                                <label class="form-check-label" for="doNotChangePrDate">
+                                    {{"Organization.Timeline.Administration_Policies.validationsAndChecks.userCantChangeThePrDat"
+                                    |
+                                    translate }}</label>
+                                <input class="form-check-input" type="checkbox" id="doNotChangePrDate"
+                                    [(ngModel)]="levelDetailsPurDTO.doNotChangePrDate"
+                                    [checked]="levelDetailsPurDTO.doNotChangePrDate === true">
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-md-6 col-lg-4 form-group mb-2">
+                            <label for="averageConsumptionPeriod">
+                                {{"Organization.Timeline.Administration_Policies.validationsAndChecks.averageConsumptionPeriod"
+                                |
+                                translate }}</label>
+                            <select [(ngModel)]="levelDetailsPurDTO.averageConsumptionPeriod" class="form-select"
+                                id="averageConsumptionPeriod">
+                                <option value="A" selected="selected">
+                                    {{"Organization.Timeline.Administration_Policies.annual"
+                                    |
+                                    translate }}</option>
+                                <option value="LQ">{{"Organization.Timeline.Administration_Policies.lastQuarter"
+                                    |translate
+                                    }}</option>
+                            </select>
+                        </div>
+                        <div class="clear"></div>
+                        <div class="col-sm-6 col-md-6 col-lg-4 form-group">
+                            <div class="form-check">
+                                <label class="form-check-label" for="validatePriceChangeInPo">
+                                    {{"Organization.Timeline.Administration_Policies.validationsAndChecks.validatePriceChangeOnPo"
+                                    |
+                                    translate }}</label>
+                                <input class="form-check-input" type="checkbox" id="validatePriceChangeInPo"
+                                    [(ngModel)]="levelDetailsPurDTO.validatePriceChangeInPo"
+                                    [checked]="levelDetailsPurDTO.validatePriceChangeInPo === true">
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-6 col-lg-4 form-group">
+                            <div class="form-check">
+                                <label class="form-check-label" for="validatPriceChngInPoPlist">
+                                    {{"Organization.Timeline.Administration_Policies.validationsAndChecks.validatePriceChangeOnPoWhenUsingPriceList"
+                                    |
+                                    translate }}</label>
+                                <input class="form-check-input" type="checkbox" id="validatPriceChngInPoPlist"
+                                    [(ngModel)]="levelDetailsPurDTO.validatPriceChngInPoPlist"
+                                    [checked]="levelDetailsPurDTO.validatPriceChngInPoPlist === true">
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-6 col-lg-4 form-group">
+                            <div class="form-check">
+                                <label class="form-check-label" for="showDetailPosIfOpenItem">
+                                    {{"Organization.Timeline.Administration_Policies.validationsAndChecks.showPosContainsOpendItems"
+                                    |
+                                    translate }}</label>
+                                <input class="form-check-input" type="checkbox" id="showDetailPosIfOpenItem"
+                                    [(ngModel)]="levelDetailsPurDTO.showDetailPosIfOpenItem"
+                                    [checked]="levelDetailsPurDTO.showDetailPosIfOpenItem === true">
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-6 col-lg-4 form-group">
+                            <div class="form-check">
+                                <label class="form-check-label" for="validateDueDateForPo">
+                                    {{"Organization.Timeline.Administration_Policies.validationsAndChecks.validateTheDueDateForPo"
+                                    |
+                                    translate }}</label>
+                                <input class="form-check-input" type="checkbox" id="validateDueDateForPo"
+                                    [(ngModel)]="levelDetailsPurDTO.validateDueDateForPo"
+                                    [checked]="levelDetailsPurDTO.validateDueDateForPo === true">
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-6 col-lg-4 form-group">
+                            <div class="form-check">
+                                <label class="form-check-label" for="validateUserForItems">
+                                    {{"Organization.Timeline.Administration_Policies.validationsAndChecks.validateUserForItems"
+                                    |
+                                    translate }}</label>
+                                <input class="form-check-input" type="checkbox" id="validateUserForItems"
+                                    [(ngModel)]="levelDetailsPurDTO.validateUserForItems"
+                                    [checked]="levelDetailsPurDTO.validateUserForItems === true">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="step-toolbar">
+    <a class="btn btn-primary" (click)="onSubmit()" style="cursor: pointer">
+        {{ "Organization.Timeline.Next" | translate }}</a>
+</div>

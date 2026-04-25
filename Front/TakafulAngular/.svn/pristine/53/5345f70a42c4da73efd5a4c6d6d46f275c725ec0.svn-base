@@ -1,0 +1,50 @@
+export class UserPermissions {
+  allowChangeStatus: string | undefined;
+  allowDelete: string | undefined;
+  allowInsert: string | undefined;
+  allowPrint: string | undefined;
+  allowRetrieve: string | undefined;
+  allowUpdate: string | undefined;
+  arabicname: string | undefined;
+  branchId: string | undefined;
+  englishname: string | undefined;
+  levelNo: string | undefined;
+  screenModule: string | undefined;
+  screenName: string | undefined;
+  screenType: string | undefined;
+  screenTypeArabic: string | undefined;
+  screenTypeEnglish: string | undefined;
+  screenUser: string | undefined;
+  sequenceNo: string | undefined;
+  subTybeArabic: string | undefined;
+  subTybeEnglish: string | undefined;
+  childs: Array<UserPermissions> = [];
+  childrenLow : PermissionLowObj[] = [];
+  firstLevel : boolean = false;
+}
+export class PermissionLowObj
+{
+  arabicName : string | undefined = '';
+  latinName : string | undefined = '';
+  routeName : string | undefined = '';
+  firstLevel : boolean = false;
+  screenTypeArabic: string | undefined;
+  screenTypeEnglish: string | undefined;
+  subTybeArabic: string | undefined;
+  subTybeEnglish: string | undefined;
+  children : UserPermissions[] = [];
+  childrenLow : PermissionLowObj[] = [];
+  constructor(latinName: string,
+    arabicName: string,
+    firstLevel: boolean
+  ){
+      this.latinName = latinName;
+      this.arabicName = arabicName;
+      this.firstLevel = firstLevel;
+    }
+
+}
+
+
+
+

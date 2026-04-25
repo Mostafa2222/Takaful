@@ -1,0 +1,208 @@
+<div class="memberships" [attr.dir]="dir">
+  <div class="header">
+    <h2>{{ "sidebar.memberships_page.title" | translate }}</h2>
+
+    <button class="btn-primary" (click)="openModal()">
+      <i class="fa fa-plus"></i>
+      {{ "sidebar.memberships_page.add" | translate }}
+    </button>
+  </div>
+  <div *ngIf="loading" class="skeleton-card"></div>
+  <div class="cards" cdkDropList (cdkDropListDropped)="drop($event)">
+    <div
+      class="card"
+      *ngFor="let m of memberships"
+      [style.--c1]="generateGradient(m.color)[0]"
+      [style.--c2]="generateGradient(m.color)[1]"
+      [style.--text]="getContrastColor(m.color)"
+      cdkDrag
+    >
+      <div class="card-inner">
+        <div
+          class="status"
+          [class.active]="m.isActive"
+          (click)="toggle(m)"
+        ></div>
+
+        <i class="fa fa-credit-card card-icon"></i>
+
+        <div class="card-header">
+          <div class="header-content">
+            <h3>{{ getName(m) }}</h3>
+            <span class="duration">{{getDuration(m) }}</span>
+          </div>
+
+          <div class="price">SAR {{ m.price }}</div>
+        </div>
+
+        <div class="card-body">
+          <ul>
+            <li>✔   {{ "sidebar.memberships_page.memberships_table.cardsCount" | translate }} [{{ m.cardsCount }}]</li>
+            <li *ngFor="let f of m.features">✔ {{ f }}</li>
+          </ul>
+
+          <div class="actions">
+            <button (click)="delete(m)">
+              <i class="fa fa-trash"></i>
+            </button>
+
+            <button (click)="edit(m)">
+              <i class="fa fa-pen"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal" *ngIf="showModal">
+  <div class="modal-card">
+    <h2 class="title">{{ "sidebar.memberships_page.add" | translate }}</h2>
+
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <div class="grid">
+        <div
+          class="preview-card"
+          [style.background]="generateGradient(form.value.color)[0]"
+          [style.color]="getContrastColor(form.value.color)"
+        >
+        {{ currentLang === 'ar' ? form.value.nameAr : form.value.nameEn }}
+        </div>
+
+        <input
+          formControlName="nameAr"
+          [placeholder]="
+            'sidebar.memberships_page.memberships_modal.nameAr' | translate
+          "
+        />
+        <div class="error" *ngIf="isInvalid('nameAr')">
+          الاسم العربي مطلوب (3 حروف على الأقل)
+        </div>
+        <input
+          formControlName="nameEn"
+          [placeholder]="
+            'sidebar.memberships_page.memberships_modal.nameEn' | translate
+          "
+        />
+        <div class="error" *ngIf="isInvalid('nameEn')">
+          الاسم بالإنجليزية مطلوب (3 حروف على الأقل)
+        </div>
+        <input
+          type="number"
+          formControlName="price"
+          [placeholder]="
+            'sidebar.memberships_page.memberships_modal.price' | translate
+          "
+        />
+        <div class="error" *ngIf="isInvalid('price')">
+          الرجاء ادخال قيمة صحيحة
+        </div>
+        <input
+          type="number"
+          formControlName="cardsCount"
+          [placeholder]="
+            'sidebar.memberships_page.memberships_modal.cardsCount' | translate
+          "
+        />
+        <div class="error" *ngIf="isInvalid('cardsCount')">
+          الرجاء ادخال قيمة صحيحة
+        </div>
+
+        <select formControlName="durationType">
+          <option *ngFor="let d of durationTypes" [value]="d">
+            {{
+              "sidebar.memberships_page.memberships_modal.duration." + d
+                | translate
+            }}
+          </option>
+        </select>
+        <div class="error" *ngIf="isInvalid('durationType')">
+          الرجاء ادخال قيمة صحيحة
+        </div>
+
+        <input
+          type="number"
+          formControlName="durationValue"
+          [placeholder]="
+            'sidebar.memberships_page.memberships_modal.durationValue'
+              | translate
+          "
+        />
+        <div class="error" *ngIf="isInvalid('durationValue')">
+          الرجاء ادخال قيمة صحيحة
+        </div>
+
+        <!-- <input
+          type="color"
+          formControlName="color"
+          [placeholder]="
+            'sidebar.memberships_page.memberships_modal.color' | translate
+          "
+        /> -->
+
+        <div class="colors m-3">
+          <div
+            *ngFor="let c of colorPresets"
+            class="color-box"
+            [style.background]="c"
+            (click)="form.patchValue({ color: c })"
+            [class.active]="form.value.color === c"
+          ></div>
+        </div>
+      </div>
+
+      <!-- FEATURES -->
+      <div class="features">
+        <div
+          *ngFor="let f of features.controls; let i = index"
+          class="feature-item m-2"
+        >
+          <input
+            [formControl]="f"
+            [placeholder]="
+              'sidebar.memberships_page.memberships_modal.feature' | translate
+            "
+          />
+          <button type="button" class="btn" (click)="removeFeature(i)">
+            ✕
+          </button>
+          
+        <div class="error" *ngIf="isInvalid('features')">
+            الرجاء ادخال قيمة صحيحة
+          </div>
+        </div>
+
+        <button type="button" class="add-feature btn" (click)="addFeature()">
+          +
+          {{
+            "sidebar.memberships_page.memberships_modal.addFeature" | translate
+          }}
+        </button>
+      </div>
+
+      <div class="toggle-row m-2">
+        <label>
+          {{
+            "sidebar.memberships_page.memberships_modal.active" | translate
+          }}
+          &nbsp;
+        </label>
+
+        <label class="switch">
+          <input type="checkbox" formControlName="isActive" />
+          <span class="slider"></span>
+        </label>
+      </div>
+      <!-- ACTIONS -->
+      <div class="actions">
+        <button type="button" class="cancel btn" (click)="close()">
+          {{ "sidebar.memberships_page.memberships_modal.cancel" | translate }}
+        </button>
+        <button type="submit" class="save-btn btn">
+          {{ "sidebar.memberships_page.memberships_modal.save" | translate }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,127 @@
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  OnChanges,
+  Output,
+  SimpleChanges
+} from '@angular/core';
+import { Subject } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
+import { TranslateService } from '@ngx-translate/core';
+import { BrowserDataDto } from '../../DTO/browserDataDTO';
+
+@Component({
+  selector: 'app-dynamic-dialog',
+  templateUrl: './dynamic-dialog.component.html',
+  styleUrls: ['./dynamic-dialog.component.css'],
+})
+export class DynamicDialogComponent implements OnInit, OnChanges {
+  @Input() data: BrowserDataDto[] = []; // Ensure data is always an array
+  @Input() selectedField: BrowserDataDto | null = null;
+  @Input() selectName!: string;
+  @Output() selected: EventEmitter<BrowserDataDto | any> = new EventEmitter();
+
+  hover: boolean = false;
+  currentLanguage: string = 'en';
+  currentPage: number = 1;
+  itemsPerPage: number = 5;
+
+  filter = {
+    code: '',
+    idNum: '',
+    displayedNameEn: '',
+    displayedNameAr: '',
+  };
+
+  private searchTerms = new Subject<void>();
+
+  constructor(public translate: TranslateService) { }
+
+  ngOnInit(): void {
+    // Set language
+    this.currentLanguage = this.translate.currentLang || 'en';
+    this.translate.onLangChange.subscribe(event => {
+      this.currentLanguage = event.lang;
+    });
+
+    // Debounce search inputs
+    this.searchTerms.pipe(debounceTime(300)).subscribe(() => {
+      this.currentPage = 1;
+    });
+
+    // Ensure first page is loaded
+    this.setInitialSelectedValue();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['data'] && this.data?.length) {
+      this.setInitialSelectedValue();
+    }
+  }
+
+  private setInitialSelectedValue(): void {
+    this.currentPage = 1;
+    if (this.selectedField) {
+      const index = this.data.findIndex(
+        (item: BrowserDataDto) => String(item.idNum) === String(this.selectedField?.idNum)
+      );
+      if (index !== -1) {
+        this.currentPage = Math.floor(index / this.itemsPerPage) + 1;
+      }
+    }
+  }
+
+  get paginatedData(): BrowserDataDto[] {
+    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+    return this.filteredData().slice(startIndex, startIndex + this.itemsPerPage);
+  }
+
+  totalPages(): number {
+    const totalItems = this.filteredData().length;
+    return totalItems > 0 ? Math.ceil(totalItems / this.itemsPerPage) : 1;
+  }
+
+  changePage(page: number): void {
+    if (page > 0 && page <= this.totalPages()) {
+      this.currentPage = page;
+    }
+  }
+
+  filteredData(): BrowserDataDto[] {
+    return this.data?.filter((group: BrowserDataDto) => {
+      return (
+        (!this.filter?.idNum || group.idNum.toString().includes(this.filter?.idNum)) &&
+        (!this.filter?.displayedNameEn ||
+          group.displayedNameEn.toLowerCase().includes(this.filter?.displayedNameEn.toLowerCase())) &&
+        (!this.filter?.displayedNameAr || group.displayedNameAr.includes(this.filter?.displayedNameAr))
+      );
+    }) || [];
+  }
+
+  onSearchChange(): void {
+    this.searchTerms.next();
+  }
+
+  selectedOption(group: BrowserDataDto | any): void {
+    this.selectedField = group;
+    if (!group) {
+      this.selected.emit({
+        idNum: null,
+        displayedNameEn: '',
+        displayedNameAr: '',
+        code: null
+      });
+    } else {
+      this.selected.emit(group);
+    }
+    this.closeDialog();
+  }
+
+  closeDialog(): void {
+    this.filter.displayedNameAr = '';
+    this.filter.idNum = '';
+    this.filter.displayedNameEn = '';
+  }
+}

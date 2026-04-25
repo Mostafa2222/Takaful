@@ -1,0 +1,15 @@
+ /* .login-sec input,.login-sec .form-select {height:40px;}
+ .login-sec{display: flex;padding: 0;align-items: center;}
+.login-sec img{max-width: 100%;}
+ .client-logo{margin-bottom: 20px;text-align: center;}
+ .client-logo img{width: 200px;}
+.login-form{ background: #fff; padding: 2rem; box-shadow: 5px 2px 5px #bababa6b; border-radius: 7px; }
+.login-details{text-align: center;}
+.dms-logo{  padding: 0 2rem;  }
+.dms-logo img{}
+.app-login{margin: 15px 0;display: flex;gap: 10px;justify-content: center;}
+.app-login a{border: 1px solid #d9d5d5;border-radius: 5px; padding: 5px;margin: 5px 0;background: #4053a429;}
+ .app-login img{width: 115px;}
+.login-form .input-group-text{background: #fff;border-right-color: transparent;}
+.login-form .input-group > .form-control,.login-form .input-group > .form-select{border-left-color: transparent;}
+.bg-img{background: url(../images/bg.jpg);background-position: top left;background-repeat: no-repeat;background-size: cover;} */

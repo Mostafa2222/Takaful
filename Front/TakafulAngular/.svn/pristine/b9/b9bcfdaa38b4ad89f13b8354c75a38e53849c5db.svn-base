@@ -1,0 +1,10 @@
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-underconstructionmodel',
+  templateUrl: './underconstructionmodel.component.html',
+  styleUrl: './underconstructionmodel.component.css'
+})
+export class UnderconstructionmodelComponent {
+
+}

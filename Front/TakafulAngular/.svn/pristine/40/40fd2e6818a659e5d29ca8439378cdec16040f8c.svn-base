@@ -1,0 +1,67 @@
+export class LocationData {
+  nodeSelectedCode: string;
+  nodeSelectedParentCode: string;
+  nodeSelectedEnglishName: string;
+  nodeSelectedArabicName: string;
+  nodeSelectedLocationTypeSelected: { idNum: any, displayedNameEn: string, displayedNameAr: string, code: string | any };
+  nodeSelectedAreaSquare: string;
+  nodeSelectedLocationImageIcon: string;
+  nodeSelectedOrderValue: string;
+  nodeSelectedDirection: string;
+  nodeSelectedTemplateId: { idNum: any, displayedNameEn: string, displayedNameAr: string, code: string | any };
+  nodeSelectedNonDepartment: boolean;
+  nodeSelectedActive: boolean;
+  nodeSelectedNotes: string;
+  nodeSelectedLandAreaSquare: string;
+  nodeSelectedParentId: string;
+  nodeSelectedId: string;
+  nodeSelectedMaxArea: number;
+  nodeSelectedMinArea: number;
+  nodeSelectedMaxLandArea: number;
+  nodeSelectedMinLandArea: number;
+
+  // Constructor to initialize the properties
+  constructor(
+    nodeSelectedCode: string = '',
+    nodeSelectedParentCode: string = '',
+    nodeSelectedEnglishName: string = '',
+    nodeSelectedArabicName: string = '',
+    nodeSelectedLocationTypeSelected: { idNum: string | number, displayedNameEn: string, displayedNameAr: string, code: string } = { idNum: '', displayedNameEn: '', displayedNameAr: '', code: '' },
+    nodeSelectedAreaSquare: string = '',
+    nodeSelectedLocationImageIcon: string = '',
+    nodeSelectedOrderValue: string = '',
+    nodeSelectedDirection: string = '',
+    nodeSelectedTemplateId: { idNum: string | number, displayedNameEn: string, displayedNameAr: string, code: string } = { idNum: '', displayedNameEn: '', displayedNameAr: '', code: '' },
+    nodeSelectedNonDepartment: boolean = false,
+    nodeSelectedActive: boolean = false,
+    nodeSelectedNotes: string = '',
+    nodeSelectedLandAreaSquare: string = '',
+    nodeSelectedParentId: string = '',
+    nodeSelectedId: string = '',
+    nodeSelectedMaxArea: number = 0,
+    nodeSelectedMinArea: number = 0,
+    nodeSelectedMaxLandArea: number = 0,
+    nodeSelectedMinLandArea: number = 0
+  ) {
+    this.nodeSelectedCode = nodeSelectedCode;
+    this.nodeSelectedParentCode = nodeSelectedParentCode;
+    this.nodeSelectedEnglishName = nodeSelectedEnglishName;
+    this.nodeSelectedArabicName = nodeSelectedArabicName;
+    this.nodeSelectedLocationTypeSelected = nodeSelectedLocationTypeSelected;
+    this.nodeSelectedAreaSquare = nodeSelectedAreaSquare;
+    this.nodeSelectedLocationImageIcon = nodeSelectedLocationImageIcon;
+    this.nodeSelectedOrderValue = nodeSelectedOrderValue;
+    this.nodeSelectedDirection = nodeSelectedDirection;
+    this.nodeSelectedTemplateId = nodeSelectedTemplateId;
+    this.nodeSelectedNonDepartment = nodeSelectedNonDepartment;
+    this.nodeSelectedActive = nodeSelectedActive;
+    this.nodeSelectedNotes = nodeSelectedNotes;
+    this.nodeSelectedLandAreaSquare = nodeSelectedLandAreaSquare;
+    this.nodeSelectedParentId = nodeSelectedParentId;
+    this.nodeSelectedId = nodeSelectedId;
+    this.nodeSelectedMaxArea = nodeSelectedMaxArea;
+    this.nodeSelectedMinArea = nodeSelectedMinArea;
+    this.nodeSelectedMaxLandArea = nodeSelectedMaxLandArea;
+    this.nodeSelectedMinLandArea = nodeSelectedMinLandArea;
+  }
+}

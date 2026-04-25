@@ -1,0 +1,511 @@
+$(document).ready(function () {
+
+  $('.childTable table tbody').on('click', 'tr', function () {
+    $(this).toggleClass('selected');
+    $(this).siblings('tr').removeClass('selected');
+  });
+  $.fn.dataTable.moment('DD/MM/YYYY');
+  //Creat table row .create-row
+  $('#mainTabel').on('click', '.create-row', function () {
+    $(this).find("i").toggleClass("fa-minus fa-plus");
+    $(this).closest("table").find("tr.new-row").toggleClass('active');
+  });
+    //
+  $('#mainTabel').on('click', 'input[name="selectRow"]', function () {
+    if ($(this).is(":checked")) {
+      $('.filter-action li').removeClass("inactive");
+      $(this).parent().parent().addClass('selected')
+    } else {
+      $('.filter-action li').addClass("inactive");
+      $(this).parent().parent().removeClass('selected');
+      $(this).parent().parent().parent().siblings().children().children().children('input[name="selectAll"]').prop("checked", false);
+    }
+  });
+  //
+  $('#mainTabel').on('click', 'input[name="selectAll"]', function () {
+    if ($(this).is(":checked")) {
+      $(this).parent().parent().parent().siblings().children().children().find('input[name = "selectRow"]').prop("checked", true).parent().parent().addClass('selected');
+      $('.filter-action li').removeClass("inactive");
+    } else {
+      $(this).parent().parent().parent().siblings().children().children().find('input[name = "selectRow"]').prop("checked", false).parent().parent().removeClass('selected');
+      $('.filter-action li').addClass("inactive");
+    }
+  });
+  //Creat table row .create-row
+  $('#mainTabel').on('click', '.details-equip', function () {
+    $(this).find("i").toggleClass("fa-minus fa-plus");
+    $(this).closest("table").find("tr.new-row").toggleClass('active');
+    $('.filter-action li').toggleClass("inactive");
+  });
+  // Row inline Add
+  $(document).on("click", ".addNewRow", function () {
+    var newRow = $(this).parent().parent().parent().siblings().children().find(".newrow");
+    var newRowcontent = newRow.clone().removeClass("newrow");
+    newRow.before(newRowcontent);
+  });
+});
+// tables
+$(document).ready(function () {
+  var tablemain = mainTabel();
+  function mainTabel () {
+    var table = $('#mainTabel table').DataTable({
+      "dom": 'tilp',
+      "stateSave": false,
+      "scrollCollapse": true,
+      "info": true,
+      "paging": true,
+      "responsive": true,
+      "ordering": true,
+      "colReorder": false,
+      "lengthMenu": [10, 20, 30],
+      "rowReorder": false,
+      'columnDefs': [{
+        'targets': [0,7,8],
+        'orderable': false,
+      }]
+    });
+    return table;
+  };
+  FilterDatatable(tablemain);
+//
+  var tablesetup = setupTabel();
+  function setupTabel () {
+    var table = $('#setupTabel table').DataTable({
+      "dom": 'tilp',
+      "stateSave": false,
+      "scrollCollapse": true,
+      "info": true,
+      "paging": true,
+      "responsive": true,
+      "ordering": false,
+      "colReorder": false,
+      "lengthMenu": [10, 20, 30],
+      "rowReorder": false,
+    });
+    return table;
+  };
+  FilterDatatable(tablesetup);
+  //
+  ////// authorized
+  $('#setupTabel tbody').on('click', 'td a.authorized', function () {
+    var tr = $(this).closest('tr');
+    var row = $(this).closest('table').DataTable().row(tr);
+    $('a').not(this).removeClass('select');
+    if (row.child.isShown()) {
+      row.child.hide();
+      tr.removeClass('shown');
+      $(this).removeClass('select');
+    } else {
+      row.child(format1(row.data())).show();
+      tr.addClass('shown');
+      tr.removeClass('selected');
+      $(this).addClass('select');
+    }
+  });
+  function format1 (rowData) {
+    var div = $('<div/>').addClass('loading').text('Loading...');
+    div.load("authorized-" + rowData[0] + ".html", function () {
+      $(".loading").removeClass('loading');
+      div.find("table");
+    });
+    console.log(rowData[0]);
+    return div;
+  };
+  ////// documents-req
+  $('#setupTabel tbody').on('click', 'td a.documents-req', function () {
+    var tr = $(this).closest('tr');
+    var row = $(this).closest('table').DataTable().row(tr);
+    $('a').not(this).removeClass('select');
+    if (row.child.isShown()) {
+      row.child.hide();
+      tr.removeClass('shown');
+      $(this).removeClass('select');
+    } else {
+      row.child(format2(row.data())).show();
+      tr.addClass('shown');
+      tr.removeClass('selected');
+      $(this).addClass('select');
+    }
+  });
+  function format2 (rowData) {
+    var div = $('<div/>').addClass('loading').text('Loading...');
+    div.load("documents-req-" + rowData[0] + ".html", function () {
+      $(".loading").removeClass('loading');
+      div.find("table");
+    });
+    console.log(rowData[0]);
+    return div;
+  };
+  ////// template-items
+  $('#setupTabel tbody').on('click', 'td a.template-items', function () {
+    var tr = $(this).closest('tr');
+    var row = $(this).closest('table').DataTable().row(tr);
+    $('a').not(this).removeClass('select');
+    if (row.child.isShown()) {
+      row.child.hide();
+      tr.removeClass('shown');
+      $(this).removeClass('select');
+    } else {
+      row.child(format3(row.data())).show();
+      tr.addClass('shown');
+      tr.removeClass('selected');
+      $(this).addClass('select');
+    }
+  });
+  function format3 (rowData) {
+    var div = $('<div/>').addClass('loading').text('Loading...');
+    div.load("template-items-" + rowData[0] + ".html", function () {
+      $(".loading").removeClass('loading');
+      div.find("table");
+    });
+    console.log(rowData[0]);
+    return div;
+  };
+
+  ////// Document
+  $('#ContractTabel tbody').on('click', 'td a.document', function () {
+    var tr = $(this).closest('tr');
+    var row = $(this).closest('table').DataTable().row(tr);
+    $('a').not(this).removeClass('select');
+    if (row.child.isShown()) {
+      row.child.hide();
+      tr.removeClass('shown');
+      $(this).removeClass('select');
+    } else {
+      row.child(format4(row.data())).show();
+      tr.addClass('shown');
+      tr.removeClass('selected');
+      $(this).addClass('select');
+    }
+  });
+  function format4 (rowData) {
+    var div = $('<div/>').addClass('loading').text('Loading...');
+    div.load("document-" + rowData[0] + ".html", function () {
+      $(".loading").removeClass('loading');
+      div.find("table");
+    });
+    console.log(rowData[0]);
+    return div;
+  };
+  ////// notes
+  $('#ContractTabel tbody').on('click', 'td a.notes', function () {
+    var tr = $(this).closest('tr');
+    var row = $(this).closest('table').DataTable().row(tr);
+    $('a').not(this).removeClass('select');
+    if (row.child.isShown()) {
+      row.child.hide();
+      tr.removeClass('shown');
+      $(this).removeClass('select');
+    } else {
+      row.child(format5(row.data())).show();
+      tr.addClass('shown');
+      tr.removeClass('selected');
+      $(this).addClass('select');
+    }
+  });
+  function format5 (rowData) {
+    var div = $('<div/>').addClass('loading').text('Loading...');
+    div.load("notes-attch-" + rowData[0] + ".html", function () {
+      $(".loading").removeClass('loading');
+      div.find("table");
+    });
+    console.log(rowData[0]);
+    return div;
+  };
+});
+// select-multiple
+$(document).ready(function () {
+  // select2
+  $(".chosen-single").select2({
+    width: "100%"
+  });
+
+  // select2 multiselection
+  $(".chosen-multiple").select2({
+    width: "100%",
+    multiple: true,
+    dropdownAutoWidth: true,
+    allowClear: true,
+    closeOnSelect: false,
+    tags: true
+  });
+  //  result of selected items
+  $('.chosen-multiple').on('select2:close', function (evt) {
+    var uldiv = $(this).siblings('span.select2').find('ul');
+    var oldCount = parseInt(uldiv.find('.count').text());
+    oldCount = oldCount || 0;
+    var count = uldiv.find('li').length - 1 + oldCount;
+    console.log($(this).siblings('span.select2').find('count'));
+    uldiv.html("<li><span class='count'>" + count + "</span> items selected</li>")
+  });
+
+});
+$(document).ready(function () {
+
+  //
+  $(document).on("click", ".filter-btn", function () {
+    $('#groupBy.filter-box').slideUp();
+    $('#filter.filter-box').slideToggle();
+    $(this).addClass("select")
+  });
+  // $(document).on("click", ".filterBtn", function () {
+  //   $(this).parent().parent().parent().slideToggle();
+  // });
+  $(document).on("click", ".groupBy-btn", function () {
+    $('#filter.filter-box').slideUp();
+    $('#groupBy.filter-box').slideToggle();
+  });
+
+  //
+  $(document).on("click", ".addUploadFile", function (e) {
+    e.preventDefault();
+    var newFile = $('.uploadFileBlock') /*.first()*/;
+    var newFilecontent = newFile.clone().removeClass('uploadFileBlock');
+    newFile.before(newFilecontent);
+  });
+  $(document).on("click", ".btn-remove", function () {
+    $(this).parent().parent('.uploadBlock').remove();
+  });
+
+  // Row inline Add
+  $(document).on('click', '.t-add', function () {
+    var newRows = $(this).parent().parent().siblings('.new-row');
+
+    //$('.addRow').hide();
+
+    newRows.toggleClass('active');
+    newRows.children('.row-inline-editable').addClass("active");
+
+    newRows.children('.row-inline-editable').each(function (index, value) {
+      var text = $(this).children("input[type='text']").val("");
+      var checkbox = $(this).children("input[type='checkbox']").val("");
+      var select = $(this).children("select").removeAttr('checked');
+
+    });
+
+  });
+  // Row inline Add -top add btn in page title-
+  $(document).on('click', '.addRowTable', function () {
+    var newRow = $(this).parent().parent().siblings().children().children().children().children().children().find('.new-row');
+    newRow.toggleClass('active');
+    newRow.children('.row-inline-editable').addClass("active");
+    newRow.children('.row-inline-editable').each(function (index, value) {
+      var text = $(this).children("input[type='text']").val("");
+      var checkbox = $(this).children("input[type='checkbox']").val("");
+      var select = $(this).children("select").removeAttr('checked');
+    });
+  });
+  // Row inline Add ib sub table
+  $(document).on('click', '.add-Row', function () {
+    var newRow = $(this).parent().parent().siblings().children().children().children('.new-row');
+    newRow.toggleClass('active');
+    newRow.children('.row-inline-editable').addClass("active");
+    newRow.children('.row-inline-editable').each(function (index, value) {
+      var text = $(this).children("input[type='text']").val("");
+      var checkbox = $(this).children("input[type='checkbox']").val("");
+      var select = $(this).children("select").removeAttr('checked');
+    });
+
+  });
+
+});
+$(document).ready(function () {
+  //grant View-btn agendaView-btn
+  $(document).on("click", ".gridView-btn", function () {
+    $(this).addClass("selected");
+    $(".grantView-btn").removeClass("selected");
+    $(".grantView").addClass("dnone");
+    $(".gridView").removeClass("dnone");
+  });
+  $(document).on("click", ".grantView-btn", function () {
+    $(this).addClass("selected");
+    $(".gridView-btn").removeClass("selected");
+    $(".grantView").removeClass("dnone");
+    $(".gridView").addClass("dnone");
+  });
+
+  //.initiation-btn .review-btn .approv-btn .in-prog-btn .initiation-status .review-status .approv-status .in-prog-status
+
+  $(document).on("click", ".order-filter a", function () {
+    $(this).toggleClass("select");
+    $('.order-filter a').not(this).removeClass('select').addClass("inactive");
+  });
+
+  $(document).on("click", ".initiation-btn", function () {
+    $(this).removeClass("inactive");
+    $('.review-status, .approv-status, .in-prog-status, .cancelled-status, .hold-status, .completed-status').parent().parent('tr').hide();
+    $('.initiation-status').parent().parent('tr').show();
+
+  });
+  $(document).on("click", ".review-btn", function () {
+    $(this).removeClass("inactive");
+    $('.initiation-status, .approv-status, .in-prog-status, .cancelled-status, .hold-status, .completed-status').parent().parent('tr').hide();
+    $('.review-status').parent().parent('tr').show();
+  });
+  $(document).on("click", ".approv-btn", function () {
+    $(this).removeClass("inactive");
+    $('.review-status, .initiation-status, .in-prog-status, .cancelled-status, .hold-status, .completed-status').parent().parent('tr').hide();
+    $('.approv-status').parent().parent('tr').show();
+  });
+  $(document).on("click", ".in-prog-btn", function () {
+    $(this).removeClass("inactive");
+    $('.initiation-status, .approv-status, .review-status, .cancelled-status, .hold-status, .completed-status').parent().parent('tr').hide();
+    $('.in-prog-status').parent().parent('tr').show();
+  });
+
+  $(document).on("click", ".hold-btn", function () {
+    $(this).removeClass("inactive");
+    $('.initiation-status, .review-status, .approv-status, .in-prog-status, .cancelled-status, .completed-status').parent().parent('tr').hide();
+    $('.hold-status').parent().parent('tr').show();
+  });
+  $(document).on("click", ".cancel-btn", function () {
+    $(this).removeClass("inactive");
+    $('.initiation-status, .review-status, .approv-status, .in-prog-status, .hold-status, .completed-status').parent().parent('tr').hide();
+    $('.cancelled-status').parent().parent('tr').show();
+  });
+  $(document).on("click", ".completed-btn", function () {
+    $(this).removeClass("inactive");
+    $('.initiation-status, .review-status, .approv-status, .in-prog-status, .hold-status, .cancelled-status').parent().parent('tr').hide();
+    $('.completed-status').parent().parent('tr').show();
+  });
+  $(document).on("click", ".all-btn", function () {
+    $(this).removeClass("inactive");
+    $('.initiation-status, .review-status, .approv-status, .in-prog-status, .hold-status, .cancelled-status, .completed-status').parent().parent('tr').show();
+    $('.order-filter a').removeClass('select').removeClass("inactive");
+  });
+});
+//hide popup if clicked outside
+$(document).click(function (e) {
+  var $tgt = $(e.target);
+  if ($tgt.closest(".parts-btn,.warranty-btn,.scrapped-btn,.contract-btn").length) { } else {
+    $(".parts-popup,.warranty-popup,.scrapped-popup,.contract-popup").hide();
+  }
+});
+// gantt chart
+$(document).ready(function (){
+    var demoSource = [
+      {
+        name: " إنشاء وحدة توليد بخارية في موقع محطة كهرباء",
+        desc: "",
+        values: [{
+          from: "2019-11-10",
+          to: "2019-12-10",
+          desc: "Name: Planning <br />Date: 2019-11-10 to 2011-11-16",
+          "label": " Planni...",
+          "customClass": "ganttRed"
+        }]
+      },
+      {
+        "name": "Project 1", "desc": "", "values": [{
+          "from": "2019-1-10/", "to": "/Date(1322870400000)/", "desc": "Name: Gathering requirements <br />Account: Account Name <br>Date: 2011-11-16 to 2011-12-03", "label": " Gather...", "customClass": "ganttGreen" }] },
+      { "name": " Project 2", "desc": "", "values": [{ "from": "/Date(1322611200000)/", "to": "/Date(1323302400000)/", "desc": "Name: Determine scope <br />Date: 2011-11-30 to 2011-12-08", "label": " Determ...", "customClass": "ganttOrange" }] },
+      { "name": " Project 3 ", "desc": "", "values": [{ "from": "/Date(1323302400000)/", "to": "/Date(1324684800000)/", "desc": "Name: Analysis and design <br />Date: 2011-12-08 to 2011-12-24", "label": " Analys..." }] },
+      { "name": " Project 4 ", "desc": "", "values": [{ "from": "/Date(1324857600000)/", "to": "/Date(1326758400000)/", "desc": "Name: Implementation <br />Date: 2011-12-26 to 2012-01-17", "label": " Implem...", "customClass": "ganttRed" }] },
+      { "name": " Project 5 ", "desc": "", "values": [{ "from": "/Date(1326758400000)/", "to": "/Date(1326844800000)/", "desc": "Name: Deliver prototype <br />Date: 2012-01-17 to 2012-01-18", "label": " Delive...", "customClass": "ganttGreen" }] },
+      { "name": " Project 6 ", "desc": "", "values": [{ "from": "/Date(1326844800000)/", "to": "/Date(1328659200000)/", "desc": "Name: Testing <br />Date: 2012-01-18 to 2012-02-08", "label": " Testin...", "customClass": "ganttOrange" }] },
+      { "name": " Project 7", "desc": "", "values": [{ "from": "/Date(1328659200000)/", "to": "/Date(1328832000000)/", "desc": "Name: Review and evaluation <br />Date: 2012-02-08 to 2012-02-10", "label": " Review..." }] },
+      { "name": " Project 8 ", "desc": "", "values": [{ "from": "/Date(1328832000000)/", "to": "/Date(1329868800000)/", "desc": "Name: Analysis and enhancement of design <br />Date: 2012-02-10 to 2012-02-22", "label": " Analys...", "customClass": "ganttRed" }] },
+      { "name": " Project 9", "desc": "", "values": [{ "from": "/Date(1329868800000)/", "to": "/Date(1331337600000)/", "desc": "Name: Implementation (enhancement of prototype)<br />Date: 2012-02-22 to 2012-03-10", "label": " Implem...", "customClass": "ganttGreen" }] },
+      { "name": " Project 10 ", "desc": "", "values": [{ "from": "/Date(1331510400000)/", "to": "/Date(1331596800000)/", "desc": "Name: Deliver prototype <br />Date: 2012-03-12 to 2012-03-13", "label": " Delive...", "customClass": "ganttOrange" }] },
+      { "name": " Project ", "desc": "", "values": [{ "from": "/Date(1331596800000)/", "to": "/Date(1332547200000)/", "desc": "Name: Testing <br />Date: 2012-03-13 to 2012-03-24", "label": " Testin...", "customClass": "ganttRed" }] },
+      { "name": " Project ", "desc": "", "values": [{ "from": "/Date(1332720000000)/", "to": "/Date(1332892800000)/", "desc": "Name: Review and evaluation <br />Date: 2012-03-26 to 2012-03-28", "label": " Review...", "customClass": "ganttGreen" }] },
+      { "name": " Project ", "desc": "", "values": [{ "from": "/Date(1332892800000)/", "to": "/Date(1333065600000)/", "desc": "Name: Finalising <br />Date: 2012-03-28 to 2012-03-30", "label": " Finali...", "customClass": "ganttOrnage" }] },
+      { "name": " Project ", "desc": "", "values": [{ "from": "/Date(1333065600000)/", "to": "/Date(1333411200000)/", "desc": "Name: Deployment <br />Date: 2012-03-30 to 2012-04-03", "label": " Deploy..." }] },
+      { "name": " Project ", "desc": "", "values": [{ "from": "/Date(1333411200000)/", "to": "/Date(1333584000000)/", "desc": "Name: Project review and evaluation <br />Date: 2012-04-03 to 2012-04-05", "label": " Projec...", "customClass": "ganttRed" }] }
+
+    ];
+    $(".gantt").gantt({
+      source: demoSource,
+      navigate: "scroll",
+      //scale: "days",
+      maxScale: "months",
+      minScale: "weeks",
+      itemsPerPage: 10,
+      scrollToToday: false,
+      // onItemClick: function (data) {
+      //     alert("Item clicked - show some details");
+      // },
+      // onAddClick: function (dt, rowId) {
+      //     alert("Empty space clicked - add an item!");
+      // },
+      // onRender: function () {
+      //     if (window.console && typeof console.log === "function") {
+      //         console.log("chart rendered");
+      //     }
+      // }
+    });
+    // $(".gantt").popover({
+    //     selector: ".bar",
+    //     title: function _getItemText() {
+    //         return this.textContent;
+    //     },
+    //     container: '.gantt',
+    //     content: "Here's some useful information.",
+    //     trigger: "hover",
+    //     placement: "auto right"
+    // });
+    // prettyPrint();
+ });
+//
+$(document).ready(function () {
+var tableContract = ContractTabel();
+function ContractTabel () {
+  var table = $('#ContractTabel table').DataTable({
+    "dom": 'tilp',
+    "stateSave": false,
+    "scrollCollapse": true,
+    "info": true,
+    "paging": true,
+    "responsive": true,
+    "ordering": false,
+    "colReorder": false,
+    "lengthMenu": [10, 20, 30],
+    "rowReorder": false,
+    // 'select': {
+    //   'style': 'multi',
+    //   'selector': 'td:not(:first-child)'
+    // },
+    // 'ajax': '../contracts-arrays.js',
+    // 'treeGrid': {
+    //   'left': 10,
+    //   'expandIcon': '<span>+</span>',
+    //   'collapseIcon': '<span>-</span>'
+    // },
+  });
+  return table;
+};
+FilterDatatable(tableContract);
+    $('#ContractTabel tbody').on('click', 'td.details-control', function () {
+      var tr = $(this).closest('tr');
+      var row = $(this).closest('table').DataTable().row(tr);//tablesetup.row(tr);
+      if (row.child.isShown()) {
+        row.child.hide();
+        tr.removeClass('shown');
+        $(this).children().removeClass('select');
+      } else {
+        row.child(format(row.data())).show();
+        tr.addClass('shown');
+        tr.removeClass('selected');
+        $(this).children().addClass('select');
+      }
+    });
+    function format (rowData) {
+      var div = $('<div/>').addClass('loading').text('Loading...');
+      div.load("taskDetails-" + rowData[0] + ".html", function () {
+        $(".loading").removeClass('loading');
+        // div.find("table").DataTable({
+        //     "paging": false,
+        // });
+      });
+      console.log(rowData[0]);
+      return div;
+    };
+});
+// table tree
+$(document).ready(function () {
+//$('.tree').treegrid({
+//  expanderExpandedClass: 'glyphicon glyphicon-minus',
+//  expanderCollapsedClass: 'glyphicon glyphicon-plus',
+//  'initialState': 'collapsed',
+//});
+});

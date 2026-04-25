@@ -1,0 +1,101 @@
+* {
+    margin: 0;
+    padding: 0;
+    font-size: 100%;
+    outline: none;
+    text-decoration: none;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+body,html {width: 100%;}
+body {
+    background: #f3f4f4;
+    font-family: 'Roboto', "Verdana", Helvetica, "Noto Sans", sans-serif, Arial, sans-serif;
+   font-size: 1rem;
+    line-height: 1.42857143;
+    color: #3d3d3e;
+    position: relative;
+}
+html {scroll-behavior: smooth;}
+/*  */
+.btn-primary {color: #fff;background-color: #adc2d9;border-color: #adc2d9;}
+.btn-primary:hover {color: #fff;background-color: #7ba6d5;border-color: #7ba6d5;}
+.btn-success {color: #fff;background-color: #fdb913;border-color: #fdb913;}
+.btn-success:hover  {color: #fff;background-color: #e3a612;border-color: #e3a612;}
+.btn-secondary {color: #fff;background-color: #657382;border-color: #657382;}
+.btn-secondary:hover {color: #fff;background-color: #454c51;border-color: #454c51;}
+.form-floating>.form-control,
+.form-floating>.form-select {height: calc(3.0rem + 2px);}
+.h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {font-weight: 400;}
+img {max-width: 100%;}
+small{font-size: 70%;}
+/* login & Register */
+.login{margin-top: 10%;}
+.login h3{font-size: 1.4rem;}
+.register{margin-top: 5%;}
+.logo{text-align:center;}
+.logo img {max-width: 65%;}
+.forget-password {color: #3d3d3e;}
+.forget-password:hover {color: #3d3d3e;}
+/*  */
+.bg-header{background-color: rgb(223, 237, 253);box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.25);/*! max-height: 100px; */padding: 2rem 1rem;margin-bottom: 1.5rem;}
+.box-gray {border-radius: 15px;background-color: rgb(101, 115, 130);box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.25);padding: 1rem;height: 138px;}
+.profile-img {border-radius: 100%;background-color: rgb(255, 255, 255);width: 95px;height: 95px;margin: auto;font-size: 4rem;padding-top: .70rem;color: #d2deec;}
+.profile-img i{border-radius: 100%;}
+.user-info{text-align: center;padding: .6rem .2rem;}
+.user-info h3{margin-bottom: 0;font-size: 1.3rem;color: #fff;}
+.wallet-info{padding: 1rem;position: relative;}
+.wallet-info::before{content:"";border-left: 2px dashed #657382;position: absolute;left: -13px;z-index: 20;top: 14px;height: 110px;}
+.wallet-info h2{color: #fdb913;}
+.wallet-item{position: relative;}
+.wallet-item::after {content:"";border-right: 1px solid #a9bdd4;position: absolute;right: 16px;z-index: 20;top: 10px;height: 50px;}
+.wallet-item:last-child::after {content:"";border-right: none;}
+.wallet-item .title{color: #a9bdd4;}
+.ecard {border-radius: 27px;background-color: rgb(253, 185, 19);box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.25);padding: 4rem 2rem 2rem;position: relative;}
+.ecard::before{content:"";position: absolute;left: 31%;z-index: 20;top: -16px;height: 30px;width: 30px;background: #f3f4f4;border-radius: 100%;}
+.ecard::after{content:"";position: absolute;left: 31%;z-index: 20;bottom: -16px;height: 30px;width: 30px;background: #f3f4f4;border-radius: 100%;}
+.ecard-logo {text-align: center;}
+.ecard-logo img{max-width: 90%;}
+.ecard-text{font-size: 1.4rem;position: relative;padding-left: 0.6rem;}
+.ecard-text::before{content:"";border-left: 2px dashed #fff;position: absolute;left: -19px;z-index: 20;top: -36px;height: 175px;}
+.card {border-radius: 10px;background-color: rgb(255, 255, 255);box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.25);height: 165px;margin-bottom: 1.3rem;padding: 1rem;}
+.seller-box .card {height: 165px;margin-bottom: 1.3rem;padding: 1rem;}
+.seller-box{margin-top: 2rem;}
+.seller-box h2{color: #fdb913;}
+.seller-box .card img {margin: auto;max-height: 140px;}
+/*  */
+.info-ecard{z-index: 20;position: relative;}
+.info-ecard .ecard{width: 80%;margin: auto;padding: 1.4rem 1rem;}
+.info-ecard .ecard::before {
+    content: "";
+    position: absolute;
+    left: 31%;
+    z-index: 20;
+    top: -17px;
+    height: 27px;
+    width: 27px;
+    background: #f3f4f4;
+    border-radius: 100%;
+}
+.info-ecard .ecard::after {
+    content: "";
+    position: absolute;
+    left: 31%;
+    z-index: 20;
+    bottom: -17px;
+    height: 27px;
+    width: 27px;
+    background: #f3f4f4;
+    border-radius: 100%;
+}
+.info-ecard .ecard-text::before {
+    left: -13px;
+    top: 2px;
+    height: 90px;
+}
+.info-ecard .ecard-logo img {
+    max-width: 75%;
+    margin-top: 13px;
+}
+.content-box{margin-top: -5rem;padding-top: 6rem;height: auto;}
+.content-box ul{list-style: revert;}

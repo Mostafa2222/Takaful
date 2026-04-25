@@ -1,0 +1,21 @@
+import { Component, Input, OnInit } from '@angular/core';
+import { TreeNode } from 'primeng/api';
+import { TreeDisplayService } from '../../services/tree-display.service';
+
+@Component({
+  selector: 'app-tree-org-chart',
+  templateUrl: './tree-org-chart.component.html',
+  styleUrls: ['./tree-org-chart.component.css']
+})
+export class TreeOrgChartComponent implements OnInit {
+  nodes: TreeNode[] = [];
+
+  constructor(private treeSer: TreeDisplayService) {}
+
+  ngOnInit(): void {
+    this.treeSer.treeData$.subscribe(data => {
+      this.nodes = data;
+      console.log(this.nodes);
+    });
+  }
+}

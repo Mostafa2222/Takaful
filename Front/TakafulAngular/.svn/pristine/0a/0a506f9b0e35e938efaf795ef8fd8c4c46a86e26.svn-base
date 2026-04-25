@@ -1,0 +1,134 @@
+import { Injectable } from '@angular/core';
+import { Router, NavigationStart } from '@angular/router';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { ToastrService } from 'ngx-toastr';
+import { MatDialog } from '@angular/material/dialog';
+import { TranslateService } from '@ngx-translate/core';
+import { FormGroup } from '@angular/forms';
+//import { InputDialogComponent } from '../../helper/inputDialog/inputDialog.component';
+
+
+@Injectable({
+  providedIn: 'root'
+})
+export class NotificationsService {
+  public subject = new BehaviorSubject<any>([]);
+  public keepAfterRouteChange = true;
+
+  constructor(public router: Router, private _toastr: ToastrService,
+    private dialog: MatDialog, public translate: TranslateService) {
+    // clear alert messages on route change unless 'keepAfterRouteChange' flag is true
+    router.events.subscribe(event => {
+      if (event instanceof NavigationStart) {
+        if (this.keepAfterRouteChange) {
+          // only keep for a single route change
+          this.keepAfterRouteChange = false;
+        } else {
+          // clear alert messages
+          this.clear();
+        }
+      }
+    });
+  }
+  //this services is used for show notifiaction using toastr services
+  //show dialog when you want to delete item to confirm before delete
+
+  // openConfirmDialog(msg: any, displayCancel = false) {
+  //   return this.dialog.open(ConfirmationDialogComponent, {
+  //     width: '390px',
+  //     panelClass: 'confirm-dialog-container',
+  //     disableClose: true,
+  //     data: {
+  //       message: msg,
+  //       displayCancel: displayCancel,
+  //     }
+  //   });
+  // }
+
+
+
+  getAlert(): Observable<any> {
+    return this.subject.asObservable();
+  }
+
+  //start alertjs function
+  private success(message: string) {
+    // this._toastr.success((message == "") ? "The Operation Have Been Successfully Done" : message);
+    debugger;
+    this._toastr.success((message == "") ? this.getTransMessage('Notification.Success') : message, '', { positionClass: this.setToasterPosition() });
+  }
+  private Exist(message: string) {
+    this._toastr.error((message == "") ? this.getTransMessage('Notification.Exist') : message, '', { positionClass: this.setToasterPosition() });
+  }
+
+  private ExistItems(message: string) {
+    this._toastr.error((message == "") ? this.getTransMessage('Notification.ExistItems') : message, '', { positionClass: this.setToasterPosition() });
+  }
+  private ExitUser(message: string) {
+    this._toastr.error((message == "") ? this.getTransMessage('Notification.ExistUser') : message, '', { positionClass: this.setToasterPosition() });
+  }
+  private ExistAlternative(message: string) {
+    this._toastr.error((message == "") ? this.getTransMessage('Notification.ExistAlternative') : message, '', { positionClass: this.setToasterPosition() });
+
+  }
+  private ExistPIRIORITY(message: string) {
+    this._toastr.error((message == "") ? this.getTransMessage('Notification.ExistPIRIORITY') : message, '', { positionClass: this.setToasterPosition() });
+
+  }
+  private ExistInOtherModule(message: string) {
+    this._toastr.error((message == "") ? this.getTransMessage('Notification.ExistWithOtherModule') : message, '', { positionClass: this.setToasterPosition() });
+  }
+  private Failed(message: string) {
+    this._toastr.error((message == "") ? this.getTransMessage('Notification.Failed') : message, '', { positionClass: this.setToasterPosition() });
+  }
+  private Related(message: string) {
+    //this._toastr.info((message == "") ? "Related Data Exist" : message);
+    this._toastr.info((message == "") ? this.getTransMessage('Notification.Related') : message, '', { positionClass: this.setToasterPosition() });
+  }
+  private PhoneExists(message:string)
+  {
+    this._toastr.error((message == "") ? this.getTransMessage('Notification.PhoneExists') : message, '', { positionClass: this.setToasterPosition() });
+
+  }
+  public Info(message: string | undefined) {
+    this._toastr.info(message, '',
+      {
+        closeButton: true,
+        positionClass: this.setToasterPosition()
+      });
+  }
+
+  public InfoForExcel(message: string | undefined) {
+    this._toastr.info(message, '',
+      {
+        closeButton: true,
+        disableTimeOut: true,
+        positionClass: this.setToasterPosition(),
+        enableHtml: true
+      });
+  }
+  //end alertjs function
+
+  clear() {
+    this.subject.next([]);
+  }
+  //------------------------------------------
+  getTransMessage(Key: string) {
+    let message = '';
+    this.translate.get(Key).subscribe((res: string) => {
+      message = res;
+    });
+    return message;
+  }
+
+  setToasterPosition() {
+    debugger;
+    if (this.translate.currentLang == 'ar') {
+      return 'toast-top-left';
+    } else {
+      return 'toast-top-right';
+    }
+  }
+
+}
+

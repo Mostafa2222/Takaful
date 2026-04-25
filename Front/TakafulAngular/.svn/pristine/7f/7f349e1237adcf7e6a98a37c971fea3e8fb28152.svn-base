@@ -1,0 +1,24 @@
+import { Injectable } from '@angular/core';
+import { UserData } from '../../models/UserData';
+
+@Injectable({
+  providedIn: 'root',
+})
+export class DataExtractionService {
+
+  constructor() { }
+
+  extractData(response: string): UserData {
+    const userData = new UserData();
+    response = response.replace('DmsSecUserProfile(', '').replace(')', '');
+    const keyValuePairs = response.split(', ');
+    userData.userCode = keyValuePairs[0].split('userCode=');
+    userData.userPassword = keyValuePairs[1].split('userPassword=');
+    userData.userNameLatin = keyValuePairs[2].split('userNameLatin=');
+    userData.userNameArabic = keyValuePairs[3].split('userNameArabic=');
+    userData.active = keyValuePairs[4].split('active=');
+    userData.employeeCode = keyValuePairs[5].split('employeeCode=');
+    userData.employeeId = keyValuePairs[6].split('employeeId=');
+    return userData;
+  }
+}

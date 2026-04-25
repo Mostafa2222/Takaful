@@ -1,0 +1,45 @@
+
+<!-- Related companies Map -->
+<div class="modal fade" id="RelatedCompaniesMapModal" tabindex="-1">
+  <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h1 class="modal-title fs-5">{{ "Organization.Timeline.Legal_Status.Long_Lat" | translate
+          }}</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+              <style>
+                  #add-root-node {
+                      cursor: pointer;
+                      color: #007bff;
+                      font-size: 16px;
+                      margin-bottom: 10px;
+                  }
+
+                  #add-root-node:hover {
+                      color: #0056b3;
+                  }
+              </style>
+              <div class="row">
+                <div class="col-sm-5 text-center d-flex">
+                  <input type="text" id="search-input"
+                    [placeholder]="'Organization.Timeline.Legal_Status.Search' | translate"
+                    class="form-control mb-2">
+                </div>
+                <div class="col-sm-1">
+                <input type="button" id="search-btn" class="btn btn-primary w-100"
+                [value]="'Organization.Timeline.Legal_Status.SearchBtn' | translate">
+              </div>
+              <div class="col-sm-1">
+                <input type="button" id="emit-btn" class="btn btn-success w-100" data-bs-dismiss="modal"
+                [value]="'Organization.Timeline.Legal_Status.Select' | translate">
+              </div>
+              </div>
+              <div id="relatedMap" style="height: 400px;"></div>
+
+          </div>
+
+      </div>
+  </div>
+</div>

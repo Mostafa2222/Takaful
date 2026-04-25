@@ -1,0 +1,29 @@
+export class FinancialBasicDto {
+    definitionId: number | null;
+    currancyId: number | null;
+    chartTypeId: number | null;
+    chartTempId: number | null;
+    currencyLatinName: string;
+    currencyArabicName: string;
+    typeLatinName: string;
+    typeArabicName: string;
+    templateLatinName: string;
+    templateArabicName: string;
+    createPOForSubBranch: string;
+    invoicePayForSubBranch: string;
+
+    constructor() {
+        this.definitionId = 0;
+        this.currancyId = null;
+        this.chartTypeId = null;
+        this.chartTempId = null;
+        this.currencyLatinName = '';
+        this.currencyArabicName = '';
+        this.typeLatinName = '';
+        this.typeArabicName = '';
+        this.templateLatinName = '';
+        this.templateArabicName = '';
+        this.createPOForSubBranch = '';
+        this.invoicePayForSubBranch = '';
+    }
+}

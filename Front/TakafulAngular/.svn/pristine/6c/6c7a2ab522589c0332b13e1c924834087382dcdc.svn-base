@@ -1,0 +1,247 @@
+import { Component, OnInit } from '@angular/core';
+import { DeptDefinitionService } from '../../../services/dept-definition.service';
+import { JobDefinition } from '../../../models/job-definition';
+import { MenuItem, TreeNode } from 'primeng/api';
+import { TranslateService } from '@ngx-translate/core';
+import { Router } from '@angular/router';
+import { TreeDisplayService } from '../../../services/tree-display.service';
+import { ToastrService } from 'ngx-toastr';
+import { EnvironmentService } from '../../../services/environment.service';
+import { DmsStpLevelDetailsDTO } from '../../../DTO/DmsStpLevelDetailsDTO';
+import { TreeRestService } from '../../../services/TreeServices/tree-rest';
+import { finalize } from 'rxjs';
+@Component({
+  selector: 'app-department-definition',
+  templateUrl: './department-definition.component.html',
+  styleUrl: './department-definition.component.css'
+})
+export class DepartmentDefinitionComponent implements OnInit {
+  selectedValue: string = '0';
+  jobDefinitions: JobDefinition[] = [];
+  treeData: any[] = [];
+  relatedTreeData: any[] = [];
+  nodesTree: number[] = [];
+  nodes: TreeNode[] = [];
+    dmsStpLevelDetails: DmsStpLevelDetailsDTO | any = {};
+
+  nodes2: TreeNode[] = [];
+  showOrgChart = false;
+  selectedNode!: TreeNode[];
+  isLoading = false;
+  errorMessage = '';
+  loading: boolean = false;
+  items: MenuItem[] = [];
+  companies: any[] = [];
+  selectedCompanyId: number = 0;
+  constructor(private deptSer: DeptDefinitionService,
+    public translate: TranslateService,private toaster: ToastrService,
+    private router: Router, private treeSer: TreeDisplayService,
+    private _treeRest: TreeRestService,
+    public _environmentService: EnvironmentService) { }
+
+  ngOnInit() {
+    this.translate.onLangChange.subscribe((event) => {
+      if(this.nodes){
+        this.nodes = this.mapToTreeNode(this.treeData, this.translate.currentLang);
+        this.nodes2 = this.mapToTreeNode(this.treeData, this.translate.currentLang);
+      }
+    });
+    this.relatedTreeData = JSON.parse(localStorage.getItem('Tree') || '[]');
+
+const selected = localStorage.getItem('selectedBranch');
+    if (selected != undefined) {
+      this.dmsStpLevelDetails = typeof selected === "string" ? JSON.parse(selected) : selected;
+    }
+    this._treeRest.getAllTreeNodesUsingDefinitionId(this.dmsStpLevelDetails.defintionId)
+      .pipe(
+        finalize(() => {
+          this.loading = false;
+        })
+      )
+      .subscribe(
+        (res: any) => {
+          if (res) {
+            this.relatedTreeData = res;
+            this.nodesTree = this.reduceToTreeNode(this.relatedTreeData);
+            this.deptSer.getCompanies(this.nodesTree).subscribe(
+              (response) => {
+                this.companies = response.map(company => {
+                  return {
+                    latinName: company[0],
+                    arabicName: company[1],
+                    id: company[2]
+                  };
+                });
+              },
+              (error) => {
+                console.error('Error occurred while fetching companies:', error);
+              }
+            );
+          }
+        },
+        (err) => {
+          console.error(err);
+        }
+      );
+  }
+  reduceToTreeNode(data: any[]): number[] {
+    let result: number[] = [];
+    for (const node of data) {
+      if (true) {
+        result.push(node.defintionId);
+      }
+      if (node.children && node.children.length > 0) {
+        result.push(...this.reduceToTreeNode(node.children));
+      }
+    }
+    return result;
+  }
+  template(id: any) {
+    this.loading = true;
+    this.getJobDefinitions(id);
+    this.getDepartmentDefinition(id);
+  }
+  getJobDefinitions(branchId: number): void {
+    this.deptSer.getJobDefinition(branchId).subscribe({
+      next: (data) => {
+        this.jobDefinitions = data;
+        this.isFetching();
+      },
+      error: (err) => {
+        console.error('Error fetching job definitions:', err);
+      }
+    });
+  }
+  getDepartmentDefinition(branchId: number) {
+    this.deptSer.getDepartmentDefinition(branchId).subscribe({
+      next: (data) => {
+        this.treeData = data;
+        this.isFetching();
+        this.nodes = this.mapToTreeNode(this.treeData, this.translate.currentLang);
+        this.nodes2 = this.mapToTreeNode(this.treeData, this.translate.currentLang);
+      },
+      error: (err) => {
+        console.error('Error fetching job definitions:', err);
+      }
+    });
+  }
+  isFetching() {
+    if ((this.jobDefinitions.length > 0 || this.treeData.length > 0) || this.selectedValue == "0") {
+      setTimeout(() => {
+        this.loading = false;
+      }, 500)
+    }
+
+  }
+  mapToTreeNode(data: any[], lan: string): TreeNode[] {
+    return data.map((node) => ({
+      label: ` ${lan === 'ar' ? node.arabicName : node.latinName}`,
+      data: node,
+      expanded: false,
+      icon: 'pi pi-fw pi-home',
+      children: node.children ? this.mapToTreeNode(node.children, lan) : [],
+    }));
+  }
+  mapToTreeNode2(data: any[],  lan: string): TreeNode[] {
+    return data.map((node) => ({
+      label: ` ${lan === 'ar' ? node.data.arabicName : node.data.latinName}`,
+      data: node.data,
+      expanded: false,
+      icon: 'pi pi-fw pi-home',
+      children: node.children ? this.mapToTreeNode2(node.children, lan) : [],
+    }));
+  }
+  nodeSelect(event: any) {
+    let ids: number[] = [];
+    this.selectedNode = event.node;
+    const mappedSelectedNode = this.mapToTreeNode2([this.selectedNode], this.translate.currentLang)[0];
+    this.nodes2 = [mappedSelectedNode];
+
+    // if (event.node.children.length > 0) {
+    //   event.node.children.forEach((ele: {
+    //     data: any;
+    //   }) => {
+    //     ids.push(ele.data.departmentId)
+    //   });
+
+    // } else {
+    //   ids.push(event.node.data.departmentId)
+    // }
+    // this.getJobSelected(event.node.data.branchId, ids);
+  }
+  getJobSelected(branchId: number, ids: number[]): void {
+    this.deptSer.getJobDefinitionSelected(branchId, ids).subscribe({
+      next: (data) => {
+        this.jobDefinitions = data;
+      },
+      error: (err) => {
+        console.error('Error fetching job definitions:', err);
+      }
+    });
+  }
+  showNames() {
+    if(this.selectedValue !== '0'){
+
+    const cleanedNodes = this.nodes2.map((node) => this.removeParentReferences(node));
+    this.treeSer.setTreeData(cleanedNodes);
+    const basePath = window.location.hostname === 'localhost' ? '' : '/Front/Org';
+    const url = this.router.serializeUrl(this.router.createUrlTree(['/Content/treeOrgChart']));
+    const fullUrl = `${window.location.origin}${basePath}/#${url}`;
+    window.open(fullUrl, '_blank');
+
+    }else{
+      if (this.translate.currentLang == 'en') {
+        this.toaster.info('Select a template', 'Info')
+      }
+      else {
+        this.toaster.info('حدد قالب', 'معلومه', {
+          positionClass: 'toast-top-left'
+        })
+      }
+    }
+  }
+  removeParentReferences(node: TreeNode): TreeNode {
+    const newNode = { ...node };
+    if (newNode.children) {
+      newNode.children = newNode.children.map((child) => this.removeParentReferences(child));
+    }
+    delete newNode.parent;
+    return newNode;
+  }
+
+  saveDept(): void {
+    if (this.selectedValue !== '0' && this.selectedCompanyId !== 0) {
+      this.deptSer.saveDepartment(this.selectedCompanyId, this.selectedValue).subscribe({
+        next: (response) => {
+          if (this.translate.currentLang == 'en') {
+            this.toaster.success('Saved Successfully.', 'Success');
+          } else {
+            this.toaster.success('تم الحفظ بنجاح.', 'نجاح', {
+              positionClass: 'toast-top-left'
+            });
+          }
+          setTimeout(()=>{
+            window.location.reload();
+          },1000)
+        },
+        error: (err) => {
+          if (this.translate.currentLang == 'en') {
+            this.toaster.error('Failed to save.', 'Fail');
+          } else {
+            this.toaster.error('فشل الحفظ.', 'فشل', {
+              positionClass: 'toast-top-left'
+            });
+          }
+        }
+      });
+    } else {
+      if (this.translate.currentLang == 'en') {
+        this.toaster.info('Select a template and a company', 'Info');
+      } else {
+        this.toaster.info('حدد قالب وشركه', 'معلومه', {
+          positionClass: 'toast-top-left'
+        });
+      }
+    }
+  }
+}

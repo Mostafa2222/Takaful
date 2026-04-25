@@ -1,0 +1,921 @@
+import { ChangeDetectorRef, Component, EventEmitter, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router'; // Import Router
+import { ToastrService } from 'ngx-toastr';
+import { MenuItem, MessageService, TreeNode } from 'primeng/api';
+import { TranslateService } from '@ngx-translate/core';
+import { TreeRestService } from '../../../services/TreeServices/tree-rest';
+import { OrganizationStructureDTO } from '../../../DTO/OrganizationStructureDTO';
+import { debounceTime, distinctUntilChanged, finalize, tap } from 'rxjs/operators';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { DmsStpLevelDetails, DmsStpLevelDetailsDTO } from '../../../DTO/DmsStpLevelDetailsDTO';
+import { DmsStpLevelDescriptionDTO } from '../../../DTO/DmsStpLevelDescriptionDTO';
+import { LegalStatusRestService } from '../../../services/LegalStatusServices/legal-status.service';
+import { BrowserDataDto, DmsStpNatureOfWorkDto, DmsStpSectorNatureDto } from '../../../DTO/browserDataDTO';
+import { LegalStatusDialogsDTO } from '../../../DTO/LegalStatusDialogsDTO';
+import { MapComponent } from '../../../helper/map/map.component';
+import { AddressSetupModelComponent } from '../address-setup-model/address-setup-model.component';
+import { AddressGroupModelComponent } from '../address-group-model/address-group-model.component';
+import { ShareholdersmodelComponent } from '../shareholdersmodel/shareholdersmodel.component';
+import { BrowserService } from '../../../services/common Services/browser.service';
+import { Observable, Subject } from 'rxjs';
+import { RelatedMapComponent } from '../../../helper/related-map/related-map.component';
+import { UserData } from '../../../models/UserData';
+
+@Component({
+  selector: 'app-related-companies',
+  templateUrl: './related-companies.component.html',
+  styleUrl: './related-companies.component.css',
+  providers: [MessageService]
+})
+export class RelatedCompaniesComponent implements OnInit {
+  loggedUser?: UserData | any
+  companyType: string | any;
+  private codeCheckSubject = new Subject<string>();
+  treeData: any[] = [];
+  filteredNodes: TreeNode[] = [];
+  nodes: TreeNode[] = [];
+  contextMenuNode: TreeNode | any;
+  levelsDescriptions: DmsStpLevelDescriptionDTO[] | any;
+  searchQuery: string = '';
+  selectedNode: OrganizationStructureDTO | any;
+  selectedNode2: DmsStpLevelDetailsDTO | any;
+  combinedPath: any;
+  codeWidth: number = 0
+  loading: boolean = false;
+  errorMessage = '';
+  items: MenuItem[] = [];
+  addressLabel: string = '';
+  relatedCompanyForm!: FormGroup<any> | any;
+  isDisabled: boolean | any;
+  dmsStpLevelDetails: DmsStpLevelDetailsDTO | any = {};
+  selectedBranch: DmsStpLevelDetailsDTO | any;
+  nodesIds: number[] = []
+  /*---------------Legal Status variables--------------*/
+  isModalOpen = false;
+  public sectorsData: DmsStpSectorNatureDto[] | any;
+  tempDefinitionCode!: string
+  @ViewChild(RelatedMapComponent) relatedMapComponent: RelatedMapComponent | any;
+  @ViewChild(AddressSetupModelComponent) addressSetupModelComponent: AddressSetupModelComponent | any;
+  @ViewChild(AddressGroupModelComponent) addressGroupModelComponent: AddressGroupModelComponent | any;
+  @ViewChild(ShareholdersmodelComponent) shareholdersModelComponent: ShareholdersmodelComponent | any;
+  numberOfShareholders: number = 0;
+  locationInput: string = '';
+  coordinates: string = '';
+  currentLanguage: string = 'en';
+  currentPage = 1;
+  pageSize = 5;
+  filterQuery: string = '';
+  filter = { displayedNameAr: '', displayedNameEn: '' };
+  hoveredWork: any = null;
+  selectedWork1: DmsStpNatureOfWorkDto | any;
+  selectedWork2: DmsStpNatureOfWorkDto | any;
+  activeDropdown: string = '';
+  selectedEmitter: EventEmitter<any> = new EventEmitter<any>();
+  /*--------- Dynamic dialog logic------------- */
+  selectedValue!: BrowserDataDto;
+  dialogData: BrowserDataDto[] | any;
+  SelectName: string = '';
+  legalStatusDialogDto: LegalStatusDialogsDTO;
+  currencyBrowserData: BrowserDataDto[] = [];
+  languageBrowserData: BrowserDataDto[] = [];
+  templateTypeBrowserData: BrowserDataDto[] = [];
+  templateBrowserData: BrowserDataDto[] = [];
+  tableName: any;
+  lastSelected!: BrowserDataDto;
+  /*----------------------------------*/
+  constructor(
+    private _legalStatusService: LegalStatusRestService,
+    public translate: TranslateService,
+    private _treeRest: TreeRestService,
+    private _getTablesServices: BrowserService,
+    private toaster: ToastrService,
+    private cdr: ChangeDetectorRef
+  ) {
+    this.legalStatusDialogDto = {
+      capitalCurrency: { idNum: 0, displayedNameEn: '-- Select --', displayedNameAr: '-- اختر --' },
+      language: { idNum: 0, displayedNameEn: '-- Select --', displayedNameAr: '-- اختر --' }
+    };
+    this.initializeRelatedCompaniesForm(false, false);
+  }
+
+  ngOnInit() {
+    this.loggedUser = JSON.parse(localStorage.getItem('userData') || '{}');
+    this.translate.onLangChange.subscribe((event) => {
+      this.currentLanguage = event.lang;
+    });
+    this.currentLanguage = this.translate.currentLang || 'en';
+    this.handleLang()
+    this.tempDefinitionCode = this.dmsStpLevelDetails.definitionCode
+    this.companyType = localStorage.getItem('hasRelatedCompanies');
+    this.loadSectorsFromLocalStorage();
+
+    this.fillScreenFields()
+    this.codeCheckSubject.pipe(
+      debounceTime(500),  // Wait 500ms before calling API
+      distinctUntilChanged() // Avoid duplicate calls if value hasn't changed
+    ).subscribe(code => {
+      this.checkCodeExist(code);
+    });
+
+    // **Detect Route Changes & Reload Data**
+    // this.router.events.subscribe(() => {
+    //   this.loadData();
+    // });
+
+    // **Detect Language Change & Reload Data**
+    this.translate.onLangChange.subscribe(() => {
+      this.loadData();
+    });
+  }
+  ngAfterViewInit(): void {
+    this.loadData(); // Call initially
+    this.getLevelsDescriptions()
+    const RelatedCompaniesMapModal = document.getElementById('RelatedCompaniesMapModal');
+    if (RelatedCompaniesMapModal) {
+      RelatedCompaniesMapModal.addEventListener('shown.bs.modal', () => {
+        if (this.relatedMapComponent) {
+          this.relatedMapComponent.refreshMap();
+        }
+      });
+    }
+  }
+  /*------------- Tree Filling --------- */
+  fillScreenFields(): void {
+    this.legalStatusDialogDto = {
+      capitalCurrency: { idNum: 0, displayedNameEn: '-- Select --', displayedNameAr: '-- اختر --' },
+      language: { idNum: 0, displayedNameEn: '-- Select --', displayedNameAr: '-- اختر --' }
+    };
+    this.assignSelectedWorks();
+    this.setSectorDetails(this.dmsStpLevelDetails?.sectorNatureId, this.dmsStpLevelDetails?.natureOfWorkId, true);
+    this.activeDropdown = 'specialty1'
+    this.selectedOption(this.selectedWork1, this.dmsStpLevelDetails.sectorNatureId,
+      this.dmsStpLevelDetails.sectorNatureArabic, this.dmsStpLevelDetails.sectorNatureEnglish
+    )
+    this.setSectorDetails(this.dmsStpLevelDetails?.otherSectorNatureId, this.dmsStpLevelDetails?.otherNatureOfWorkId, false);
+    this.activeDropdown = 'specialty2'
+    this.selectedOption(this.selectedWork2, this.dmsStpLevelDetails.otherSectorNatureId,
+      this.dmsStpLevelDetails.otherSectorNatureArabic, this.dmsStpLevelDetails.otherSectorNatureEnglish
+    )
+    this.patchCoordinates();
+    this.getBrowserData();
+  }
+  loadData() {
+    this.dmsStpLevelDetails = {}
+    this.selectedWork1 = {};
+    this.selectedWork2 = {};
+    this.legalStatusDialogDto = {
+      capitalCurrency: { idNum: 0, displayedNameEn: '-- Select --', displayedNameAr: '-- اختر --' },
+      language: { idNum: 0, displayedNameEn: '-- Select --', displayedNameAr: '-- اختر --' }
+    };
+    if (localStorage.getItem("token")) {
+      this.populateTree();
+      this.initializeRelatedCompaniesForm(false, false);
+    }
+  }
+
+  populateTree() {
+    this.loading = true;
+    const selected = localStorage.getItem('selectedBranch');
+    if (selected != undefined) {
+      this.selectedBranch = JSON.parse(selected) as DmsStpLevelDetailsDTO;
+    }
+    this._treeRest.getAllTreeNodesUsingDefinitionId(this.selectedBranch.defintionId)
+      .pipe(
+        finalize(() => {
+          this.loading = false;
+          this.cdr.detectChanges();
+        })
+      )
+      .subscribe(
+        (res: any) => {
+          if (res) {
+            this.treeData = res;
+            this.nodes = this.mapToTreeNode(this.treeData);
+            this.filteredNodes = [...this.nodes];
+          }
+        },
+        (err) => {
+          console.error(err);
+        }
+      );
+  }
+
+  mapToTreeNode(data: any[]): TreeNode[] {
+    return data.map((node) => ({
+      label: this.translate.currentLang === 'en' ? `${node.englishName}` : `${node.arabicName}`,
+      data: node,
+      expanded: false,
+      icon: node.actAsBranch != null && node.actAsBranch == 'Y' ? 'icon fa-solid fa-building' : 'pi pi-fw pi-home',
+      children: node.children ? this.mapToTreeNode(node.children) : [],
+    }));
+  }
+  getLevelsDescriptions() {
+    this._legalStatusService.GetLevelsDescriptions().subscribe(
+      (data: any) => {
+        if (data && data.length > 0) {
+          this.levelsDescriptions = data.map((level: any) => ({ ...level }));
+        } else {
+          this.levelsDescriptions = [];
+        }
+      },
+      (error) => {
+        console.error('Error fetching levels descriptions:', error);
+      }
+    );
+  }
+  /*-------------- Nodes Actions -------- */
+  // Capture the node that was right-clicked
+  onNodeRightClick(event: any) {
+    if (event?.node && event?.originalEvent) {
+      this.contextMenuNode = event.node;
+      const pathToNode = this.findPathToNode(this.treeData, event.node.data.defintionId);
+      if (pathToNode.length < this.levelsDescriptions.length)
+        this.updateContextMenuItems(this.levelsDescriptions[pathToNode.length], this.levelsDescriptions[pathToNode.length - 1], pathToNode.length);
+      event.originalEvent.preventDefault(); // Prevent default browser menu
+    } else {
+    }
+  }
+  // Dynamically update context menu items
+  updateContextMenuItems(childNode: any, currentNode: any, length: any) {
+    this.items = [];
+    this.nodesIds = []
+    this.fillNodesIds(this.contextMenuNode);
+    this.codeWidth = childNode.segmentWidth
+    if (this.contextMenuNode) {
+      if (length == 1) {
+        this.items.push(
+          {
+            label: `Add ${childNode.englishName}`,
+            icon: 'pi pi-pencil',
+            command: () => this.addChildNode(this.contextMenuNode, childNode.levelId)
+          },
+          {
+            label: 'Add Company',
+            icon: 'pi pi-plus-circle',
+            command: () => this.addBranch(this.contextMenuNode, childNode.levelId)
+          }
+        );
+      }
+      else if (this.contextMenuNode.data.actAsBranch == 'Y') {
+        this.items.push(
+          {
+            label: `Delete Company`,
+            icon: 'pi pi-trash',
+            command: () => this.deleteNode()
+          }
+        );
+      }
+      else {
+        this.items.push(
+          {
+            label: `Add ${childNode.englishName}`,
+            icon: 'pi pi-pencil',
+            command: () => this.addChildNode(this.contextMenuNode, childNode.levelId)
+          },
+          {
+            label: 'Add Company',
+            icon: 'pi pi-plus-circle',
+            command: () => this.addBranch(this.contextMenuNode, childNode.levelId)
+          },
+          {
+            label: `Delete ${currentNode.englishName}`,
+            icon: 'pi pi-trash',
+            command: () => this.deleteNode()
+          }
+        );
+      }
+    }
+  }
+  fillNodesIds(selectedNode: any) {
+    const collectIds = (node: any) => {
+      this.nodesIds.push(selectedNode.data.defintionId);
+      if (node.children && node.children.length > 0) {
+        node.children.forEach((child: any) => {
+          this.nodesIds.push(child.defintionId);
+        });
+      }
+    };
+    collectIds(selectedNode.data);
+  }
+  addChildNode(selected: TreeNode, nodeLevel: any) {
+    if (selected) {
+      this.dmsStpLevelDetails = {}
+      this.dmsStpLevelDetails.parentId = selected.data.defintionId
+      this.dmsStpLevelDetails.levelId = nodeLevel
+      this.companyType = 'Group'
+    }
+    this.contextMenuNode = {} as TreeNode<any>;
+    this.initializeRelatedCompaniesForm(true, true)
+  }
+
+  addBranch(selectedNode: TreeNode, nodeLevel: any) {
+    if (selectedNode) {
+      this.dmsStpLevelDetails = {}
+      this.dmsStpLevelDetails.parentId = selectedNode.data.defintionId
+      this.dmsStpLevelDetails.levelId = nodeLevel
+      //this.dmsStpLevelDetails.actAsBranch = 'Y'
+      this.companyType = 'standalone'
+    }
+    this.contextMenuNode = {} as TreeNode<any>;
+    this.initializeRelatedCompaniesForm(true, true)
+  }
+
+  deleteNode() {
+    this.loading = true;
+    this.nodesIds.reverse()
+    this._legalStatusService.deleteExistingLevelDetails(this.nodesIds).subscribe(
+      (response) => {
+        if (response) {
+          if (response.message === "Deleted") {
+            this.loadData()
+            if (this.translate.currentLang == 'en') {
+              this.toaster.success('Data Deleted Successfully', 'Success');
+            }
+            else {
+              this.toaster.success('تم الحذف', '', {
+                positionClass: 'toast-top-left'
+              })
+            }
+          }
+        }
+      },
+      (error) => {
+        if (this.translate.currentLang === 'en') {
+          this.toaster.error('Failed to Delete', 'Error');
+        } else {
+          this.toaster.error('فشل في الحذف ', 'خطأ', {
+            positionClass: 'toast-top-left'
+          });
+        }
+        console.error('Error occurred:', error);
+        this.loading = false;
+        this.cdr.detectChanges();
+      }
+    );
+  }
+  nodeSelect(event: any) {
+    this.selectedNode = event.node.data
+    const pathToNode = this.findPathToNode(this.treeData, this.selectedNode.defintionId);
+    const combinedPath = pathToNode.map((node, index) => ({
+      ...node,
+      description: this.levelsDescriptions[index] || ''
+    }));
+    this.combinedPath = combinedPath;
+    this.dmsStpLevelDetails = this.selectedNode
+    this.fillScreenFields()
+    this.codeWidth = this.levelsDescriptions[pathToNode.length -
+      1].segmentWidth
+    this.initializeRelatedCompaniesForm(true, true)
+  }
+
+  findPathToNode(rootNodes: OrganizationStructureDTO[], selectedNodeId: number): OrganizationStructureDTO[] {
+    let path: OrganizationStructureDTO[] = [];
+    function search(node: OrganizationStructureDTO, currentPath: OrganizationStructureDTO[]): boolean {
+      currentPath.push(node);
+      if (node.defintionId === selectedNodeId) {
+        path = [...currentPath];
+        return true;
+      }
+      for (let child of node.children || []) {
+        if (search(child, currentPath)) {
+          return true;
+        }
+      }
+      currentPath.pop();
+      return false;
+    }
+    for (let root of rootNodes) {
+      if (search(root, [])) break;
+    }
+    return path;
+  }
+
+  /*---------------- Sectors & work Logic--------------- */
+  loadSectorsFromLocalStorage(): void {
+    const storedSectors = localStorage.getItem("Sectors");
+
+    if (storedSectors) {
+      try {
+        this.sectorsData = JSON.parse(storedSectors);
+        this.setSectorDetails(this.dmsStpLevelDetails?.sectorNatureId, this.dmsStpLevelDetails?.natureOfWorkId, true);
+        this.setSectorDetails(this.dmsStpLevelDetails?.otherSectorNatureId, this.dmsStpLevelDetails?.otherNatureOfWorkId, false);
+
+      } catch (error) {
+        console.error("❌ Error parsing Sectors from localStorage", error);
+      }
+    } else {
+      console.warn("⚠️ No sectors data found in localStorage. Consider handling this case.");
+    }
+  }
+
+
+  private setSectorDetails(sectorId: number, natureOfWorkId: number, isMainSector: boolean): void {
+    if (!this.sectorsData || !Array.isArray(this.sectorsData)) {
+      console.error("sectorsData is undefined or not an array:", this.sectorsData);
+      return;
+    }
+    const sector = this.sectorsData.find((sec: { sectorNatureId: any; }) => sec.sectorNatureId === sectorId);
+    if (!sector) {
+      console.warn(`Sector with ID ${sectorId} not found in sectorsData.`);
+      return;
+    }
+    if (isMainSector) {
+      this.dmsStpLevelDetails.sectorNatureEnglish = sector.natureNameEnglish;
+      this.dmsStpLevelDetails.sectorNatureArabic = sector.natureNameArabic;
+    } else {
+      this.dmsStpLevelDetails.otherSectorNatureEnglish = sector.natureNameEnglish;
+      this.dmsStpLevelDetails.otherSectorNatureArabic = sector.natureNameArabic;
+    }
+    if (!sector.dmsStpNatureOfWorks || !Array.isArray(sector.dmsStpNatureOfWorks)) {
+      console.warn(`Sector ${sectorId} has no valid 'dmsStpNatureOfWorks' array.`);
+      return;
+    }
+    const natureOfWork = sector.dmsStpNatureOfWorks.find((work: { natureOfWorkId: any; }) => work.natureOfWorkId === natureOfWorkId);
+    if (!natureOfWork) {
+      console.warn(`Nature of work with ID ${natureOfWorkId} not found in sector ${sectorId}.`);
+      return;
+    }
+    if (isMainSector) {
+      this.dmsStpLevelDetails.natureOfWorkEnglish = natureOfWork.englishName;
+      this.dmsStpLevelDetails.natureOfWorkArabic = natureOfWork.arabicName;
+    } else {
+      this.dmsStpLevelDetails.otherNatureOfWorkEnglish = natureOfWork.englishName;
+      this.dmsStpLevelDetails.otherNatureOfWorkArabic = natureOfWork.arabicName;
+    }
+  }
+
+  assignSelectedWorks() {
+    this.selectedWork1 = this.findWorkById(this.dmsStpLevelDetails.natureOfWorkId);
+    this.selectedWork2 = this.findWorkById(this.dmsStpLevelDetails.otherNatureOfWorkId);
+  }
+  findWorkById(workNatureId: number | null): DmsStpNatureOfWorkDto | undefined {
+    if (!workNatureId) {
+      return undefined;
+    }
+    if (!this.sectorsData || !Array.isArray(this.sectorsData)) {
+      return undefined;
+    }
+    for (let sector of this.sectorsData) {
+      if (!sector.dmsStpNatureOfWorks || !Array.isArray(sector.dmsStpNatureOfWorks)) {
+        continue; // Skip this sector if it has no works
+      }
+      const work = sector.dmsStpNatureOfWorks.find((work: any) => work.natureOfWorkId === workNatureId);
+      if (work) return work;
+    }
+    return undefined;
+  }
+
+
+  /*----------------Map Logic------------- */
+  parseCoordinates(coordinates: string): void {
+    const [lng, lat] = coordinates.split(',').map(coord => parseFloat(coord.trim()));
+    if (this.relatedMapComponent && !isNaN(lat) && !isNaN(lng)) {
+      this.relocateMap(lng, lat);  // Call the method to relocate the map
+    }
+  }
+  relocateMap(lng: number, lat: number): void {
+    // Use the map component to access the Leaflet map and set the new center
+    const map = this.relatedMapComponent.getMap();  // Assuming you have a `getMap()` method in your MapComponent
+    if (map) {
+      map.setView([lng, lat], 13);
+    }
+  }
+  patchCoordinates(): void {
+    const latitude = this.dmsStpLevelDetails.latitude ?? '';
+    const longitude = this.dmsStpLevelDetails.longitude ?? '';
+    if (latitude === '' || longitude === '') {
+      this.coordinates = 'e.g. 25.276987 55.296249';
+    } else {
+      this.coordinates = `${longitude}, ${latitude}`;
+      this.relatedCompanyForm.patchValue({
+        coordinates: this.coordinates,
+      });
+    }
+    this.relatedCompanyForm.patchValue({
+      longitude: longitude,
+      latitude: latitude
+    });
+
+  }
+  onCoordinatesBlur(): void {
+    // const coordinates = this.legalStatusForm.get('coordinates').value;
+    // this.parseCoordinates(coordinates);
+  }
+  updateCoordinates(coords: string): void {
+    this.coordinates = coords;
+    const [lng, lat] = this.coordinates.split(',').map(coord => parseFloat(coord.trim()));
+    this.relatedCompanyForm.patchValue({
+      coordinates: coords,
+      latitude: lng,
+      longitude: lat
+    });
+    this.dmsStpLevelDetails.latitude = lat;
+    this.dmsStpLevelDetails.longitude = lng;
+  }
+  /*---------------- Form Logic--------------- */
+  initializeRelatedCompaniesForm(isBranch: boolean, isActive: boolean): void {
+    this.isDisabled = !isBranch
+    this.relatedCompanyForm = new FormGroup({
+      arabicName: new FormControl({ value: this.dmsStpLevelDetails.arabicName || '', disabled: !isActive }
+        , [Validators.required]),
+      englishName: new FormControl({ value: this.dmsStpLevelDetails.englishName || '', disabled: !isActive },
+        [Validators.required]),
+      definitionCode: new FormControl({ value: this.dmsStpLevelDetails.definitionCode || '', disabled: !isActive },
+        [Validators.required, Validators.pattern('^[a-zA-Z0-9]+$')]),
+      sectorNatureId: new FormControl({ value: this.dmsStpLevelDetails.sectorNatureId, disabled: !isBranch }),
+      natureOfWorkId: new FormControl({ value: this.dmsStpLevelDetails.natureOfWorkId, disabled: !isBranch }),
+      otherSectorNatureId: new FormControl({ value: this.dmsStpLevelDetails.otherSectorNatureId, disabled: !isBranch }),
+      otherNatureOfWorkId: new FormControl({ value: this.dmsStpLevelDetails.otherNatureOfWorkId, disabled: !isBranch }),
+      coordinates: new FormControl({ value: '', disabled: true }),
+      longitude: new FormControl({ value: this.dmsStpLevelDetails.longitude, disabled: !isBranch }),
+      latitude: new FormControl({ value: this.dmsStpLevelDetails.latitude, disabled: !isBranch }),
+      capital: new FormControl({ value: this.dmsStpLevelDetails.capital, disabled: !isBranch }),
+      currencyId: new FormControl({ value: this.dmsStpLevelDetails.currancyId, disabled: !isBranch }),
+      urlAddress: new FormControl({ value: this.dmsStpLevelDetails.urlAddress, disabled: !isBranch }),
+      languageId: new FormControl({ value: this.dmsStpLevelDetails.languageId, disabled: !isBranch }),
+    },
+    );
+  }
+  actAsBranchValueChange(event: MouseEvent | any) {
+    const checked = (event.target as HTMLInputElement).checked;
+    this.dmsStpLevelDetails.actAsBranch = checked ? 'Y' : 'N';
+    // this.companyType = checked ? 'standalone' : 'Group';
+
+  }
+  onCodeChange() {
+    const code = this.relatedCompanyForm.get('definitionCode')?.value;
+    if (code) {
+      this.codeCheckSubject.next(code);
+    }
+  }
+  checkCodeExist(code: string) {
+    this._legalStatusService.isDefinitionCodeExists(code).subscribe((response: any) => {
+      const control = this.relatedCompanyForm.get('definitionCode');
+      if (response.definitionCodeExists) {
+        this.loading = false;
+        this.cdr.detectChanges();
+        const message = this.translate.currentLang === 'en' ? 'Code already exists' : 'الكود موجود مسبقا';
+        const title = this.translate.currentLang === 'en' ? 'Warning' : 'تحذير';
+        const direction = this.translate.currentLang === 'en' ? 'toast-top-right' : 'toast-top-left'
+        this.toaster.warning(message, title, { positionClass: direction });
+      } else {
+        control?.setErrors(null);
+      }
+    });
+  }
+  onSubmit() {
+    // if (this.companyType) {
+    //   if (this.companyType == 'Group') {
+    //     //this.dmsStpLevelDetails.actAsBranch = 'N'
+    //     this.dmsStpLevelDetails.purchasedNode = 'N'
+    //   } else {
+    //    // this.dmsStpLevelDetails.actAsBranch = 'Y'
+    //     this.dmsStpLevelDetails.purchasedNode = 'Y'
+    //   }
+    // }
+    this.dmsStpLevelDetails.purchasedNode = 'Y'
+    // this.dmsStpLevelDetails.clientId = 1
+    this.dmsStpLevelDetails.languageId = this.legalStatusDialogDto.language.idNum;
+    this.dmsStpLevelDetails.currancyId = this.legalStatusDialogDto.capitalCurrency.idNum;
+    // this.dmsStpLevelDetails.actAsBranch = this.relatedCompanyForm.get('actAsBranch')?.value;
+    this.dmsStpLevelDetails.addTransactionUser = this.loggedUser.userNameLatin[1]
+    const combinedDto = {
+      dmsStpLevelDetailsDto: this.dmsStpLevelDetails
+    };
+    this.relatedCompanyForm.markAllAsTouched();
+    if (this.relatedCompanyForm.valid) {
+      this.loading = true;
+      if (this.dmsStpLevelDetails.defintionId) {
+        this._legalStatusService.editExistingDmsStpLevelDetails(combinedDto).
+          subscribe((response: any) => {
+            if (response.message === "Edited") {
+              this.loading = false;
+              this.cdr.detectChanges();
+              this.loadData()
+              if (this.translate.currentLang == 'en') {
+                this.toaster.success('Data Edited Successfully', 'Success');
+
+              }
+              else {
+                this.toaster.success('تم التعديل بنجاح', 'نجاح', {
+                  positionClass: 'toast-top-left'
+                })
+              }
+            }
+          },
+            (error: any) => {
+              this.loading = false;
+              this.cdr.detectChanges();
+              if (this.translate.currentLang == 'en') {
+                this.toaster.error('Failed to Edit', 'Error')
+              }
+              else {
+                this.toaster.error('فشل في التعديل ', 'خطأ', {
+                  positionClass: 'toast-top-left'
+                })
+              }
+              console.error('Error occurred:', error);
+            });
+      }
+      else {
+        this._legalStatusService.SaveDmsStpLevelDetails(combinedDto).
+          subscribe((response: any) => {
+            if (response.message === "Saved") {
+              this.loading = false;
+              this.cdr.detectChanges();
+              this.loadData()
+              if (this.translate.currentLang == 'en') {
+                this.toaster.success('Data Saved Successfully', 'Success');
+              }
+              else {
+                this.toaster.success('تم الإضافة بنجاح', 'نجاح', {
+                  positionClass: 'toast-top-left'
+                })
+              }
+            }
+          },
+            (error: any) => {
+              this.loading = false;
+              this.cdr.detectChanges();
+              if (this.translate.currentLang == 'en') {
+                this.toaster.error('Failed to Add', 'Error')
+              }
+              else {
+                this.toaster.error('فشل في الإضافة ', 'خطأ', {
+                  positionClass: 'toast-top-left'
+                })
+              }
+              console.error('Error occurred:', error);
+            });
+      }
+    } else {
+      if (this.translate.currentLang == 'en') {
+        this.toaster.error('Missing Values', 'Fail')
+      }
+      else {
+        this.toaster.error('حقول فارغة', 'خطأ', {
+          positionClass: 'toast-top-left'
+        })
+      }
+      console.warn('Invalid Form 2', this.relatedCompanyForm.controls)
+    }
+  }
+  /*---------------- Dynamic Dialog Logic--------------- */
+  getBrowserData() {
+    this.getBrowserLanguage()
+    this.getBrowserCapitalCurrency()
+  }
+  getBrowserLanguage() {
+    const selectedLanguageId = this.dmsStpLevelDetails.languageId;
+    if (selectedLanguageId) {
+      this._getTablesServices.getSelectedBrowserData(selectedLanguageId, 'PRS_STP_LANGUAGE', 'LANGUAGE_ID',
+        'LATIN_NAME', 'ARABIC_NAME', 'LANGUAGE_CODE')
+        .subscribe({
+          next: (data: any) => {
+            this.legalStatusDialogDto.language.idNum = data.idNum;
+            this.legalStatusDialogDto.language.displayedNameEn = data.displayedNameEn;
+            this.legalStatusDialogDto.language.displayedNameAr = data.displayedNameAr;
+          },
+          error: (error: any) => {
+            console.error(`Error fetching: `, error);
+          },
+        });
+    }
+
+  }
+  getBrowserCapitalCurrency() {
+    const selectedCapitalCurrencyId = this.dmsStpLevelDetails.currancyId;
+    if (selectedCapitalCurrencyId) {
+      this._getTablesServices.getSelectedBrowserData(selectedCapitalCurrencyId, 'DMS_STP_CURRANCY', 'CURRANCY_ID',
+        'LATIN_NAME', 'ARABIC_NAME', 'CURRANCY_CODE')
+        .subscribe({
+          next: (data: any) => {
+            this.legalStatusDialogDto.capitalCurrency.idNum = data.idNum;
+            this.legalStatusDialogDto.capitalCurrency.displayedNameEn = data.displayedNameEn;
+            this.legalStatusDialogDto.capitalCurrency.displayedNameAr = data.displayedNameAr;
+          },
+          error: (error: any) => {
+            console.error(`Error fetching: `, error);
+          },
+        });
+    }
+  }
+  handleLang() {
+    const dateInputs = document.querySelectorAll<HTMLInputElement>('input');
+    const selects = document.querySelectorAll<HTMLSelectElement>('select');
+    const checkBox =
+      document.querySelectorAll<HTMLInputElement>('input[type="checkbox"]');
+    if (this.translate.currentLang == 'en') {
+      dateInputs.forEach((input) => {
+        input.style.setProperty('padding', '4px', 'important');
+      });
+      selects.forEach((select) => {
+        select.style.setProperty('padding', '4px', 'important');
+      });
+    } else {
+
+      dateInputs.forEach((input) => {
+        input.style.setProperty('padding', '4px', 'important');
+      });
+      selects.forEach((select) => {
+        select.style.setProperty('padding', '4px', 'important');
+      });
+    }
+    checkBox.forEach((select) => {
+      select.style.setProperty('padding', '0px', 'important');
+    });
+  }
+
+  onDropdownOpen(dropdownId: string, event: MouseEvent) {
+    event.preventDefault();
+    this.activeDropdown = dropdownId;
+    this.isModalOpen = true;
+  }
+  getFilteredData(): any[] {
+    if (!this.sectorsData) return [];
+    return this.sectorsData.filter((sector: DmsStpSectorNatureDto) => this.matchesFilter(sector));
+  }
+
+  matchesFilter(sector: any): boolean {
+    const searchTerm =
+      this.currentLanguage === 'ar'
+        ? this.filter.displayedNameAr.trim().toLowerCase()
+        : this.filter.displayedNameEn.trim().toLowerCase();
+
+    if (!searchTerm) return true;
+
+    // Check if the sector or any child work matches the search term
+    const parentMatches = this.currentLanguage === 'ar'
+      ? sector.natureNameArabic?.toLowerCase().includes(searchTerm)
+      : sector.natureNameEnglish?.toLowerCase().includes(searchTerm);
+
+    const childMatches = sector.dmsStpNatureOfWorks.some((work: any) =>
+      this.currentLanguage === 'ar'
+        ? work.arabicName?.toLowerCase().includes(searchTerm)
+        : work.englishName?.toLowerCase().includes(searchTerm)
+    );
+
+    // Expand the sector if it matches the filter
+    sector.expanded = parentMatches || childMatches;
+    return parentMatches || childMatches;
+  }
+
+  getPaginatedData() {
+    const startIndex = (this.currentPage - 1) * this.pageSize;
+    const endIndex = startIndex + this.pageSize;
+    return this.sectorsData.slice(startIndex, endIndex);
+  }
+  totalPages() {
+    const filteredData = this.sectorsData.filter((sector: DmsStpSectorNatureDto) => this.matchesFilter(sector));
+    return Math.ceil(filteredData.length / this.pageSize);
+  }
+
+  changePage(page: number) {
+    this.currentPage = page;
+  }
+
+  onSearchChange(): void {
+    this.currentPage = 1; // Reset to the first page
+  }
+
+  resetFilter() {
+    this.filter.displayedNameAr = '';
+    this.filter.displayedNameEn = '';
+    this.onSearchChange(); // To reset search results as well
+  }
+
+  resetSpecialty(activeDropdown: string) {
+    if (activeDropdown === 'specialty1') {
+      this.selectedWork1 = {
+        arabicName: '-- اختر --',
+        englishName: '-- Select --'
+      };
+      this.dmsStpLevelDetails.sectorNatureId = null
+      this.dmsStpLevelDetails.sectorNatureArabic = ''
+      this.dmsStpLevelDetails.sectorNatureEnglish = ''
+      this.dmsStpLevelDetails.natureOfWorkId = null
+      this.dmsStpLevelDetails.natureOfWorkArabic = ''
+      this.dmsStpLevelDetails.natureOfWorkEnglish = ''
+    }
+    if (activeDropdown === 'specialty2') {
+      this.selectedWork2 = {
+        arabicName: '-- اختر --',
+        englishName: '-- Select --'
+      };
+      this.dmsStpLevelDetails.otherSectorNatureId = null;
+      this.dmsStpLevelDetails.otherSectorNatureArabic = ''
+      this.dmsStpLevelDetails.otherSectorNatureEnglish = ''
+      this.dmsStpLevelDetails.otherNatureOfWorkId = null;
+      this.dmsStpLevelDetails.otherNatureOfWorkArabic = ''
+      this.dmsStpLevelDetails.otherNatureOfWorkEnglish = ''
+    }
+  }
+
+  onMouseOver(work: any): void {
+    this.hoveredWork = work;
+  }
+
+  onMouseOut(): void {
+    this.hoveredWork = null;
+  }
+
+  isHovered(work: any): boolean {
+    return this.hoveredWork === work;
+  }
+
+  closeModal() {
+    this.isModalOpen = false;
+  }
+
+  openModal() {
+    this.isModalOpen = true;
+  }
+
+  selectedOption(work: any, sectorNatureId: any, sectorNameArabic: any, sectorNameEnglish: any) {
+    if (!work) {
+      if (this.activeDropdown === 'specialty1') {
+        this.resetSpecialty(this.activeDropdown)
+      }
+      if (this.activeDropdown === 'specialty2') {
+        this.resetSpecialty(this.activeDropdown)
+      }
+      const emptyGroup = {
+        displayedNameEn: '-- Select --',
+        displayedNameAr: '-- اختر --'
+      };
+      this.selectedEmitter.emit(emptyGroup);
+      this.resetFilter();
+      this.closeModal();
+      return;
+    }
+    if (this.activeDropdown === 'specialty1') {
+      this.selectedWork1 = {
+        arabicName: sectorNameArabic + ' - ' + work.arabicName,
+        englishName: sectorNameEnglish + ' - ' + work.englishName
+      };
+      this.dmsStpLevelDetails.natureOfWorkId = work.natureOfWorkId;
+      this.dmsStpLevelDetails.sectorNatureId = sectorNatureId;
+    }
+
+    if (this.activeDropdown === 'specialty2') {
+      this.selectedWork2 = {
+        arabicName: sectorNameArabic + ' - ' + work.arabicName,
+        englishName: sectorNameEnglish + ' - ' + work.englishName
+      };
+      this.dmsStpLevelDetails.otherNatureOfWorkId = work.natureOfWorkId;
+      this.dmsStpLevelDetails.otherSectorNatureId = sectorNatureId;
+    }
+
+    // this.selectedEmitter.emit(work);
+    this.resetFilter();
+    this.closeModal();
+  }
+
+  stpDialog(
+    event: MouseEvent,
+    tableName: string,
+    idColumnName: string,
+    latinName: string,
+    arabicName: string,
+    targetArray: BrowserDataDto[],
+    selectName: string,
+    selected: BrowserDataDto
+  ) {
+    event.preventDefault();
+    this.dialogData = targetArray;
+    this.SelectName = selectName;
+    this.lastSelected = selected;
+    if (targetArray.length == 0) {
+      this.fetchData(tableName, idColumnName, latinName, arabicName, targetArray);
+    }
+  }
+
+  private fetchData(
+    table: string,
+    idColumnName: string,
+    latinName: string,
+    arabicName: string,
+    targetArray: BrowserDataDto[]
+  ): void {
+    this._getTablesServices
+      .getTable(table, idColumnName, latinName, arabicName)
+      .subscribe({
+        next: (data: BrowserDataDto[]) => {
+          targetArray.push(...data);
+          this.tableName = table;
+        },
+        error: (error: any) => {
+          console.error(`Error fetching: `, error);
+        },
+      });
+  }
+
+  selected(event: any) {
+    const { idNum, displayedNameAr, displayedNameEn } = event;
+    this.lastSelected.idNum = idNum;
+    this.lastSelected.displayedNameEn = displayedNameEn;
+    this.lastSelected.displayedNameAr = displayedNameAr;
+
+  }
+
+}

@@ -1,0 +1,175 @@
+<div class="pb-24 bg-gray-50 min-h-screen">
+  <!-- Hero Banner Slider -->
+  <div class="relative h-[200px] overflow-hidden">
+    <div
+      *ngFor="let slide of slides; let i = index"
+      class="absolute inset-0 transition-opacity duration-1000"
+      [ngClass]="i === currentSlide() ? 'opacity-100' : 'opacity-0'"
+    >
+      <img
+        [src]="slide.image"
+        [alt]="slide.title"
+        class="w-full h-full object-cover"
+      />
+      <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent flex items-end p-6">
+        <div class="text-white">
+          <h2>{{ slide.title }}</h2>
+          <p class="text-[12px] mt-1 opacity-90">
+            {{ slide.description }}
+          </p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Dots Indicator -->
+    <div class="absolute bottom-3 left-1/2 transform -translate-x-1/2 flex gap-2 z-10">
+      <button
+        *ngFor="let slide of slides; let i = index"
+        (click)="setCurrentSlide(i)"
+        class="w-2 h-2 rounded-full transition-all"
+        [ngClass]="i === currentSlide() ? 'bg-white w-6' : 'bg-white/50'"
+        [attr.aria-label]="'Go to slide ' + (i + 1)"
+      ></button>
+    </div>
+  </div>
+
+  <!-- Services Icons -->
+  <div class="px-6 py-6">
+    <div class="flex justify-between items-start gap-3">
+      <app-service-icon
+        iconName="home"
+        label="رعاية منزلية"
+        color="#F44336"
+        (onClick)="onNavigate('homecare')"
+      ></app-service-icon>
+      <app-service-icon
+        iconName="building-2"
+        label="مستشفيات"
+        color="#2196F3"
+        (onClick)="onNavigate('hospitals')"
+      ></app-service-icon>
+      <app-service-icon
+        iconName="star"
+        label="طب عام"
+        color="#9C27B0"
+        (onClick)="onNavigate('general')"
+      ></app-service-icon>
+      <app-service-icon
+        iconName="stethoscope"
+        label="أسنان"
+        color="#FF9800"
+        (onClick)="onNavigate('dental')"
+      ></app-service-icon>
+      <app-service-icon
+        iconName="pill"
+        label="صيدليات"
+        color="#4CAF50"
+        (onClick)="onNavigate('pharmacies')"
+      ></app-service-icon>
+    </div>
+  </div>
+
+  <!-- Membership Section -->
+  <div class="px-6 mb-6">
+    <div
+      (click)="onNavigate('membership')"
+      [style.backgroundImage]="'linear-gradient(rgba(110, 167, 253, 0.85), rgba(91, 142, 220, 0.85)), url(https://via.placeholder.com/150)'"
+      class="bg-cover bg-center rounded-lg p-6 text-white cursor-pointer hover:shadow-lg transition-all overflow-hidden relative"
+    >
+      <div class="relative z-10">
+        <h3>إصدار عضوية تكافل العربية</h3>
+        <p class="text-[12px] mt-2 opacity-90">
+          احصل على عضويتك الآن واستمتع بالتغطية الشاملة
+        </p>
+        <div class="mt-4 bg-white/20 backdrop-blur-sm rounded-lg px-4 py-2 inline-block">
+          <span class="text-[14px]">ابدأ الآن &larr;</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Network Section -->
+  <div class="px-6 mb-6">
+    <div
+      (click)="onNavigate('network')"
+      [style.backgroundImage]="'linear-gradient(rgba(76, 175, 80, 0.85), rgba(76, 175, 80, 0.85)), url(' + getSelectedCityImage() + ')'"
+      class="bg-cover bg-center rounded-lg p-5 text-white cursor-pointer hover:shadow-lg transition-all overflow-hidden relative"
+    >
+      <div class="relative z-10">
+        <h3>الشبكة الطبية</h3>
+        <p class="text-[12px] mt-2 opacity-90">
+          تصفح قائمة المستشفيات والعيادات المعتمدة
+        </p>
+        <div class="mt-3 text-[12px]">عرض الشبكة &larr;</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Medical Operations -->
+  <div class="px-6 mb-6">
+    <div
+      (click)="onNavigate('operations')"
+      [style.backgroundImage]="'linear-gradient(rgba(244, 67, 54, 0.85), rgba(244, 67, 54, 0.85)), url(https://images.unsplash.com/photo-1757152962882-6bf8495b324d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzdXJnZXJ5JTIwb3BlcmF0aW5nJTIwcm9vbSUyMG1lZGljYWx8ZW58MXx8fHwxNzY4NDk1MjY3fDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral)'"
+      class="bg-cover bg-center rounded-lg p-5 text-white cursor-pointer hover:shadow-lg transition-all overflow-hidden relative"
+    >
+      <div class="relative z-10">
+        <h3>خدمات طبية مدفوعة</h3>
+        <p class="text-[12px] mt-2 opacity-90">
+          ولادات - ليزك - تكميم
+        </p>
+        <div class="mt-3 text-[12px]">المزيد &larr;</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Latest Section -->
+  <div class="px-6 mb-6">
+    <div class="bg-[#bcf3ff] rounded-lg p-5 cursor-pointer hover:shadow-lg transition-shadow">
+      <div class="flex items-center gap-2 mb-2">
+        <span class="text-[20px]">😱</span>
+        <h3 class="text-gray-800">الأحدث</h3>
+      </div>
+      <p class="text-[12px] text-gray-700">
+        أحدث العروض والكوبونات المضافة حديثاً
+      </p>
+    </div>
+  </div>
+
+  <!-- All Services Section -->
+  <div class="px-6 mb-6">
+    <div
+      (click)="onNavigate('offers')"
+      [style.backgroundImage]="'linear-gradient(rgba(253, 110, 135, 0.85), rgba(253, 110, 135, 0.85)), url(https://images.unsplash.com/photo-1644370644949-b175294cbceb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxkaXNjb3VudCUyMGNvdXBvbnMlMjBvZmZlcnMlMjBzaG9wcGluZ3xlbnwxfHx8fDE3Njg0OTY4MDV8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral)'"
+      class="bg-cover bg-center rounded-lg p-5 text-white cursor-pointer hover:shadow-lg transition-all overflow-hidden relative"
+    >
+      <div class="relative z-10 flex justify-between items-center">
+        <div>
+          <h3>شاهد جميع الخدمات</h3>
+          <p class="text-[12px] mt-1 opacity-90">خدمات مجانية</p>
+        </div>
+        <div class="text-[24px]">&larr;</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Home Visits -->
+  <div class="px-6 mb-6">
+    <div
+      (click)="onNavigate('homevisits')"
+      class="bg-white rounded-lg overflow-hidden shadow-md cursor-pointer hover:shadow-lg transition-shadow"
+    >
+      <img
+        src="https://images.unsplash.com/photo-1758691462321-9b6c98c40f7e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxob21lJTIwaGVhbHRoY2FyZSUyMHZpc2l0fGVufDF8fHx8MTc2NDY4Njg0MHww&ixlib=rb-4.1.0&q=80&w=1080"
+        alt="Home Visit"
+        class="w-full h-[160px] object-cover"
+      />
+      <div class="p-4">
+        <h3 class="text-gray-800">زيارات منزلية</h3>
+        <p class="text-[12px] text-gray-600 mt-2">
+          احجز زيارة طبية منزلية لتلقي العلاج في منزلك
+        </p>
+        <div class="mt-3 text-[#6ea7fd] text-[12px]">احجز الآن &larr;</div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,48 @@
+import { Component, Input } from '@angular/core';
+import { Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
+import { DmsStpLevelDetailsDTO } from '../../../DTO/DmsStpLevelDetailsDTO';
+
+@Component({
+  selector: 'app-timeline',
+  templateUrl: './timeline.component.html',
+  styleUrl: './timeline.component.css'
+})
+export class TimelineComponent {
+  activeStep: string = 'legal-step';
+  companyType: string | any;
+  selectedBranch: DmsStpLevelDetailsDTO | any;
+  constructor(private router: Router, public translate: TranslateService
+  ) { }
+  ngOnInit() {
+
+    const selected = localStorage.getItem('selectedBranch');
+     this.companyType = localStorage.getItem('hasRelatedCompanies');
+  }
+  RouteToLegalStatus() {
+    this.activeStep = 'legal-step';
+    this.router.navigate(['/Content/LegalStatus']);
+  }
+  RouteToAdministrationPolicies() {
+    this.activeStep = 'policies-step';
+    this.router.navigate(['/Content/AdministrationPolicies']);
+  }
+  RouteToDepartmentDefinition() {
+    this.activeStep = 'depDef-step';
+    this.router.navigate(['/Content/DepartmentDefinition']);
+  }
+  RouteToFinancial() {
+    this.activeStep = 'financial-step';
+    this.router.navigate(['/Content/Financial']);
+  }
+  RouteToLocationDefinition() {
+    this.activeStep = 'locDef-step';
+    this.router.navigate(['/Content/LocationDefinition']);
+  }
+  RouteToRelatedCompanies() {
+    this.activeStep = 'relatedCompanies-step';
+    this.router.navigate(['/Content/RelatedCompanies']);
+  }
+
+
+}

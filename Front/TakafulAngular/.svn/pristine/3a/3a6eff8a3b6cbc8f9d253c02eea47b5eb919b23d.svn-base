@@ -1,0 +1,36 @@
+import { Injectable, OnInit } from '@angular/core';
+import { UserInfo } from '../../models/UserInfo';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { EnvironmentService } from '../environment.service';
+import { LevelDetailsPurDTO } from '../../DTO/LevelDetailsPurDTO';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class AdminPolicyServiceService {
+
+  ss: LevelDetailsPurDTO | any;
+
+  constructor(private http: HttpClient, public _environmentService: EnvironmentService) {
+
+  }
+  postData(data: any): Observable<any> {
+    let url = this._environmentService.apiUrl + 'organization/administration/levelDetailsPur';
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    });
+
+    return this.http.post(url, data, { headers });
+  }
+
+  retrieveData(id: number): Observable<LevelDetailsPurDTO> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    });
+    let url = this._environmentService.apiUrl + 'organization/administration/retriveLevelDetails/' + id;
+    return this.http.get<LevelDetailsPurDTO>(url, { headers });
+  }
+}

@@ -1,0 +1,177 @@
+<nav class="navbar navbar-expand-sm bg-light bg-opacity-25 shadow-sm sticky-top flex-md-nowrap">
+  <div class="container-fluid">
+      <!-- <div class="toggle-menu-wrapper" (click)="toggle()">
+          <a href="#" class="toggle-menu">
+              <span></span>
+              <span></span>
+              <span></span>
+          </a>
+      </div> -->
+      <a class="navbar-brand nav-logo" href="#"></a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain" aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="navbar-collapse collapse navbar-collapse" id="navbarMain">
+          <!-- <div class="app-nam"><img src="assets/images/outpatient-icon.png" alt=""><h4 class="text-green">Outpatient</h4></div> -->
+          <div class="ms-auto mb-sm-0 navbar-nav d-flex justify-content-end">
+              <ul class="nav-item header-tools d-flex align-items-center justify-content-center">
+                  <!-- <li class="app-name">
+                      <img src="assets/images/outpatient-icon.png" alt="">
+                      <h4 class="text-green">Organization</h4>
+                  </li>
+                  <li class="vr mx-2"></li>
+                  <li>
+                      <a href="#" class="px-1" title="Info"><i class="dms-icon-info"></i></a>
+                  </li>
+                  <li class="px-2 dropdown" title="Masseage">
+                      <a href="#" data-bs-toggle="dropdown" class="navbar-link dropdown-toggle icon position-relative" aria-expanded="false" aria-haspopup="true">
+                          <i class="dms-icon-envelope"></i>
+                          <span class="position-absolute top-0 translate-middle p-1 bg-danger border-light rounded-circle badge"></span>
+                      </a>
+                      <div class="dropdown-menu dropdown-menu-end animate slideIn msg-view p-2">
+                          <p class="msg-num">Masseage (<span>10</span>)</p>
+                          <a href="#" class="list-group-item list-group-item-action msg-item">
+                              <div class="d-flex">
+                                  <div class="msg-img me-1 rounded-circle">
+                                      <img src="assets/images/user.jpg" alt="">
+                                  </div>
+                                  <div class="d-flex flex-column flex-grow-1">
+                                      <div class="d-flex w-100 justify-content-between">
+                                          <h5 class="mb-1 msg-name">Dr. Mazen Hany</h5>
+                                          <small class="text-muted msg-date">12/10/2022</small>
+                                      </div>
+                                      <div class="d-flex flex-column msg-details">
+                                          <p class="mb-1">RE: Case of lun</p>
+                                          <small class="text-secondary">56 yo female pt. known case of lung ca s/p
+                                              radio and chemotherapy.</small>
+                                      </div>
+                                  </div>
+                              </div>
+                          </a>
+                          <a href="#" class="list-group-item list-group-item-action msg-item">
+                              <div class="d-flex">
+                                  <div class="msg-img me-1 rounded-circle">
+                                      <img src="assets/images/user.jpg" alt="">
+                                  </div>
+                                  <div class="d-flex flex-column flex-grow-1">
+                                      <div class="d-flex w-100 justify-content-between">
+                                          <h5 class="mb-1 msg-name">Dr. Mazen Hany</h5>
+                                          <small class="text-muted msg-date">12/10/2022</small>
+                                      </div>
+                                      <div class="d-flex flex-column msg-details">
+                                          <p class="mb-1">RE: Case of lun</p>
+                                          <small class="text-secondary">56 yo female pt. known case of lung ca s/p
+                                              radio and chemotherapy.</small>
+                                      </div>
+                                  </div>
+                              </div>
+                          </a>
+                          <a href="#" class="list-group-item list-group-item-action msg-item">
+                              <div class="d-flex">
+                                  <div class="msg-img me-1 rounded-circle">
+                                      <img src="assets/images/user.jpg" alt="">
+                                  </div>
+                                  <div class="d-flex flex-column flex-grow-1">
+                                      <div class="d-flex w-100 justify-content-between">
+                                          <h5 class="mb-1 msg-name">Dr. Mazen Hany</h5>
+                                          <small class="text-muted msg-date">12/10/2022</small>
+                                      </div>
+                                      <div class="d-flex flex-column msg-details">
+                                          <p class="mb-1">RE: Case of lun</p>
+                                          <small class="text-secondary">56 yo female pt. known case of lung ca s/p
+                                              radio and chemotherapy.</small>
+                                      </div>
+                                  </div>
+                              </div>
+                          </a>
+                          <a href="#" class="p-1 d-grid alert-all text-center">View all messages</a>
+                      </div>
+                  </li>
+                  <li class="px-2 dropdown" title="Alert">
+                      <a href="#" data-bs-toggle="dropdown" class="navbar-link dropdown-toggle icon position-relative" role="button" aria-expanded="false"><i class="dms-icon-bell"></i>
+                          <span class="position-absolute top-0 translate-middle p-1 bg-danger border-light rounded-circle badge"></span>
+                      </a>
+                      <div class="dropdown-menu dropdown-menu-end animate slideIn msg-view p-2">
+                          <p class="msg-num">Notifications (<span>5</span>)</p>
+                          <a href="#" class="list-group-item list-group-item-action msg-item">
+                              <div class="d-flex flex-column flex-grow-1">
+                                  <div class="d-flex w-100 justify-content-between">
+                                      <h5 class="mb-1 msg-name">Ali Ahmed</h5>
+                                      <small class="text-muted msg-date">12/10/2022</small>
+                                  </div>
+                                  <div class="d-flex flex-column msg-details">
+                                      <p class="mb-1 text-secondary">
+                                          Not sure if we"ll need any further instruction on how to utilise the
+                                          encoded ID in links from the new email broadcast tool.
+                                      </p>
+                                  </div>
+                              </div>
+                          </a>
+                          <a href="#" class="list-group-item list-group-item-action msg-item">
+                              <div class="d-flex flex-column flex-grow-1">
+                                  <div class="d-flex w-100 justify-content-between">
+                                      <h5 class="mb-1 msg-name">Islam Mohamed</h5>
+                                      <small class="text-muted msg-date">12/10/2022</small>
+                                  </div>
+                                  <div class="d-flex flex-column msg-details">
+                                      <p class="mb-1 text-secondary">
+                                          Not sure if we"ll need any further instruction on how to utilise the
+                                          encoded ID in links from the new email broadcast tool.
+                                      </p>
+                                  </div>
+                              </div>
+                          </a>
+                          <a href="#" class="p-1 d-grid alert-all text-center">View all notifications</a>
+                      </div>
+                  </li>
+                  <li class="px-2 dropdown" title="Apps Menu">
+                      <a href="#" data-bs-toggle="dropdown" class="navbar-link dropdown-toggle icon position-relative" aria-expanded="false"><i class="dms-icon-grid"></i></a>
+                      <div class="dropdown-menu apps-menu dropdown-menu-end animate slideIn">
+                          <div class="d-flex flex-row flex-wrap justify-content-center">
+                              <a href="#" class="col-4 app-item mb-2"><img src="assets/images/lab.png" alt="" title="LAB">
+                                  <p class="mt-2">LAB</p>
+                              </a>
+                              <a href="#" class="col-4 app-item mb-2"><img src="assets/images/operation.png" alt="" title="operation">
+                                  <p class="mt-2">operation</p>
+                              </a>
+                              <a href="#" class="col-4 app-item mb-2"><img src="assets/images/outpa.png" alt="" title="Outpatient Manager">
+                                  <p class="mt-2">Outpatient Manager</p>
+                              </a>
+                              <a href="#" class="col-4 app-item mb-2"><img src="assets/images/assets.png" alt="" title="Fixed Assets">
+                                  <p class="mt-2">Fixed Assets</p>
+                              </a>
+                              <a href="#" class="col-4 app-item mb-2"><img src="assets/images/invoice.png" alt="" title="invoice">
+                                  <p class="mt-2">invoice</p>
+                              </a>
+                              <a href="#" class="col-4 app-item mb-2"><img src="assets/images/housekeeping.png" alt="" title="housekeeping">
+                                  <p class="mt-2">housekeeping</p>
+                              </a>
+                          </div>
+                          <a href="#" class="btn btn-secondary btn-sm d-grid px-5">Main Menu</a>
+                      </div>
+                  </li> -->
+                  <li class="px-1 lang" title="English Lang"> <a (click)="changeLang('en')" *ngIf="translate.currentLang != 'en'" style="cursor: pointer;"><i class="dms-icon-English"></i></a></li>
+                  <li class="px-1 lang" title="Arabic Lang"> <a (click)="changeLang('ar')" *ngIf="translate.currentLang == 'en'" style="cursor: pointer;"><i class="dms-icon-arabic"></i></a></li>
+                  <li class="vr mx-2"></li>
+                  <li class="navbar-user dropdown">
+                    <a href="#" class="navbar-link dropdown-toggle d-flex align-items-center" data-bs-toggle="dropdown" role="button" aria-expanded="false">
+                      <img
+                      [src]="'data:image/jpeg;base64,' + userImg"
+                      alt="{{loggedUser?.userNameLatin}}"/>
+                      <span class="d-none d-md-inline">
+                        {{translate.currentLang == 'ar' ?  loggedUser?.userNameArabic[1] : loggedUser?.userNameLatin[1]}}
+                        </span><b class="caret"></b>
+                    </a>
+                      <div class="dropdown-menu dropdown-menu-end animate slideIn me-1">
+                          <a href="#" class="dropdown-item">Edit Profile</a>
+                          <a href="#" class="dropdown-item">Settings</a>
+                          <div class="dropdown-divider"></div>
+                          <a href="#" class="dropdown-item" (click)="LogOut()">{{'NavBar.LogOut' | translate}}</a>
+
+                      </div>
+                  </li>
+              </ul>
+          </div>
+      </div>
+  </div>
+</nav>

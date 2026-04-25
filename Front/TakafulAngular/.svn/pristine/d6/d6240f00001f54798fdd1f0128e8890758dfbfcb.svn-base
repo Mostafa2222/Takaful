@@ -1,0 +1,138 @@
+<!-- Key Shareholders Modal -->
+ <!-- <app-legal-status [numberOfShareholders]="shareholders.length"></app-legal-status> -->
+<div class="modal fade" id="KeyShareholdersModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+        <div class="modal-header d-flex align-items-center">
+          <!-- Left: Modal Title -->
+          <h1 class="modal-title fs-5 flex-grow-1">
+            {{"Organization.Timeline.Legal_Status.Shareholders.Title" | translate}}
+          </h1>
+
+          <!-- Center: Number of Shares (Properly Centered) -->
+          <div class="d-flex align-items-center mx-auto">
+            <h1 class="modal-title fs-6 mb-1">
+              {{"Organization.Timeline.Legal_Status.Number_Of_Shares" | translate}}:
+            </h1>
+            <span class="badge bg-primary fs-7 px-1 mx-1 py-2">{{ numberOfShares }}</span>
+          </div>
+
+          <!-- Right: Close Button -->
+          <button type="button" class="btn-close ms-auto" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+          <div class="modal-body">
+            <div class="table-responsive">
+              <table class="table table-striped table-hover table-sm">
+                  <colgroup>
+                      <col>
+                      <col>
+                      <col>
+                      <col>
+                      <col>
+                      <col>
+                      <col>
+
+                  </colgroup>
+                  <thead>
+                      <tr>
+                          <th></th>
+                          <th>{{"Organization.Timeline.Legal_Status.Shareholders.English_Name"| translate}}</th>
+                          <th>{{"Organization.Timeline.Legal_Status.Shareholders.Arabic_Name"| translate}}</th>
+                          <th class="text-center">{{"Organization.Timeline.Legal_Status.Shareholders.Shares"| translate}}</th>
+                          <th class="text-center">{{"Organization.Timeline.Legal_Status.Shareholders.Percentage"| translate}}</th>
+                          <th class="text-center">{{"Organization.Timeline.Legal_Status.Shareholders.Edit"| translate}}</th>
+                          <th class="text-center">{{"Organization.Timeline.Legal_Status.Shareholders.Delete"| translate}}</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      <tr *ngFor="let shareholder of shareholders; let i = index">
+                          <td></td>
+                          <td>
+                              <input *ngIf="selectedShareId === shareholder.shareId" [(ngModel)]="shareholder.shareNameEnglish"
+                                  class="form-control" />
+                              <span *ngIf="selectedShareId !== shareholder.shareId">{{ shareholder.shareNameEnglish }}</span>
+                          </td>
+                          <td>
+                              <input *ngIf="selectedShareId === shareholder.shareId" [(ngModel)]="shareholder.shareNameArabic"
+                                  class="form-control" />
+                              <span *ngIf="selectedShareId !== shareholder.shareId">{{ shareholder.shareNameArabic }}</span>
+                          </td>
+                          <td class="text-center">
+                              <input *ngIf="selectedShareId === shareholder.shareId" type="number" min="1"
+                                  [(ngModel)]="shareholder.shares" style="width: 5rem;margin: 0 22%;" class="form-control text-center" />
+                              <span *ngIf="selectedShareId !== shareholder.shareId">{{ shareholder.shares }}</span>
+                          </td>
+                          <td class="text-center">
+                            <input *ngIf="selectedShareId === shareholder.shareId" type="number"
+                              [(ngModel)]="shareholder.percentage" [value]="calculatePercentage(shareholder.shares)" style="width: 5rem;margin: 0 22%;" class="form-control text-center" disabled/>
+
+                            <span *ngIf="selectedShareId !== shareholder.shareId">{{ shareholder.percentage }}</span>
+                          </td>
+
+                          <td class="text-center">
+                              <button style="border: none;background:none;"
+                                  *ngIf="selectedShareId !== shareholder.shareId"
+                                  class=" row-edit fa fa-pencil-alt text-primary" (click)="editRow(shareholder.shareId)"></button>
+                                  <button *ngIf="selectedShareId === shareholder.shareId"
+                                          class="btn btn-success shadow-sm"
+                                          (click)="saveEditedRow(shareholder)">
+                                          <i class="fa-solid fa-check text-light"></i>
+                                  </button>
+
+                                  <button *ngIf="selectedShareId === shareholder.shareId"
+                                          class="btn btn-danger shadow-sm"
+                                          (click)="cancelEdit()">
+                                          <i class="fa-solid fa-xmark text-light"></i>
+                                  </button>
+                          </td>
+                          <td class="text-center"><button style="border: none;background:none;"
+                            class="text-danger delete-row fa fa-trash-alt" (click)="deleteRow(shareholder.shareId)"></button>
+                    </td>
+                      </tr>
+
+                      <!-- New Row (For Adding New Entry) -->
+                      <tr>
+                          <td class="text-center">{{"Organization.Timeline.Legal_Status.Address.New"| translate}}
+                          </td>
+                          <td>
+                            <input
+                              type="text"
+                              [(ngModel)]="newShareholder.shareNameEnglish"
+                              class="form-control"
+                              placeholder="{{'Organization.Timeline.Legal_Status.Shareholders.English_Name' | translate}}"
+                              (input)="newShareholder.shareNameEnglish = newShareholder.shareNameEnglish.trimStart()"
+                            />
+                          </td>
+
+                          <td>
+                            <input
+                              type="text"
+                              [(ngModel)]="newShareholder.shareNameArabic"
+                              class="form-control"
+                              placeholder="{{'Organization.Timeline.Legal_Status.Shareholders.Arabic_Name' | translate}}"
+                              (input)="newShareholder.shareNameArabic = newShareholder.shareNameArabic.trimStart()"
+                            />
+                          </td>
+
+                          <td class="text-center"><input type="number" min="1" [(ngModel)]="newShareholder.shares"
+                                  class="form-control text-center" style="max-width: 5rem;margin: 0 22%;"
+                                  placeholder="{{'Organization.Timeline.Legal_Status.Shareholders.Shares'| translate}}" />
+                          </td>
+                          <td class="text-center"><input type="number" [(ngModel)]="newShareholder.percentage"
+                            [value]="calculatePercentage(newShareholder.shares)" class="form-control text-center"
+                            style="width: 5rem;margin: 0 22%;" disabled />
+
+                          </td>
+                          <td class="text-center"><a href="#" (click)="addRow()" class="btn btn-primary">
+                            <i class="fa fa-floppy-disk fa-lg"></i>
+                              </a></td>
+                      </tr>
+
+                  </tbody>
+              </table>
+          </div>
+          </div>
+      </div>
+  </div>
+</div>

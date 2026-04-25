@@ -1,0 +1,22 @@
+<div *ngIf="!_layoutService.excludeLayout">
+  <app-navbar *ngIf="_layoutService.hasNav"></app-navbar>
+  <!-- <app-sidebar *ngIf="_layoutService.hasSidebar" class="notToPrint" ></app-sidebar> -->
+  <main class="main-content">
+    <div class="container-fluid">
+      <app-pagetitle></app-pagetitle>
+      <div class="page-content">
+        <app-companynature></app-companynature>
+        <div class="tab-content border rounded p-3" id="tab-content">
+          <router-outlet></router-outlet>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <app-footer *ngIf="_layoutService.hasFooter" class="notToPrint"></app-footer>
+  <app-underconstructionmodel></app-underconstructionmodel>
+  <app-default-model></app-default-model>
+</div>
+
+<!-- Show only router-outlet when layout is excluded -->
+<router-outlet *ngIf="_layoutService.excludeLayout"></router-outlet>

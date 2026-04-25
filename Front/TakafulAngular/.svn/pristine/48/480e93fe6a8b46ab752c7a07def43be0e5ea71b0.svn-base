@@ -1,0 +1,91 @@
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="btn-close" data-bs-dismiss="modal" (click)="closeDialog()"
+            aria-label="Close"></button>
+        </div>
+        <div class="modal-body" style="min-width: 40rem; overflow-y: hidden">
+          <table class="table table-bordered table-sm row-border hover" id="datatableexample">
+            <thead style="text-align: center">
+              <tr>
+                <th>{{ translate.currentLang == "ar" ? "الكود" : "Code" }}</th>
+                <th *ngIf="translate.currentLang !== 'ar'">
+                  {{ selectName | translate }}
+                </th>
+                <th *ngIf="translate.currentLang === 'ar'">
+                  {{ selectName | translate }}
+                </th>
+              </tr>
+              <tr>
+                <th>
+                  <input type="text" class="form-control" [placeholder]="
+                      translate.currentLang == 'ar' ? ' بحث ' : 'Search'
+                    " [(ngModel)]="filter.idNum" (ngModelChange)="onSearchChange()" />
+                </th>
+                <th *ngIf="translate.currentLang === 'ar'">
+                  <input type="text" class="form-control" placeholder=" بحث " [(ngModel)]="filter.displayedNameAr"
+                    (ngModelChange)="onSearchChange()" />
+                </th>
+                <th *ngIf="translate.currentLang !== 'ar'">
+                  <input type="text" class="form-control" placeholder="Search" [(ngModel)]="filter.displayedNameEn"
+                    (ngModelChange)="onSearchChange()" />
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr onmouseover="this.style.backgroundColor='var(--appColor)';" onmouseout="this.style.backgroundColor='';"
+                style="cursor: pointer">
+                <td colspan="2" class="select-placeholder" (click)="selectedOption(null)" data-bs-dismiss="modal">
+                  {{
+                  translate.currentLang == "ar" ? "-- اختر --" : "-- Select --"
+                  }}
+                </td>
+              </tr>
+              <tr *ngFor="let group of paginatedData" (click)="selectedOption(group)" data-bs-dismiss="modal"
+                style="cursor: pointer; text-align: center" onmouseover="this.style.backgroundColor='var(--appColor)';"
+                onmouseout="this.style.backgroundColor='';" [class.selected]="
+                  group.idNum.toString() === selectedField?.idNum?.toString()
+                ">
+                <td>{{ group.code }}</td>
+                <td>
+                  {{
+                  translate.currentLang == "ar"
+                  ? group.displayedNameAr
+                  : group.displayedNameEn
+                  }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="modal-footer" style="display: flex; justify-content: center">
+          <div class="pagination">
+            <i [ngClass]="
+                translate.currentLang === 'ar'
+                  ? 'fas fa-angle-double-right'
+                  : 'fas fa-angle-double-left'
+              " (click)="changePage(1)" [class.disabled]="currentPage === 1"></i>
+            <i [ngClass]="
+                translate.currentLang === 'ar'
+                  ? 'fas fa-angle-right'
+                  : 'fas fa-angle-left'
+              " (click)="changePage(currentPage - 1)" [class.disabled]="currentPage === 1"></i>
+            <span style="font-weight: bold">{{ translate.currentLang == "ar" ? "صفحه" : "page" }}
+              {{ currentPage }} {{ translate.currentLang == "ar" ? "من" : "of" }}
+              {{ totalPages() }}</span>
+            <i [ngClass]="
+                translate.currentLang === 'ar'
+                  ? 'fas fa-angle-left'
+                  : 'fas fa-angle-right'
+              " (click)="changePage(currentPage + 1)" [class.disabled]="currentPage === totalPages()"></i>
+            <i [ngClass]="
+                translate.currentLang === 'ar'
+                  ? 'fas fa-angle-double-left'
+                  : 'fas fa-angle-double-right'
+              " (click)="changePage(totalPages())" [class.disabled]="currentPage === totalPages()"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

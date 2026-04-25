@@ -1,0 +1,98 @@
+{
+  "sidebar": {
+    "user_profile": {
+      "roles": {
+        "ADMIN": "Admin",
+        "USER": "User",
+        "EMPLOYEE": "Employee"
+      },
+      "profile": "Profile",
+      "settings": "Settings",
+      "logout": "Logout"
+    },
+    "dashboard": "Dashboard",
+    "home": "Home",
+    "users_section": "Users Management",
+    "users": "Users",
+    "users_page": {
+      "title": "Users Management",
+      "add": "Add New User",
+      "users_table": {
+        "ID": "ID",
+        "name": "Full Name",
+        "phone": "Phone",
+        "email": "Email",
+        "role": "Role",
+        "status": "Status",
+        "operations": "Operations"
+      }
+    },
+    "roles": "Roles",
+    "products_section": "Products",
+    "cards": "Memberships",
+    "memberships_page": {
+      "title": "Memberships Management",
+      "add": "Add New Membership",
+      "memberships_table": {
+        "operations": "Operations",
+        "cardsCount":"Cards Count",
+        "duration":"Duration"
+      },
+      "memberships_modal": {
+        "title": "Add New Membership",
+        "nameAr": "Arabic Name",
+        "nameEn": "English Name",
+        "price": "Price",
+        "cardsCount": "Memberships Count",
+        "duration": {
+          "DAY": "Day",
+          "WEEK": "Week",
+          "MONTH": "Month",
+          "YEAR": "Year",
+          "CUSTOM": "Custom"
+        },
+        "durationValue": "Duration",
+        "color": "Color",
+        "feature": "Feature",
+        "addFeature": "Add Feature",
+        "active": "Activate Membership",
+        "cancel": "Cancel",
+        "save": "Save",
+        "validation":{
+          "nameAr":"Required En"
+        }
+      }
+    },
+    "medical_network": "Medical Network",
+    "medical_services": "Medical Services",
+    "coupons": "Coupons",
+    "offers": "Offers",
+    "operations_section": "Operations",
+    "operations": "Operations",
+    "visits": "Visits",
+    "clients_section": "Clients",
+    "clients": "Clients",
+    "verify_membership": "Verify Membership",
+    "management_section": "Management",
+    "departments": "Departments",
+    "sales": "Sales",
+    "merchants": "Merchants",
+    "contracts": "Contracts",
+    "marketing_section": "Marketing",
+    "marketing": "Marketing",
+    "support_section": "Support",
+    "contact": "Contact Us",
+    "subscriptions_section": "Subscriptions",
+    "subscriptions": "Subscriptions",
+    "finance_section": "Finance",
+    "accounts": "Accounts",
+    "invoices": "Invoices",
+    "tax": "Tax",
+    "reports_section": "Reports",
+    "reports": "Reports",
+    "locations_section": "Locations",
+    "locations": "Locations",
+    "system_settings": "Settings",
+    "website_settings": "Website Management"
+  }
+}

@@ -1,0 +1,23 @@
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { CompanynatureComponent } from './companynature.component';
+
+describe('CompanynatureComponent', () => {
+  let component: CompanynatureComponent;
+  let fixture: ComponentFixture<CompanynatureComponent>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [CompanynatureComponent]
+    })
+    .compileComponents();
+    
+    fixture = TestBed.createComponent(CompanynatureComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});

@@ -1,0 +1,78 @@
+<!-- <mat-horizontal-stepper linear [formGroup]="form">
+
+<mat-step [stepControl]="areaIdCtrl" label="السيارة والعنوان">
+
+    <mat-form-field>
+  <mat-label>المنطقة</mat-label>
+  <mat-select formControlName="areaId">
+    <mat-option *ngFor="let a of areas" [value]="a.id">
+      {{ a.nameAr  }}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>السيارة</mat-label>
+      <mat-select formControlName="carId">
+        <mat-option *ngFor="let car of cars" [value]="car.id">
+          {{ car.plateNumbers }} - {{ car.model }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>العنوان</mat-label>
+      <mat-select formControlName="addressId">
+        <mat-option *ngFor="let addr of addresses" [value]="addr.id">
+          {{ addr.label }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <button mat-raised-button color="primary" matStepperNext>
+      التالي
+    </button>
+  </mat-step>
+
+
+<mat-step [stepControl]="dateCtrl" label="الموعد">
+
+
+  <mat-form-field>
+  <input
+    matInput
+    type="date"
+    formControlName="date"
+  >
+</mat-form-field>
+
+<div class="slots">
+  <button
+    mat-raised-button
+    *ngFor="let slot of slots"
+    [disabled]="slot.bookedCount >= slot.capacity"
+    (click)="selectSlot(slot.timeSlot)">
+    {{ slot.timeSlot }}
+  </button>
+</div>
+
+
+  <button mat-raised-button matStepperNext>
+    التالي
+  </button>
+</mat-step>
+
+
+  <mat-step label="الخدمات">
+    <button mat-raised-button matStepperNext>
+      التالي
+    </button>
+  </mat-step>
+
+  <mat-step label="تأكيد">
+    <button mat-raised-button color="primary" (click)="submit()">
+      تأكيد الحجز
+    </button>
+  </mat-step>
+
+</mat-horizontal-stepper> -->

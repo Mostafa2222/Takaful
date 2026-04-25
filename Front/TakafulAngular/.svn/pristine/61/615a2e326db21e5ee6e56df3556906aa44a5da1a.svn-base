@@ -1,0 +1,28 @@
+import { Injectable } from '@angular/core';
+import * as CryptoJS from 'crypto-js';
+@Injectable({
+  providedIn: 'root'
+})
+export class EncryptionService {
+  private secretKey = "b7c248e1feaeea27346659c1edd31793ce342c8aa2669cf064cba3aace551688"
+  constructor() { }
+  encrypt(data: string): string {
+    try {
+      return CryptoJS.AES.encrypt(data, this.secretKey).toString();
+    } catch (error) {
+      console.error('Error encrypting data', error);
+      return '';
+    }
+  }
+
+  decrypt(encryptedData: string | any): string {
+    try {
+
+      const bytes = CryptoJS.AES.decrypt(encryptedData, this.secretKey);
+      return bytes.toString(CryptoJS.enc.Utf8);
+    } catch (error) {
+      console.error('Error decrypting data', error);
+      return '';
+    }
+  }
+}

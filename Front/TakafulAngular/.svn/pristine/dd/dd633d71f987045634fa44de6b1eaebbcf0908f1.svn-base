@@ -1,0 +1,66 @@
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { JobDefinition } from '../models/job-definition';
+import { Observable } from 'rxjs';
+import { EnvironmentService } from './environment.service';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class DeptDefinitionService {
+
+  constructor(private http: HttpClient, public _environmentService: EnvironmentService) { }
+
+  public apiUrl: string = this._environmentService.apiUrl;
+
+  getJobDefinition(branchId: number): Observable<JobDefinition[]> {
+    let url = `${this.apiUrl}organization/department/job/${branchId}`;
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json'
+      , 'Authorization': `Bearer ${localStorage.getItem('token')}`
+    });
+    return this.http.get<JobDefinition[]>(url, { headers });
+  }
+
+  getDepartmentDefinition(branchId: number): Observable<any> {
+    let url = `${this.apiUrl}organization/department/department/${branchId}`;
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json'
+      , 'Authorization': `Bearer ${localStorage.getItem('token')}`
+    });
+    return this.http.get<any>(url, { headers });
+  }
+
+  getJobDefinitionSelected(branchId: number, ids: number[]): Observable<JobDefinition[]> {
+    let url = `${this.apiUrl}organization/department/process`;
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    });
+    const body = {
+      ids: ids,
+      branchId: branchId
+    };
+    return this.http.post<JobDefinition[]>(url, body, { headers });
+  }
+
+  getCompanies(ids: number[]): Observable<Array<Object[]>> {
+    let url = `${this.apiUrl}organization/department/retreiveCompanies`;
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    });
+    return this.http.post<Array<Object[]>>(url, ids, { headers });
+  }
+
+  saveDepartment(branchId: number, templateId: string): Observable<any> {
+    let url = `${this.apiUrl}organization/department/saveDepartment/${branchId}/${templateId}`;
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    });
+    return this.http.post(url, { headers });
+  }
+
+
+}

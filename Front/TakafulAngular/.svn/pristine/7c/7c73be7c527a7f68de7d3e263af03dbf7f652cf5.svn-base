@@ -1,0 +1,514 @@
+import { Component } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
+import { ToastrService } from 'ngx-toastr';
+import { MenuItem, TreeNode } from 'primeng/api'
+import { TreeRestService } from '../../../services/TreeServices/tree-rest';
+import { LocationData } from '../../../models/location-data';
+import { BrowserDataDto } from '../../../DTO/browserDataDTO';
+import { BrowserService } from '../../../services/common Services/browser.service';
+import { LocationDefinitionService } from '../../../services/LocationDefinitionService/location-definition.service';
+import { PrsStpLocationPK } from '../../../models/PrsStpLocationPK';
+import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import * as XLSX from 'xlsx';
+
+@Component({
+  selector: 'app-location-definition',
+  templateUrl: './location-definition.component.html',
+  styleUrl: './location-definition.component.css'
+})
+export class LocationDefinitionComponent {
+  treeData: any[] = [];
+  nodes: TreeNode[] = [];
+  selectedNode!: TreeNode;
+  errorMessage = '';
+  locationTypeBrowser: BrowserDataDto[] = [];
+  furnitureModelBrowser: BrowserDataDto[] = [];
+  dialogData: BrowserDataDto[] | any;
+  SelectName: string = '';
+  tableName: any;
+  targetedBrowserDataValue: string = '';
+  lastSelected!: BrowserDataDto;
+  ids: PrsStpLocationPK[] = []
+  items: MenuItem[] = [];
+  loading: boolean = false;
+  searchQuery: string = '';
+  filteredNodes: TreeNode[] = [];
+  tempCode: string = '';
+  selectedFile: File | null = null;
+  // location Data:
+  locationData: LocationData = new LocationData();
+  locationDataForm!: FormGroup<any>;
+  constructor(private toaster: ToastrService, public translate: TranslateService, private locationService: LocationDefinitionService,
+    private _getTablesServices: BrowserService, private fb: FormBuilder, private router: Router) { }
+  ngOnInit() {
+    this.locationLevelTree()
+    this.translate.onLangChange.subscribe((event) => {
+      this.locationLevelTree()
+    });
+  }
+  mapToTreeNode(data: any[]): TreeNode[] {
+    return data.map((node) => ({
+      label: this.translate.currentLang === 'en' ? `${node.LATIN_NAME}` : `${node.ARABIC_NAME}`,
+      data: node,
+      expanded: false,
+      icon: 'pi pi-fw pi-home',
+      children: node.children ? this.mapToTreeNode(node.children) : [],
+    }));
+  }
+  nodeExpand(event: any) {
+    this.toaster.info(event.node.label + ", Node Expanded", 'success')
+  }
+  nodeCollapse(event: any) {
+    this.toaster.info(event.node + ", Node Collapsed", 'success')
+  }
+  nodeSelect(event: any) {
+    this.locationData.nodeSelectedCode = event.node.data.code;
+    this.locationData.nodeSelectedParentCode = event.node.data.parentCode;
+    this.locationData.nodeSelectedEnglishName = event.node.data.LATIN_NAME;
+    this.locationData.nodeSelectedArabicName = event.node.data.ARABIC_NAME;
+    this.getSelectedBrowserData(event.node.data.LOCATION_TYPE_ID, 'PMT_STP_LOCATION_TYPE', 'LOCATION_TYPE_ID',
+      'LATIN_NAME', 'ARABIC_NAME', 'LOCATION_TYPE_CODE', 'nodeSelectedLocationTypeSelected');
+    this.locationData.nodeSelectedAreaSquare = event.node.data.AREA;
+    this.locationData.nodeSelectedLandAreaSquare = event.node.data.LAND_AREA;
+    this.locationData.nodeSelectedLocationImageIcon = event.node.data.LOCATION_IMAGE_ICON;
+    this.locationData.nodeSelectedOrderValue = event.node.data.ORDER_VALUE;
+    this.locationData.nodeSelectedDirection = event.node.data.DIRECTION;
+    this.getSelectedBrowserData(event.node.data.TEMPLATE_ID, 'DMS_ASSET_TEMPLATE_HEADER', 'TEMPLATE_ID',
+      'LATIN_NAME', 'ARABIC_NAME', 'TEMPLATE_CODE', 'nodeSelectedTemplateId');
+    this.locationData.nodeSelectedNonDepartment = event.node.data.NON_DEPARTMENT === 'A' ? true : false;
+    this.locationData.nodeSelectedActive = event.node.data.ACTIVE === 'A' ? true : false;
+    this.locationData.nodeSelectedNotes = event.node.data.NOTES;
+    this.locationData.nodeSelectedParentId = event.node.data.parentId
+    this.locationData.nodeSelectedId = event.node.data.id
+    this.locationData.nodeSelectedMaxArea = event.node.data.MAX_AREA;
+    this.locationData.nodeSelectedMinArea = event.node.data.MIN_AREA == null ? 0 : event.node.data.MIN_AREA;
+    this.locationData.nodeSelectedMaxLandArea = event.node.data.MAX_LAND_AREA;
+    this.locationData.nodeSelectedMinLandArea = event.node.data.MIN_LAND_AREA == null ? 0 : event.node.data.MIN_LAND_AREA;
+    // Collect IDs of the selected node and its children:
+    this.ids = [];
+    const collectIds = (node: any) => {
+      const locationPK: PrsStpLocationPK = {
+        branchId: node.data.BRANCH_ID,
+        locationId: node.data.id
+      };
+      this.ids.push(locationPK);
+      if (node.children && node.children.length > 0) {
+        node.children.forEach((child: any) => {
+          collectIds(child);
+        });
+      }
+    };
+    collectIds(event.node);
+    this.updateLabels();
+    this.initializeLocationDataForm();
+  }
+  // Not used method
+  nodeUnselect(event: any) {
+    this.toaster.info(event.node + ", Node Unselected", 'success')
+  }
+  // Method to fetch tree of location levels:
+  locationLevelTree() {
+    this.loading = true;
+    this.locationService.getLocationLevel().subscribe({
+      next: (res: any) => {
+        if (!res?.length) {
+          this.loading = false;
+          return;
+        }
+        this.treeData = res;
+        this.nodes = this.mapToTreeNode(this.treeData);
+        this.filteredNodes = [...this.nodes];
+        if (this.nodes.length) {
+          this.selectedNode = this.nodes[0];
+          this.nodeSelect({ node: this.selectedNode });
+          this.searchQuery = '';
+        }
+      },
+      error: (err) => {
+        console.error(err);
+      },
+      complete: () => {
+        this.loading = false;
+      }
+    });
+  }
+  private fetchData(table: string, idColumnName: string, latinName: string, arabicName: string,
+    targetArray: BrowserDataDto[]): void {
+    this._getTablesServices
+      .getTable(table, idColumnName, latinName, arabicName, 1)
+      .subscribe({
+        next: (data: BrowserDataDto[]) => {
+          targetArray.push(...data);
+          this.tableName = table;
+        },
+        error: (error: any) => {
+          console.error(`Error fetching: `, error);
+        },
+      });
+  }
+  selected(event: any) {
+    const { idNum, displayedNameAr, displayedNameEn } = event;
+    if (this.targetedBrowserDataValue == 'nodeSelectedLocationTypeSelected') {
+      this.locationData.nodeSelectedLocationTypeSelected.idNum = idNum;
+      this.locationData.nodeSelectedLocationTypeSelected.displayedNameEn = displayedNameEn;
+      this.locationData.nodeSelectedLocationTypeSelected.displayedNameAr = displayedNameAr;
+    } else {
+      this.locationData.nodeSelectedTemplateId.idNum = idNum;
+      this.locationData.nodeSelectedTemplateId.displayedNameEn = displayedNameEn;
+      this.locationData.nodeSelectedTemplateId.displayedNameAr = displayedNameAr;
+    }
+  }
+  stpDialog(event: MouseEvent, tableName: string, idColumnName: string, latinName: string, arabicName: string,
+    targetArray: BrowserDataDto[], selectName: string, targetKey: string) {
+    event.preventDefault();
+    this.dialogData = targetArray;
+    this.SelectName = selectName;
+    if (targetArray.length == 0) {
+      this.fetchData(tableName, idColumnName, latinName, arabicName, targetArray);
+    }
+    this.targetedBrowserDataValue = targetKey;
+    if (targetKey === 'nodeSelectedLocationTypeSelected') {
+      this.lastSelected = this.locationData.nodeSelectedLocationTypeSelected as BrowserDataDto;
+    } else if (targetKey === 'nodeSelectedTemplateId') {
+      this.lastSelected = this.locationData.nodeSelectedTemplateId as BrowserDataDto;
+    }
+  }
+  getSelectedBrowserData(idValue: any, tableName: string, idName: string, displayedNameEn: string,
+    displayedNameAr: string, codeName: string, targetKey: 'nodeSelectedLocationTypeSelected' | 'nodeSelectedTemplateId') {
+    this._getTablesServices
+      .getSelectedBrowserData(idValue, tableName, idName, displayedNameEn, displayedNameAr, codeName)
+      .subscribe({
+        next: (data: BrowserDataDto) => {
+          const responseData = {
+            idNum: data.idNum != null ? data.idNum : null,
+            displayedNameEn: data.displayedNameEn,
+            displayedNameAr: data.displayedNameAr,
+            code: data.code
+          }
+          if (targetKey === 'nodeSelectedLocationTypeSelected') {
+            this.locationData.nodeSelectedLocationTypeSelected = responseData;
+          } else if (targetKey === 'nodeSelectedTemplateId') {
+            this.locationData.nodeSelectedTemplateId = responseData;
+          }
+        },
+        error: (error: any) => {
+          console.error(`Error fetching: `, error);
+        },
+      });
+  }
+  handleFileUpload(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      const file = input.files[0];
+      // Check if the selected file is an XLS file
+      if (file.type !== 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' && file.type !== 'application/vnd.ms-excel') {
+        alert('Please select a valid XLS/XLSX file.');
+        return;
+      }
+      this.selectedFile = file;
+    } else {
+      this.toaster.warning(this.translate.instant('No file selected'), 'Warning');
+    }
+  }
+  updateLabels() {
+    this.items = [
+      {
+        label: this.translate.instant('Organization.Timeline.Location_Definition.ADD_LOCATION'),
+        icon: 'fa fa-plus-circle',
+        command: () => this.addItem(false, true, this.selectedNode),
+        styleClass: 'add-item'
+      }
+    ];
+    if (this.locationData.nodeSelectedParentId != null && this.locationData.nodeSelectedParentId !== '') {
+      this.items.push({
+        label: this.translate.instant('Organization.Timeline.Location_Definition.REMOVE_LOCATION'),
+        icon: 'fa fa-minus-circle',
+        command: () => this.removeItem(),
+        styleClass: 'remove-item'
+      });
+    }
+  }
+  addItem(newNode: boolean, childNode: boolean, selected: TreeNode) {
+    if (selected) {
+      const maximumNumber = Number.MAX_VALUE;
+      // Reset selected node and clear form data
+      this.locationData = {
+        nodeSelectedCode: '',
+        nodeSelectedParentCode: (newNode === true) ? '' : selected.data.code,
+        nodeSelectedEnglishName: '',
+        nodeSelectedArabicName: '',
+        nodeSelectedLocationTypeSelected: { idNum: null, displayedNameEn: '', displayedNameAr: '', code: '' },
+        nodeSelectedAreaSquare: '',
+        nodeSelectedLocationImageIcon: '',
+        nodeSelectedOrderValue: '',
+        nodeSelectedDirection: '',
+        nodeSelectedTemplateId: { idNum: null, displayedNameEn: '', displayedNameAr: '', code: '' },
+        nodeSelectedNonDepartment: false,
+        nodeSelectedActive: false,
+        nodeSelectedNotes: '',
+        nodeSelectedLandAreaSquare: '',
+        nodeSelectedParentId: (newNode === true && childNode == false) ? '' : selected.data.id,
+        nodeSelectedId: (newNode === false && childNode === true) ? '' :
+          (newNode === true) ? '' : selected.data.id,
+        nodeSelectedMaxArea: (newNode === true && childNode == false) ? maximumNumber : selected.data.AREA - selected.data.MIN_AREA,
+        nodeSelectedMinArea: 0,
+        nodeSelectedMaxLandArea: (newNode === true && childNode == false) ? maximumNumber : selected.data.LAND_AREA - selected.data.MIN_LAND_AREA,
+        nodeSelectedMinLandArea: 0
+      };
+      this.selectedNode = {} as TreeNode<any>;
+      this.initializeLocationDataForm();
+    }
+  }
+  removeItem() {
+    this.loading = true;
+    this.locationService.deleteLocation(this.ids).subscribe(
+      (response) => {
+        if (response) {
+          if (this.translate.currentLang === 'en') {
+            this.toaster.success('Location Deleted Successfully', 'Success');
+          } else {
+            this.toaster.success('تم حذف الموقع بنجاح', 'نجاح', {
+              positionClass: 'toast-top-left'
+            });
+          }
+          this.loading = false;
+          window.location.reload()
+        }
+      },
+      (error) => {
+        if (this.translate.currentLang === 'en') {
+          this.toaster.error('Failed to Delete Location', 'Error');
+        } else {
+          this.toaster.error('فشل في حذف الموقع', 'خطأ', {
+            positionClass: 'toast-top-left'
+          });
+        }
+        console.error('Error occurred:', error);
+        this.loading = false;
+      }
+    );
+  }
+  // Method to initialize location data form:
+  initializeLocationDataForm(): void {
+    this.locationDataForm = this.fb.group({
+      nodeSelectedCode: [this.locationData.nodeSelectedCode, [Validators.required, Validators.pattern('^[0-9]*$')]],
+      nodeSelectedParentCode: [{ value: this.locationData.nodeSelectedParentCode, disabled: true }],
+      nodeSelectedEnglishName: [this.locationData.nodeSelectedEnglishName, [Validators.required]],
+      nodeSelectedArabicName: [this.locationData.nodeSelectedArabicName, [Validators.required]],
+      nodeSelectedLocationTypeSelected: [this.locationData.nodeSelectedLocationTypeSelected],
+      nodeSelectedAreaSquare: [
+        this.locationData.nodeSelectedAreaSquare,
+        [
+          this.areaInRangeValidator(this.locationData.nodeSelectedMinArea, this.locationData.nodeSelectedMaxArea)
+        ]
+      ],
+      nodeSelectedLandAreaSquare: [this.locationData.nodeSelectedLandAreaSquare,
+      [
+        this.areaInRangeValidator(this.locationData.nodeSelectedMinLandArea, this.locationData.nodeSelectedMaxLandArea)
+      ]
+      ],
+      nodeSelectedLocationImageIcon: [this.locationData.nodeSelectedLocationImageIcon],
+      nodeSelectedOrderValue: [this.locationData.nodeSelectedOrderValue],
+      nodeSelectedDirection: [this.locationData.nodeSelectedDirection],
+      nodeSelectedTemplateId: [this.locationData.nodeSelectedTemplateId],
+      nodeSelectedNonDepartment: [this.locationData.nodeSelectedNonDepartment],
+      nodeSelectedActive: [this.locationData.nodeSelectedActive],
+      nodeSelectedNotes: [this.locationData.nodeSelectedNotes],
+      nodeSelectedIdAndChildIds: this.fb.array(
+        this.ids.reverse().map(id =>
+          this.fb.group({
+            branchId: [id.branchId],
+            locationId: [id.locationId]
+          })
+        )
+      )
+    });
+  }
+  // Method to filter location level data in the tree:
+  filterTree() {
+    if (!this.searchQuery) {
+      this.filteredNodes = [...this.nodes];
+      return;
+    }
+    const query = this.searchQuery.toLowerCase();
+    const filterNodes = (nodes: TreeNode[]): TreeNode[] => {
+      return nodes
+        .map(node => {
+          const label = (node.label || '').toLowerCase();
+          if (label.includes(query)) {
+            return { ...node, children: node.children || [] };
+          }
+          const filteredChildren = filterNodes(node.children || []);
+          if (filteredChildren.length > 0) {
+            return { ...node, children: filteredChildren };
+          }
+          return null;
+        })
+        .filter(node => node !== null) as TreeNode[];
+    };
+    this.filteredNodes = filterNodes(this.nodes);
+  }
+  // marks all forms as Marked :
+  private markAllAsTouched(formGroup: FormGroup) {
+    Object.keys(formGroup.controls).forEach(controlName => {
+      formGroup.get(controlName)?.markAsTouched();
+    });
+  }
+  // Method to display toast with localization :
+  private showToast(type: 'success' | 'warning' | 'error', enMessage: string, arMessage: string, enTitle: string,
+    arTitle: string) {
+    const message = this.translate.currentLang === 'en' ? enMessage : arMessage;
+    const options = this.translate.currentLang === 'ar' ? { positionClass: 'toast-top-left' } : {};
+    const title = this.translate.currentLang === 'en' ? enTitle : arTitle;
+    this.toaster[type](message, title.charAt(0).toUpperCase() + title.slice(1), options);
+  }
+  // Checking for range validation :
+  areaInRangeValidator(minArea: number, maxArea: number): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const value = control.value;
+      if (value === undefined || value === null || value === '') {
+        return null;
+      }
+      if (value < minArea || value > maxArea) {
+        return { areaOutOfRange: true };
+      }
+      return null;
+    };
+  }
+  // Method to save a new location level : 
+  saveNewLocation() {
+    const controls = this.locationDataForm.controls;
+    this.markAllAsTouched(this.locationDataForm)
+    if (this.locationDataForm.valid) {
+      this.loading = true;
+      this.locationService.addLocation(this.locationData).subscribe({
+        next: (response) => {
+          // Show the appropriate toastr message
+          if (response === 'Code Already Exists') {
+            this.showToast('warning', 'Code Already Exists', 'الكود موجود بالفعل', 'Warning', 'تحذير');
+          }
+          else {
+            this.showToast('success', 'Location Added Successfully', 'تم إضافة الموقع بنجاح', 'Success', 'نجاح');
+          }
+          this.loading = false;
+          setTimeout(() => {
+            window.location.reload();
+          }, 1000);
+        },
+        error: (error) => {
+          if (error.status === 409) {
+            this.showToast('warning', 'Code Already Exists', 'الكود موجود بالفعل', 'Warning', 'تحذير');
+          }
+          else {
+            this.showToast('error', 'Failed to Add Location', 'فشل في إضافة الموقع', 'Error', 'خطأ');
+          }
+          this.loading = false;
+        }
+      });
+    }
+    else {
+      for (const control in controls) {
+        if (controls[control].hasError('required')) {
+          this.showToast('error', 'Missing Values', 'حقول فارغة', 'Error', 'خطأ');
+          return;
+        }
+      }
+    }
+  }
+  // Method to generate excel sheet for too add new location level :
+  generateExcel() {
+    // Prepare data for both sheets
+    const locationSetupLabels = this.translate.currentLang === 'en'
+      ? [['Location Code', 'Latin Name', 'Arabic Name', 'Location Parent ID']]
+      : [['رمز الموقع', 'الاسم اللاتيني', 'الاسم بالعربية', 'معرف الموقع الأب']];
+    const locationsLabels = this.translate.currentLang === 'en'
+      ? [['Location ID', 'Location Code', 'Latin Name', 'Arabic Name', 'Location Parent ID']]
+      : [['معرف الموقع', 'رمز الموقع', 'الاسم اللاتيني', 'الاسم بالعربية', 'معرف الموقع الأب']];
+    const locationsData = this.treeData.map(node => [
+      node.id,
+      node.code,
+      node.LATIN_NAME,
+      node.ARABIC_NAME,
+      node.parentId
+    ]);
+    const locationSetupWorksheet = XLSX.utils.aoa_to_sheet(locationSetupLabels);
+    const locationsWorksheet = XLSX.utils.aoa_to_sheet([...locationsLabels, ...locationsData]);
+    const headerStyle = {
+      font: { bold: true },
+      fill: {
+        fgColor: { rgb: "000000" }
+      },
+      alignment: { horizontal: "center", vertical: "center" }
+    };
+    const adjustColumnWidth = (sheet: any, data: any[]) => {
+      const colWidths: number[] = [];
+      data.forEach(row => {
+        row.forEach((cell: string | number, colIdx: number) => {
+          const length = cell ? cell.toString().length : 0;
+          if (!colWidths[colIdx] || length > colWidths[colIdx]) {
+            colWidths[colIdx] = length;
+          }
+        });
+      });
+      colWidths.forEach((width, colIdx) => {
+        sheet['!cols'] = sheet['!cols'] || [];
+        sheet['!cols'][colIdx] = { wch: width + 2 };
+      });
+    };
+    Object.keys(locationSetupWorksheet).forEach((cell: string) => {
+      if (cell[1] === '1') {
+        locationSetupWorksheet[cell].s = headerStyle;
+      }
+    });
+    Object.keys(locationsWorksheet).forEach((cell: string) => {
+      if (cell[1] === '1') {
+        locationsWorksheet[cell].s = headerStyle;
+      }
+    });
+    adjustColumnWidth(locationSetupWorksheet, locationSetupLabels);
+    adjustColumnWidth(locationsWorksheet, [...locationsLabels, ...locationsData]);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, locationSetupWorksheet, 'Location Setup');
+    XLSX.utils.book_append_sheet(wb, locationsWorksheet, 'Locations');
+    XLSX.writeFile(wb, 'Locations_Data.xlsx');
+  }
+  // Method to handle file selection
+  onFileSelected(event: any): void {
+    if (event.target.files.length > 0) {
+      this.selectedFile = event.target.files[0];
+    }
+    this.uploadFile()
+  }
+  // Method to trigger file input click
+  triggerFileUpload(): void {
+    const fileInput = document.getElementById('file-upload') as HTMLInputElement;
+    if (fileInput) {
+      fileInput.click();
+    }
+  }
+  // Method to upload the file after it has been selected
+  uploadFile(): void {
+    if (!this.selectedFile) {
+      this.showToast('warning', 'Please select an XLS file first.', 'يرجى تحديد ملف XLS أولاً.', 'Warning', 'تحذير');
+      return;
+    }
+    this.loading = true;
+    // Parse and upload the file through your locationService
+    this.locationService.parseExcel(this.selectedFile)
+      .then(parsedData => {
+        return this.locationService.uploadExcelData(parsedData).toPromise();
+      })
+      .then(response => {
+        this.showToast('success', 'File uploaded successfully!', 'تم تحميل الملف بنجاح!', 'Success', 'نجاح');
+      })
+      .catch(error => {
+        this.showToast('error', 'Failed to upload file ', 'فشل في تحميل الملف ', 'Error', 'خطأ');
+        console.error(error);
+      })
+      .finally(() => {
+        this.loading = false;
+        this.selectedFile = null;
+      });
+  }
+}

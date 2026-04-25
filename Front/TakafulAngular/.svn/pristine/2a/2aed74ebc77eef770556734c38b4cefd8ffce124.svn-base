@@ -1,0 +1,51 @@
+import { Injectable } from '@angular/core';
+
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { EnvironmentService } from '../environment.service';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class TreeRestService {
+  public apiUrl: string = this._environmentService.apiUrl;
+  public publicUrl: string = this._environmentService.publicUrl;
+
+  constructor(public http: HttpClient, public _environmentService: EnvironmentService) { }
+
+  public getAllTreeNodesUsingView(): Observable<any>{
+    let url = this.apiUrl+'organization/all';
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json'
+      ,'Authorization': `Bearer ${localStorage.getItem('token')}`
+    });
+    return this.http.get<any>(url, { headers});
+  }
+
+  public getAllTreeNodesUsingDefinitionId(defintionId: any): Observable<any>{
+    let url = this.apiUrl+'organization/GroupByDefinitionId/'+defintionId;
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json'
+      ,'Authorization': `Bearer ${localStorage.getItem('token')}`
+    });
+    return this.http.get<any>(url, { headers});
+  }
+  public getTreeNodesUsingView(): Observable<any>{
+    let url = this.apiUrl+'organization/all/L';
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json'
+      ,'Authorization': `Bearer ${localStorage.getItem('token')}`
+    });
+    return this.http.get<any>(url, { headers});
+  }
+  public getAllLevelDetails(): Observable<any>{
+    let url = this.publicUrl+'getAllLevels';
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json'});
+    return this.http.get<any>(url, { headers});
+  }
+  // Service to fetch Location level Tree from database:
+  public getLocationLevel(): Observable<any>{
+    let url = this.apiUrl+'organization/location/all';
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json'
+      ,'Authorization': `Bearer ${localStorage.getItem('token')}`
+    });
+    return this.http.get<any>(url, { headers});
+  }
+}

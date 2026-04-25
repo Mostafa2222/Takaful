@@ -1,0 +1,169 @@
+import { Component, OnInit } from '@angular/core';
+import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
+import { MatPaginatorIntl } from '@angular/material/paginator';
+import { Router } from '@angular/router';
+import { UserData } from '../../../models/UserData';
+import { DmsStpLevelDetailsDTO } from '../../../DTO/DmsStpLevelDetailsDTO';
+
+@Component({
+  selector: 'app-navbar',
+  templateUrl: './navbar.component.html',
+  styleUrl: './navbar.component.css'
+})
+export class NavbarComponent implements OnInit {
+  loggedUser?: UserData | any
+  branchId?: any
+  userImg?: String
+  token?: any
+  //userDefaultImg?: String
+  branchLogo?: any
+  branchLogoAr?: any
+  branchArabicName?: any
+  branchLatinName?: any
+  authorizedBranches!: DmsStpLevelDetailsDTO[];
+  toggleSideNav: boolean = false;
+  constructor(private router: Router,
+    public translate: TranslateService,
+    private matpaginator: MatPaginatorIntl
+  ) {
+    translate.addLangs(['en', 'ar']);
+    translate.setDefaultLang('en');
+    const browserLang = translate.getBrowserLang();
+    const lang = localStorage.getItem("CurrentLang") ?? '';
+    if (localStorage.getItem("CurrentLang") && localStorage.getItem("CurrentLang") != "" && localStorage.getItem("CurrentLang") != "undefined") {
+
+      translate.use(lang);
+      localStorage.getItem("CurrentLang") === 'ar' ? document.getElementById("BootStrapCssFileEn")?.setAttribute('href', '') : document.getElementById("BootStrapCssFileEn")?.setAttribute('href', 'assets/css/bootstrap.min.css');
+      localStorage.getItem("CurrentLang") === 'ar' ? document.getElementById("BootStrapCssFile")?.setAttribute('href', 'assets/css/bootstrap.rtl.min.css') : document.getElementById("BootStrapCssFile")?.setAttribute('href', '');
+      localStorage.getItem("CurrentLang") === 'ar' ? document.getElementById("DMSmainCssFile")?.setAttribute('href', 'assets/css/DMSmain-rtl.css') : document.getElementById("DMSmainCssFile")?.setAttribute('href', '');
+      localStorage.getItem("CurrentLang") === 'ar' ? document.getElementById("OrgCssFile")?.setAttribute('href', 'assets/css/org-ar.css') : document.getElementById("OrgCssFile")?.setAttribute('href', '');
+
+      localStorage.getItem("CurrentLang") === 'ar' ? document.getElementsByTagName("body")[0]?.setAttribute('dir', 'rtl') : document.getElementsByTagName("body")[0]?.setAttribute('dir', 'ltr');
+      localStorage.getItem("CurrentLang") === 'ar'
+        ? document.getElementsByTagName("body")[0]?.style.setProperty('direction', 'rtl')
+        : document.getElementsByTagName("body")[0]?.style.setProperty('direction', 'ltr');
+      //localStorage.getItem("CurrentLang") === 'ar' ? document.getElementById("DMSBlueRtlCssFile").setAttribute('href', '../assets/css/DMSBlue-rtl.css') : document.getElementById("DMSBlueRtlCssFile").setAttribute('href', '../assets/css/NoneCssFile.css');
+
+    }
+    else {
+      translate.use(browserLang?.match(/en|ar/) ? browserLang : 'en');
+      localStorage.setItem("CurrentLang", translate.currentLang);
+      document.getElementById("BootStrapCssFileEn")?.setAttribute('href', 'assets/css/bootstrap.min.css');
+      document.getElementById("BootStrapCssFile")?.setAttribute('href', '');
+      document.getElementById("DMSmainCssFile")?.setAttribute('href', '');
+      document.getElementById("OrgCssFile")?.setAttribute('href', '');
+    }
+
+    translate.onLangChange.subscribe((s: LangChangeEvent) => {
+      this.translateLabels();
+    });
+    this.translateLabels();
+  }
+  translateLabels() {
+    this.matpaginator.getRangeLabel = this.getRangeLabel;
+    this.matpaginator.changes.next();
+  }
+  handleLang() {
+    const dateInputs = document.querySelectorAll<HTMLInputElement>('input');
+    const selects = document.querySelectorAll<HTMLSelectElement>('select');
+    const checkBox =
+      document.querySelectorAll<HTMLInputElement>('input[type="checkbox"]');
+    if (this.translate.currentLang == 'en') {
+      dateInputs.forEach((input) => {
+        input.style.setProperty('padding', '4px', 'important');
+      });
+      selects.forEach((select) => {
+        select.style.setProperty('padding', '4px', 'important');
+      });
+    } else {
+
+      dateInputs.forEach((input) => {
+        input.style.setProperty('padding', '4px', 'important');
+      });
+      selects.forEach((select) => {
+        select.style.setProperty('padding', '4px', 'important');
+      });
+    }
+
+    checkBox.forEach((select) => {
+      select.style.setProperty('padding', '0px', 'important');
+    });
+  }
+
+  getRangeLabel: (page: number, pageSize: number, length: number) => string = (
+    page: number,
+    pageSize: number,
+    length: number
+  ): string => {
+    if (this.translate.currentLang == 'ar') {
+      if (length == 0)
+        return Intl.NumberFormat('ar-SA', {}).format(0) + ' من ' + Intl.NumberFormat('ar-SA', {}).format(0);
+      else {
+        const startIndex = page * pageSize;
+        const endIndex = startIndex < length ? Math.min(startIndex + pageSize, length) : startIndex + pageSize;
+        return Intl.NumberFormat('ar-SA', {}).format(startIndex + 1) + ' - ' + Intl.NumberFormat('ar-SA', {}).format(endIndex) + ' من ' + Intl.NumberFormat('ar-SA', {}).format(length);
+      }
+    } else {
+      return new MatPaginatorIntl().getRangeLabel(page, pageSize, length).replace(/[a-z]+/i, 'of');
+    }
+  };
+  LogOut() {
+    const storedLevels = localStorage.getItem("Levels");
+    localStorage.clear()
+    if (storedLevels) {
+      this.authorizedBranches = JSON.parse(storedLevels) as DmsStpLevelDetailsDTO[];
+    } else {
+      this.authorizedBranches = []; // or handle the case where data is not available
+    }
+
+    localStorage.setItem("Levels", JSON.stringify(this.authorizedBranches));
+    localStorage.setItem("CurrentLang", "en")
+    this.router.navigate(['/Login']);
+    const menuElement = document.querySelector('.DMSBlueBlue.menu-lg');
+    if (menuElement) {
+      menuElement.classList.remove('menu-lg');
+    }
+  }
+
+
+  ngOnInit(): void {
+    this.translate.get("headerTitle");
+    this.loggedUser = JSON.parse(localStorage.getItem('userData') || '{}');
+    this.userImg = JSON.parse(localStorage.getItem('userLogo') || '{}');
+    this.branchLogo = JSON.parse(localStorage.getItem('CompanyLogo') || '{}');
+    this.branchLogoAr = JSON.parse(localStorage.getItem('CompanyLogoAr') || '{}');
+    this.branchArabicName = JSON.parse(localStorage.getItem('BranchArabicName') || '{}');
+    this.branchLatinName = JSON.parse(localStorage.getItem('BranchLatinName') || '{}');
+  }
+
+  toggle() {
+    const menuElement = document.querySelector('.DMSBlueBlue');
+    if (this.toggleSideNav) {
+      if (menuElement) {
+        menuElement.classList.remove('menu-lg');
+        document.querySelector('.toggle-menu')?.classList.remove('opened');
+      }
+    } else {
+      menuElement?.classList.add('menu-lg');
+      document.querySelector('.toggle-menu')?.classList.add('opened');
+    }
+    this.toggleSideNav = !this.toggleSideNav;
+
+  }
+
+  changeLang(lang: string) {
+    localStorage.setItem("CurrentLang", lang);
+    this.translate.use(lang);
+    lang === 'ar' ? document.getElementById("BootStrapCssFileEn")?.setAttribute('href', '') : document.getElementById("BootStrapCssFileEn")?.setAttribute('href', 'assets/css/bootstrap.min.css');
+    lang === 'ar' ? document.getElementById("BootStrapCssFile")?.setAttribute('href', 'assets/css/bootstrap.rtl.min.css') : document.getElementById("BootStrapCssFile")?.setAttribute('href', '');
+    localStorage.getItem("CurrentLang") === 'ar' ? document.getElementById("DMSmainCssFile")?.setAttribute('href', 'assets/css/DMSmain-rtl.css') : document.getElementById("DMSmainCssFile")?.setAttribute('href', '');
+    localStorage.getItem("CurrentLang") === 'ar' ? document.getElementById("OrgCssFile")?.setAttribute('href', 'assets/css/org-ar.css') : document.getElementById("OrgCssFile")?.setAttribute('href', '');
+
+
+    lang === 'ar'
+      ? document.getElementsByTagName("body")[0]?.style.setProperty('direction', 'rtl')
+      : document.getElementsByTagName("body")[0]?.style.setProperty('direction', 'ltr');
+    this.handleLang()
+  }
+
+}

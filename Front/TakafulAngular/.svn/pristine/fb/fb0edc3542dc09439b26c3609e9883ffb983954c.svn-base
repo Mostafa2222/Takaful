@@ -1,0 +1,116 @@
+import { APP_INITIALIZER, NgModule } from '@angular/core';
+
+
+import { AppRoutingModule } from './app-routing.module';
+import { AppComponent } from './app.component';
+import { FooterComponent } from './components/shared/footer/footer.component';
+import { SidebarComponent } from './components/shared/sidebar/sidebar.component';
+import { NavbarComponent } from './components/shared/navbar/navbar.component';
+import { NotFoundComponent } from './components/RoutingComponents/not-found/not-found.component';
+import { LayoutComponent } from './components/shared/layout/layout.component';
+import { HTTP_INTERCEPTORS, HttpClient, HttpClientModule } from '@angular/common/http';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatInputModule } from '@angular/material/input';
+import { RouterModule } from '@angular/router';
+import { MatOption } from '@angular/material/core';
+import { CommonModule, HashLocationStrategy, LocationStrategy } from '@angular/common';
+import { ToastrModule, provideToastr } from 'ngx-toastr';
+import { MatDialogModule } from '@angular/material/dialog';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { BrowserModule } from '@angular/platform-browser';
+import { MatCardModule } from '@angular/material/card';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ToasteralertComponent } from './helper/toasteralert/toasteralert.component';
+import { LoadingComponent } from './helper/loading/loading.component';
+import { EnvironmentService } from './services/environment.service';
+import { CookieService } from 'ngx-cookie-service';
+import { PagetitleComponent } from './components/shared/pagetitle/pagetitle.component';
+import { ShareholdersmodelComponent } from './components/content/shareholdersmodel/shareholdersmodel.component';
+import { UnderconstructionmodelComponent } from './components/content/underconstructionmodel/underconstructionmodel.component';
+import { AddressSetupModelComponent } from './components/content/address-setup-model/address-setup-model.component';
+import { DefaultModelComponent } from './components/content/default-model/default-model.component';
+import { CompanynatureComponent } from './components/content/companynature/companynature.component';
+import { TimelineComponent } from './components/content/timeline/timeline.component';
+import { LoginComponent } from './components/RoutingComponents/login/login.component';
+import { NotificationsService } from './services/Notifications/Notifications.service';
+import { AuthInterceptor } from './services/AuthServices/auth.interceptor';
+import { AddressGroupModelComponent } from './components/content/address-group-model/address-group-model.component';
+import { TreeModule } from 'primeng/tree';
+// import { ContextMenuModule } from 'primeng/contextmenu';
+
+
+export function HttpLoaderFactory(http: HttpClient) {
+   return new TranslateHttpLoader(http, '/Front/Org/assets/i18n/', '.json');
+//  return new TranslateHttpLoader(http, '/assets/i18n/', '.json');
+}
+export function initializeApp(configService: EnvironmentService) {
+  return (): Promise<any> => {
+    return configService.loadConfig().toPromise();
+  };
+}
+@NgModule({
+  declarations: [
+    AppComponent,
+    FooterComponent,
+    SidebarComponent,
+    NavbarComponent,
+    NotFoundComponent,
+    LoginComponent,
+    ToasteralertComponent,
+    LayoutComponent,
+    LoadingComponent,
+    PagetitleComponent,
+    UnderconstructionmodelComponent,
+    DefaultModelComponent,
+    CompanynatureComponent,
+    TimelineComponent
+  ],
+  imports: [
+    CommonModule,
+    FormsModule,
+    BrowserModule,
+    BrowserAnimationsModule,
+    ReactiveFormsModule,
+    HttpClientModule,
+    MatInputModule,
+    MatOption,
+    TreeModule ,
+    // ContextMenuModule,
+    RouterModule.forRoot([]),
+    MatCardModule,
+    ToastrModule.forRoot(),
+    MatDialogModule,
+    TranslateModule.forRoot({
+      defaultLanguage: 'en',
+      loader: {
+        provide: TranslateLoader,
+        useFactory: HttpLoaderFactory,
+        deps: [HttpClient]
+      }
+    }),
+    AppRoutingModule
+  ],
+  providers: [CookieService,
+    { provide: LocationStrategy
+      , useClass: HashLocationStrategy
+     },
+    {
+      provide: APP_INITIALIZER,
+      useFactory: initializeApp,
+      deps: [EnvironmentService],
+      multi: true
+    },{
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
+    }, NotificationsService,
+    provideToastr({ closeButton: true, positionClass: 'toast-top-right', preventDuplicates: true })
+  ],
+  bootstrap: [AppComponent],
+  /* entryComponents: [
+     ConfirmationDialogComponent,
+     InputDialogComponent
+   ]*/
+})
+export class AppModule { }

@@ -1,0 +1,12 @@
+.input-group-btn>.btn {
+  padding: 5px 6px;
+  height: 30px;
+  min-width: 23px;
+  border: 1px solid #ccc;
+  line-height: 17px;
+  /* background: #e3e2e2; */
+  border-radius: 0 3px 3px 0;
+}
+.max-text-area{
+  max-height: 200px;
+}

@@ -1,0 +1,813 @@
+<div
+  *ngIf="isLoading"
+  id="pause"
+  class="d-flex align-items-center justify-content-center"
+>
+  <span class="loader"></span>
+</div>
+
+<app-address-setup-model></app-address-setup-model>
+<app-address-group-model
+  (valueEmitted)="handleValueEmitted($event)"
+></app-address-group-model>
+<app-shareholdersmodel
+  (emittedShareholdersLength)="handleShareholdersCount($event)"
+  (allocated)="handleShareholdersSum($event)"
+></app-shareholdersmodel>
+<app-dynamic-dialog
+  (selected)="selected($event)"
+  [selectedField]="lastSelected"
+  [data]="dialogData"
+  [selectName]="SelectName"
+></app-dynamic-dialog>
+<!-- Legal Status -->
+<div class="tab-pane active show" id="legal-step" role="tabpanel">
+  <form [formGroup]="legalStatusForm" (ngSubmit)="onSubmit()">
+    <h3>{{ "Organization.Timeline.Legal_Status.Title" | translate }}</h3>
+    <div class="row">
+      <div class="col-sm-12 col-md-3 col-lg-3 col-xl-3 form-group mb-2">
+        <label class="form-label"
+          >{{ "Organization.Timeline.Legal_Status.Arabic_Name" | translate
+          }}<span class="text-danger"> *</span></label
+        >
+        <input
+          type="text"
+          class="form-control"
+          formControlName="arabicName"
+          [(ngModel)]="dmsStpLevelDetails.arabicName"
+          placeholder="{{
+            'Organization.Timeline.Legal_Status.Arabic_Name' | translate
+          }}"
+        />
+        <div
+          *ngIf="legalStatusForm.get('arabicName')!.touched"
+          class="text-danger small-text"
+        >
+          <ng-container
+            *ngIf="legalStatusForm.get('arabicName')!.hasError('required')"
+          >
+            {{ "validation.required" | translate }}
+          </ng-container>
+        </div>
+      </div>
+      <div class="col-sm-12 col-md-3 col-lg-3 col-xl-3 form-group mb-2">
+        <label class="form-label"
+          >{{ "Organization.Timeline.Legal_Status.English_Name" | translate
+          }}<span class="text-danger"> *</span></label
+        >
+        <input
+          type="text"
+          class="form-control"
+          formControlName="englishName"
+          [(ngModel)]="dmsStpLevelDetails.englishName"
+          placeholder="{{
+            'Organization.Timeline.Legal_Status.English_Name' | translate
+          }}"
+        />
+        <div
+          *ngIf="legalStatusForm.get('englishName')!.touched"
+          class="text-danger small-text"
+        >
+          <ng-container
+            *ngIf="legalStatusForm.get('englishName')!.hasError('required')"
+          >
+            {{ "validation.required" | translate }}
+          </ng-container>
+        </div>
+      </div>
+      <!-- <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 form-group mb-2"></div> -->
+      <div class="col-sm-12 col-md-2 col-lg-2 col-xl-2 form-group mb-2">
+        <label class="form-label"
+          >{{ "Organization.Timeline.Legal_Status.Company_Code" | translate
+          }}<span class="text-danger"> *</span></label
+        >
+        <input
+          type="text"
+          class="form-control"
+          formControlName="definitionCode"
+          [(ngModel)]="dmsStpLevelDetails.definitionCode"
+          [maxlength]="2"
+          (input)="onCodeChange()"
+          (keypress)="blockDash($event)"
+          (paste)="blockPaste($event)"
+          placeholder="{{
+            'Organization.Timeline.Legal_Status.Company_Code' | translate
+          }}"
+        />
+        <div
+          *ngIf="legalStatusForm.get('definitionCode')!.touched"
+          class="text-danger small-text"
+        >
+          <ng-container
+            *ngIf="legalStatusForm.get('definitionCode')!.hasError('required')"
+          >
+            {{ "validation.required" | translate }}
+          </ng-container>
+
+        </div>
+      </div>
+      <div class="col-sm-12 col-md-2 col-lg-2 col-xl-2 form-group mb-2">
+        <label class="form-label"
+          >{{ "Organization.Timeline.Legal_Status.Sector_Nature" | translate
+          }}
+          <!-- <span class="text-danger"> *</span> -->
+          </label
+        >
+        <select
+          id="specialty1"
+          class="form-select"
+          data-bs-toggle="modal"
+          data-bs-target="#accordionModal"
+          (mousedown)="onDropdownOpen('specialty1', $event)"
+        >
+          <option [value]="selectedWork1?.natureOfWorkId ?? ''" selected>
+            {{
+              currentLanguage === "ar"
+                ? selectedWork1?.arabicName ??
+                  (dmsStpLevelDetails?.sectorNatureArabic &&
+                  dmsStpLevelDetails?.natureOfWorkArabic
+                    ? dmsStpLevelDetails.sectorNatureArabic +
+                      " - " +
+                      dmsStpLevelDetails.natureOfWorkArabic
+                    : "-- اختر --")
+                : selectedWork1?.englishName ??
+                  (dmsStpLevelDetails?.sectorNatureEnglish &&
+                  dmsStpLevelDetails?.natureOfWorkEnglish
+                    ? dmsStpLevelDetails.sectorNatureEnglish +
+                      " - " +
+                      dmsStpLevelDetails.natureOfWorkEnglish
+                    : "-- Select --")
+            }}
+          </option>
+        </select>
+        <div
+          *ngIf="legalStatusForm.get('natureOfWorkId')!.touched"
+          class="text-danger small-text"
+        >
+          <ng-container
+            *ngIf="legalStatusForm.get('natureOfWorkId')!.hasError('required')"
+          >
+            {{ "validation.required" | translate }}
+          </ng-container>
+        </div>
+      </div>
+      <div class="col-sm-12 col-md-2 col-lg-2 col-xl-2 form-group mb-2">
+        <label class="form-label">{{
+          "Organization.Timeline.Legal_Status.Sector_Nature_Other" | translate
+        }}</label>
+        <select
+          id="specialty2"
+          class="form-select"
+          data-bs-toggle="modal"
+          data-bs-target="#accordionModal"
+          (mousedown)="onDropdownOpen('specialty2', $event)"
+        >
+          <option [value]="selectedWork2?.natureOfWorkId ?? ''" selected>
+            {{
+              currentLanguage === "ar"
+                ? selectedWork2?.arabicName ??
+                  (dmsStpLevelDetails?.otherSectorNatureArabic &&
+                  dmsStpLevelDetails?.otherNatureOfWorkArabic
+                    ? dmsStpLevelDetails.otherSectorNatureArabic +
+                      " - " +
+                      dmsStpLevelDetails.otherNatureOfWorkArabic
+                    : "-- اختر --")
+                : selectedWork2?.englishName ??
+                  (dmsStpLevelDetails?.otherSectorNatureEnglish &&
+                  dmsStpLevelDetails?.otherNatureOfWorkEnglish
+                    ? dmsStpLevelDetails.otherSectorNatureEnglish +
+                      " - " +
+                      dmsStpLevelDetails.otherNatureOfWorkEnglish
+                    : "-- Select --")
+            }}
+          </option>
+        </select>
+      </div>
+      <div class="col-12">
+        <fieldset class="scheduler-border">
+          <legend class="scheduler-border">
+            {{
+              "Organization.Timeline.Legal_Status.Address.Address" | translate
+            }}
+            <a
+              href="#"
+              class=""
+              data-bs-toggle="modal"
+              data-bs-target="#addressModal"
+              (click)="populateAddressModal()"
+              ><i class="fas fa-gear"></i
+            ></a>
+            {{ "Organization.Timeline.Legal_Status.AddressGroup" | translate }}
+            <a
+              href="#"
+              class=""
+              data-bs-toggle="modal"
+              data-bs-target="#addressGroupModal"
+              (click)="populateAddressGroupModal()"
+              ><i class="fas fa-gear"></i
+            ></a>
+          </legend>
+          <fieldset>
+            <nav aria-label="breadcrumb" class="styled-breadcrumb">
+              <ol class="breadcrumb">
+                <ng-container *ngFor="let description of dmsStpLevelDescriptionsList; let i = index">
+                  <li class="breadcrumb-item" >
+                    <span class="breadcrumb-text" >
+                      {{
+                        currentLanguage === 'ar'
+                          ? description.arabicName  + ' : ' + dmsStpLevelDetailsList[i]?.arabicName
+                          : description.englishName + ' : ' + dmsStpLevelDetailsList[i]?.englishName
+                      }}
+                    </span>
+                  </li>
+                  <span *ngIf="i < dmsStpLevelDescriptionsList.length - 1" class="separator">|</span>
+                </ng-container>
+              </ol>
+            </nav>
+          </fieldset>
+
+          <!-- <div
+            class="row"
+            *ngIf="currentLanguage === 'en'; else arabicTemplate"
+          >
+            <div
+              *ngFor="
+                let description of dmsStpLevelDescriptionsList;
+                let i = index
+              "
+              class="col-sm-12 col-md-4 col-lg-4 col-xl-4 form-group mb-2"
+            >
+              <label class="form-label">{{ description.englishName }}</label>
+              <input
+                type="text"
+                [value]="dmsStpLevelDetailsList[i]?.englishName"
+                class="form-control"
+                [disabled]="true"
+                placeholder="{{ description.englishName }}"
+              />
+            </div>
+          </div>
+
+          <ng-template #arabicTemplate>
+            <div class="row">
+              <div
+                *ngFor="
+                  let description of dmsStpLevelDescriptionsList;
+                  let i = index
+                "
+                class="col-sm-12 col-md-4 col-lg-4 col-xl-4 form-group mb-2"
+              >
+                <label class="form-label">{{ description.arabicName }}</label>
+                <input
+                  type="text"
+                  [value]="dmsStpLevelDetailsList[i]?.arabicName"
+                  class="form-control"
+                  [disabled]="true"
+                  placeholder="{{ description.arabicName }}"
+                />
+              </div>
+            </div>
+          </ng-template> -->
+        </fieldset>
+      </div>
+      <div class="col-sm-12 col-md-4 col-lg-4 col-xl-3 form-group mb-2">
+        <label class="form-label"
+          >{{ "Organization.Timeline.Legal_Status.Long_Lat" | translate }}
+          <a href="#" class="" data-bs-toggle="modal" data-bs-target="#MapModal"
+            ><i class="fas fa-gear"></i
+          ></a>
+          <!-- <span class="text-danger"> *</span> -->
+          </label
+        >
+        <input
+          type="text"
+          class="form-control"
+          formControlName="coordinates"
+          [placeholder]="coordinates"
+          [(ngModel)]="coordinates"
+        />
+        <app-map (coordinatesSelected)="updateCoordinates($event)"></app-map>
+      </div>
+      <div class="col-sm-12 col-md-4 col-lg-4 col-xl-3 form-group mb-2">
+        <label class="form-label"
+          >{{ "Organization.Timeline.Legal_Status.Capital" | translate
+          }}
+          <!-- <span class="text-danger"> *</span> -->
+          </label
+        >
+        <input
+          type="number"
+          min="0"
+          class="form-control"
+          formControlName="capital"
+          [(ngModel)]="dmsStpLevelDetails.capital"
+          placeholder="{{
+            'Organization.Timeline.Legal_Status.Capital' | translate
+          }}"
+        />
+        <div
+          *ngIf="legalStatusForm.get('capital')!.touched"
+          class="text-danger small-text"
+        >
+          <ng-container
+            *ngIf="legalStatusForm.get('capital')!.hasError('required')"
+          >
+            {{ "validation.required" | translate }}
+          </ng-container>
+        </div>
+      </div>
+      <div class="col-sm-12 col-md-4 col-lg-4 col-xl-3 form-group mb-2">
+        <label class="form-label"
+          >{{ "Organization.Timeline.Legal_Status.Capital_Currency" | translate
+          }}
+          <!-- <span class="text-danger"> *</span> -->
+          </label
+        >
+        <select
+          class="form-select"
+          data-bs-toggle="modal"
+          data-bs-target="#exampleModal"
+          (mousedown)="
+            stpDialog(
+              $event,
+              'DMS_STP_CURRANCY',
+              'CURRANCY_ID , CURRANCY_CODE',
+              'LATIN_NAME',
+              'ARABIC_NAME',
+              currencyBrowserData,
+              'Organization.Timeline.Legal_Status.Capital_Currency',
+              legalStatusDialogDto.capitalCurrency
+            )
+          "
+        >
+          <option
+            [value]="this.legalStatusDialogDto.capitalCurrency.idNum"
+            selected
+          >
+            {{
+              translate.currentLang === "ar"
+                ? this.legalStatusDialogDto.capitalCurrency.displayedNameAr ||
+                  "-- اختر --"
+                : this.legalStatusDialogDto.capitalCurrency.displayedNameEn ||
+                  "-- Select --"
+            }}
+          </option>
+        </select>
+        <div
+          *ngIf="legalStatusForm.get('currencyId')!.touched"
+          class="text-danger small-text"
+        >
+          <ng-container
+            *ngIf="legalStatusForm.get('currencyId')!.hasError('required')"
+          >
+            {{ "validation.required" | translate }}
+          </ng-container>
+        </div>
+      </div>
+      <div class="col-sm-12 col-md-4 col-lg-4 col-xl-3 form-group mb-2">
+        <label class="form-label"
+          >{{ "Organization.Timeline.Legal_Status.Number_Of_Shares" | translate
+          }}
+          <!-- <span class="text-danger"> *</span> -->
+          </label
+        >
+        <div class="input-group">
+          <input
+            type="number"
+            class="form-control text-center"
+            formControlName="numberOfShares"
+            [min]="1"
+            maxlength="3"
+            oninput="this.value=this.value.slice(0,this.maxLength)"
+            (input)="validateNumberOfShares($event)"
+            onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+            (change)="openShareholdersModal()"
+            placeholder="{{
+              'Organization.Timeline.Legal_Status.Number_Of_Shares' | translate
+            }}"
+          />
+          <div
+            class="input-extra"
+            style="flex-grow: 2; line-height: 24px; margin: 0 10px"
+          >
+            <span class=""> {{ numberOfShareholders }} </span>
+            {{
+              "Organization.Timeline.Legal_Status.Shareholders.Title"
+                | translate
+            }}
+            <a
+              class="text-decoration-none link-icon"
+              [class.disabled]="!openShareholdersModalFlag"
+              href="#KeyShareholdersModal"
+              data-bs-toggle="modal"
+              (click)="
+                openShareholdersModalFlag
+                  ? populateShareholdersModal()
+                  : $event.preventDefault()
+              "
+            >
+              <i class="fas fa-plus-circle"></i>
+            </a>
+          </div>
+          <div
+            *ngIf="legalStatusForm.get('numberOfShares')!.touched"
+            class="text-danger small-text"
+          >
+            <!-- <ng-container
+              *ngIf="
+                legalStatusForm.get('numberOfShares')!.hasError('required')
+              "
+            >
+              {{ "validation.required" | translate }}
+            </ng-container> -->
+            <ng-container
+              *ngIf="
+                legalStatusForm.get('numberOfShares')!.hasError('minValue')
+              "
+            >
+              {{ "validation.AtLeast" | translate }}
+              {{ totalNumberOfShares }}.
+            </ng-container>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-12 col-md-4 col-lg-4 col-xl-3 form-group mb-2">
+        <label class="form-label"
+          >{{ "Organization.Timeline.Legal_Status.URL_Address" | translate
+          }}
+          <!-- <span class="text-danger"> *</span> -->
+          </label
+        >
+        <input
+          type="text"
+          class="form-control"
+          formControlName="urlAddress"
+          [(ngModel)]="dmsStpLevelDetails.urlAddress"
+          placeholder="{{
+            'Organization.Timeline.Legal_Status.URL_Address' | translate
+          }}"
+        />
+        <div
+          *ngIf="legalStatusForm.get('urlAddress')!.touched"
+          class="text-danger small-text"
+        >
+          <ng-container
+            *ngIf="legalStatusForm.get('urlAddress')!.hasError('required')"
+          >
+            {{ "validation.required" | translate }}
+          </ng-container>
+        </div>
+      </div>
+      <div class="col-sm-12 col-md-4 col-lg-4 col-xl-3 form-group mb-2">
+        <label class="form-label"
+          >{{ "Organization.Timeline.Legal_Status.Language" | translate
+          }}
+          <!-- <span class="text-danger"> *</span> -->
+          </label
+        >
+        <select
+          class="form-select"
+          data-bs-toggle="modal"
+          data-bs-target="#exampleModal"
+          (mousedown)="
+            stpDialog(
+              $event,
+              'PRS_STP_LANGUAGE',
+              'LANGUAGE_ID , LANGUAGE_CODE',
+              'LATIN_NAME',
+              'ARABIC_NAME',
+              languageBrowserData,
+              'Organization.Timeline.Legal_Status.Language',
+              legalStatusDialogDto.language
+            )
+          "
+        >
+          <option [value]="this.legalStatusDialogDto.language.idNum" selected>
+            {{
+              translate.currentLang === "ar"
+                ? this.legalStatusDialogDto.language.displayedNameAr ||
+                  "-- اختر --"
+                : this.legalStatusDialogDto.language.displayedNameEn ||
+                  "-- Select --"
+            }}
+          </option>
+        </select>
+        <div
+          *ngIf="legalStatusForm.get('languageId')!.touched"
+          class="text-danger small-text"
+        >
+          <ng-container
+            *ngIf="legalStatusForm.get('languageId')!.hasError('required')"
+          >
+            {{ "validation.required" | translate }}
+          </ng-container>
+        </div>
+      </div>
+    </div>
+    <div class="step-toolbar">
+      <a class="btn btn-primary" (click)="onSubmit()" style="cursor: pointer">
+        {{ "Organization.Timeline.Legal_Status.Address.Save" | translate }}</a
+      >
+    </div>
+  </form>
+</div>
+
+<!------------------------Modal-->
+<!-- Backdrop -->
+<div
+  class="modal-backdrop fade show"
+  *ngIf="isModalOpen"
+  (click)="closeModal()"
+></div>
+<div
+  class="modal fade"
+  [class.show]="isModalOpen"
+  [style.display]="isModalOpen ? 'block' : 'none'"
+  id="accordionModal"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="accordionModalLabel"
+  aria-hidden="true"
+  *ngIf="isModalOpen"
+  @modalAnimation
+  (shown.bs.modal)="resetFilter()"
+>
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content rounded-3 shadow-lg">
+      <div
+        style="color: white"
+        class="modal-header text-danger bg-primary d-flex justify-content-between"
+      >
+        <button
+          style="color: rgb(3, 0, 0)"
+          type="button"
+          class="btn-close text-danger-emphasis"
+          (click)="closeModal()"
+          aria-label="Close"
+        >
+          X
+        </button>
+      </div>
+      <div
+        class="modal-body"
+        style="max-height: 70vh; overflow-y: auto; overflow-x: hidden"
+      >
+        <div class="input-group mb-3">
+          <input
+            *ngIf="translate.currentLang === 'ar'"
+            type="text"
+            class="form-control"
+            placeholder="بحث"
+            [(ngModel)]="filter.displayedNameAr"
+            (ngModelChange)="onSearchChange()"
+          />
+          <input
+            *ngIf="translate.currentLang !== 'ar'"
+            type="text"
+            class="form-control"
+            placeholder="Search"
+            [(ngModel)]="filter.displayedNameEn"
+            (ngModelChange)="onSearchChange()"
+          />
+        </div>
+
+        <table class="table table-sm">
+          <tbody>
+            <tr
+              onmouseover="this.style.backgroundColor='var(--appColor)';"
+              onmouseout="this.style.backgroundColor='';"
+              style="cursor: pointer; text-align: center"
+            >
+              <td
+                colspan="2"
+                class="select-placeholder"
+                (click)="selectedOption(null, null, null, null)"
+                data-bs-dismiss="modal"
+              >
+                {{
+                  translate.currentLang == "ar" ? "-- اختر --" : "-- Select --"
+                }}
+              </td>
+            </tr>
+            <tr
+              *ngFor="
+                let sector of getFilteredData().slice(
+                  (currentPage - 1) * pageSize,
+                  currentPage * pageSize
+                );
+                let i = index
+              "
+            >
+              <td colspan="2">
+                <div class="accordion12" id="accordion" role="tablist">
+                  <div class="accordion-item flex-column">
+                    <h2 class="accordion-header" [id]="'heading' + i">
+                      <button
+                        class="accordion-button collapsed"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        [attr.data-bs-target]="'#collapse' + i"
+                        [attr.aria-expanded]="false"
+                        [class.highlight]="
+                          currentLanguage === 'ar'
+                            ? sector.natureNameArabic
+                                ?.toLowerCase()
+                                .includes(filter.displayedNameAr.toLowerCase())
+                            : sector.natureNameEnglish
+                                ?.toLowerCase()
+                                .includes(filter.displayedNameEn.toLowerCase())
+                        "
+                        [attr.aria-controls]="'collapse' + i"
+                      >
+                        {{
+                          currentLanguage === "ar"
+                            ? sector.natureNameArabic
+                            : sector.natureNameEnglish
+                        }}
+                      </button>
+                    </h2>
+                    <div
+                      id="collapse{{ i }}"
+                      class="accordion-collapse collapse"
+                      [ngClass]="{ show: sector.expanded }"
+                      aria-labelledby="'heading' + i"
+                    >
+                      <div class="accordion-body">
+                        <ul class="list-unstyled">
+                          <li
+                            *ngFor="let work of sector.dmsStpNatureOfWorks"
+                            [ngClass]="{
+                              hovered:
+                                isHovered(work) ||
+                                (currentLanguage === 'ar' &&
+                                  filter.displayedNameAr &&
+                                  work.arabicName
+                                    ?.toLowerCase()
+                                    .includes(
+                                      filter.displayedNameAr.toLowerCase()
+                                    )) ||
+                                (currentLanguage !== 'ar' &&
+                                  filter.displayedNameEn &&
+                                  work.englishName
+                                    ?.toLowerCase()
+                                    .includes(
+                                      filter.displayedNameEn.toLowerCase()
+                                    ))
+                            }"
+                            class="list-item p-2 mb-2 border rounded bg-light shadow-sm"
+                            (mouseover)="onMouseOver(work)"
+                            (mouseout)="onMouseOut()"
+                            (click)="
+                              selectedOption(
+                                work,
+                                sector.sectorNatureId,
+                                sector.natureNameArabic,
+                                sector.natureNameEnglish
+                              )
+                            "
+                            style="cursor: pointer; text-align: center"
+                          >
+                            <i
+                              class="fas fa-check-circle text-success me-2"
+                              *ngIf="
+                                (currentLanguage === 'ar' &&
+                                  filter.displayedNameAr &&
+                                  work.arabicName
+                                    ?.toLowerCase()
+                                    .includes(
+                                      filter.displayedNameAr.toLowerCase()
+                                    )) ||
+                                (currentLanguage !== 'ar' &&
+                                  filter.displayedNameEn &&
+                                  work.englishName
+                                    ?.toLowerCase()
+                                    .includes(
+                                      filter.displayedNameEn.toLowerCase()
+                                    ))
+                              "
+                            ></i>
+
+                            <i
+                              class="fas fa-circle text-muted me-2"
+                              *ngIf="
+                                (currentLanguage === 'ar' &&
+                                  filter.displayedNameAr &&
+                                  !work.arabicName
+                                    ?.toLowerCase()
+                                    .includes(
+                                      filter.displayedNameAr.toLowerCase()
+                                    )) ||
+                                (currentLanguage !== 'ar' &&
+                                  filter.displayedNameEn &&
+                                  !work.englishName
+                                    ?.toLowerCase()
+                                    .includes(
+                                      filter.displayedNameEn.toLowerCase()
+                                    ))
+                              "
+                            ></i>
+
+                            {{
+                              currentLanguage === "ar"
+                                ? work.arabicName
+                                : work.englishName
+                            }}
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </td>
+            </tr>
+
+            <tr *ngIf="getFilteredData().length === 0">
+              <td colspan="2" class="text-center text-muted">
+                {{
+                  translate.currentLang === "ar"
+                    ? "لا توجد نتائج"
+                    : "No results found"
+                }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer d-flex justify-content-center">
+        <div class="pagination">
+          <!-- First Page Button -->
+          <button
+            class="btn btn-outline-primary"
+            [ngClass]="{ active: currentPage === 1 }"
+            [disabled]="currentPage === 1"
+            (click)="changePage(1)"
+          >
+            <i
+              [ngClass]="
+                translate.currentLang === 'ar'
+                  ? 'fas fa-angle-double-right'
+                  : 'fas fa-angle-double-left'
+              "
+            ></i>
+          </button>
+
+          <!-- Previous Page Button -->
+          <button
+            class="btn btn-outline-primary"
+            [ngClass]="{ active: currentPage === currentPage - 1 }"
+            [disabled]="currentPage === 1"
+            (click)="changePage(currentPage - 1)"
+          >
+            <i
+              [ngClass]="
+                translate.currentLang === 'ar'
+                  ? 'fas fa-angle-right'
+                  : 'fas fa-angle-left'
+              "
+            ></i>
+          </button>
+
+          <!-- Current Page Text -->
+          <span style="font-weight: bold" class="page-info">
+            {{ translate.currentLang === "ar" ? "صفحه" : "Page" }}
+            {{ currentPage }}
+            {{ translate.currentLang === "ar" ? "من" : "of" }}
+            {{ totalPages() }}
+          </span>
+
+          <!-- Next Page Button -->
+          <button
+            class="btn btn-outline-primary"
+            [ngClass]="{ active: currentPage === currentPage + 1 }"
+            [disabled]="currentPage === totalPages()"
+            (click)="changePage(currentPage + 1)"
+          >
+            <i
+              [ngClass]="
+                translate.currentLang === 'ar'
+                  ? 'fas fa-angle-left'
+                  : 'fas fa-angle-right'
+              "
+            ></i>
+          </button>
+
+          <!-- Last Page Button -->
+          <button
+            class="btn btn-outline-primary"
+            [ngClass]="{ active: currentPage === totalPages() }"
+            [disabled]="currentPage === totalPages()"
+            (click)="changePage(totalPages())"
+          >
+            <i
+              [ngClass]="
+                translate.currentLang === 'ar'
+                  ? 'fas fa-angle-double-left'
+                  : 'fas fa-angle-double-right'
+              "
+            ></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

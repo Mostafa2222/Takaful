@@ -1,0 +1,1296 @@
+$(document).ready(function () {
+    // Data table Search
+    $('.searchableTh .fa-search').click(function () {
+        $(this).parent().toggleClass("searching");
+        $(this).siblings("input,select").focus();
+        $(this).siblings("input,select").val("");
+        $(this).siblings("input,select").trigger("change");
+        /*table.columns().search( "" ).draw();*/
+        event.stopPropagation();
+    });
+    $('.searchableTh input,.searchableTh select').click(function () {
+        event.stopPropagation();
+    });
+    // Apply the search
+    function FilterDatatable (table) {
+        table.columns().every(function () {
+            var that = this;
+            $('input', this.header()).on('keyup change', function () {
+                if (that.search() !== this.value) {
+                    that.search(this.value).draw();
+                }
+            });
+            $('select', this.header()).on('change', function () {
+                if (that.search() !== this.value) {
+                    //regExSearch = '<span\b[^>]*>('+ this.value +')</span>';
+                    //table.column(columnNo).search(regExSearch, true, false).draw();
+                    that
+                        .search(this.value)
+                        .draw();
+                    console.log(that.search());
+                }
+            });
+        });
+    };
+});
+$(document).ready(function () {
+    $('.chosen-single').select2({
+        width: '100%'
+    });
+    // select2 multiselection
+    $('.chosen-multiple').select2({
+        width: '100%',
+        multiple: true,
+        dropdownAutoWidth: true,
+        allowClear: true,
+        closeOnSelect: false,
+        tags: false,
+    });
+    //  result of selected items
+    $('.chosen-multiple').on('select2:close', function (evt) {
+        var uldiv = $(this).siblings('span.select2').find('ul')
+        var count = uldiv.find('li').length - 1;
+        uldiv.html("<li>" + count + " items selected</li>")
+    });
+    // select2 multiselection
+    $('.chosen-multiple-days').select2({
+        width: '100%',
+        multiple: true,
+        dropdownAutoWidth: true,
+        allowClear: true,
+        closeOnSelect: false,
+        tags:false,
+    });
+    //  result of selected items
+    // $('.chosen-multiple-pos').on('select2:close', function (evt) {
+    //     var uldiv = $(this).siblings('span.select2').find('ul')
+    //     var count = uldiv.find('li').length - 1;
+    //     uldiv.html("<li>" + count + " items selected</li>")
+    // });
+    //
+    function formatText (icon) {
+        return $('<span><i class="fas ' + $(icon.element).data('icon') + '"></i> ' + icon.text + '</span>');
+    };
+    $('.select2-icon').select2({
+        width: "100%",
+        minimumResultsForSearch: -1,
+        templateSelection: formatText,
+        templateResult: formatText,
+        closeOnSelect: true,
+    });
+    //Create table row .create-row
+    $(document).on('click', '.create-row', function () {
+        $(this).find("i").toggleClass("fa-minus fa-plus")
+        $(this).closest("table").find("tr.new-row").toggleClass('active');
+    });
+    // Passing moment function to dataTable Prototype to help datatable plugin sorting by date depending on moment format
+    $.fn.dataTable.moment('D/M/YYYY');
+
+    //------------------------------------- DataTable
+    // #groupTabel
+    var tableGroup = GroupTabel();
+    function GroupTabel () {
+        var table = $('#groupTabel table').DataTable({
+            "dom": 'tilp',
+            "stateSave": false,
+            "scrollCollapse": false,
+            "info": true,
+            "paging": true,
+            "responsive": true,
+            "ordering": true,
+            "colReorder": true,
+            "columnDefs": [{
+                orderable: false,
+                targets: [4]
+            }],
+        });
+        return table;
+    };
+    FilterDatatable(tableGroup);
+    // #PlansTabel
+    var tablePlans = PlansTabel();
+    function PlansTabel () {
+        var table = $('#plansTabel table').DataTable({
+            "dom": 'tilp',
+            "stateSave": false,
+            "scrollCollapse": false,
+            "info": true,
+            "paging": true,
+            "responsive": true,
+            "ordering": true,
+            "colReorder": true,
+            "columnDefs": [{
+                orderable: false,
+                targets: [3]
+            }],
+        });
+        return table;
+    };
+    FilterDatatable(tablePlans);
+    // #PlansDefinTabel
+    var tablePlansDefin = PlansDefinTabel();
+    function PlansDefinTabel () {
+        var table = $('#plansDefinTabel table').DataTable({
+            "dom": 'tilp',
+            "stateSave": false,
+            "scrollCollapse": false,
+            "info": true,
+            "paging": true,
+            "responsive": true,
+            "ordering": true,
+            "colReorder": true,
+            "columnDefs": [{
+                orderable: false,
+                targets: [4]
+            }],
+        });
+        return table;
+        // FilterDatatable(tablePlansDefin);
+    };
+    //tempTabel
+    var tableTemp = tempTabel();
+    function tempTabel () {
+        var table = $('#tempTabel table').DataTable({
+            "dom": 'tilp',
+            "stateSave": false,
+            "scrollCollapse": false,
+            "info": true,
+            "paging": true,
+            "responsive": true,
+            "ordering": false,
+            "colReorder": true,
+            "columnDefs": [{
+                orderable: false,
+                targets: [1]
+            }],
+        });
+        return table;
+    };
+    FilterDatatable(tableTemp);
+    //emp-plansTabel
+    var tableEmpPlans = EmpPlansTabel();
+    function EmpPlansTabel () {
+        var table = $('#emp-plansTabel table').DataTable({
+            "dom": 'tilp',
+            "stateSave": false,
+            "scrollCollapse": false,
+            "info": true,
+            "paging": true,
+            "responsive": true,
+            "ordering": true,
+            "colReorder": true,
+            "columnDefs": [{
+                orderable: false,
+                targets: [0, 6]
+            }],
+        });
+        return table;
+    };
+    //emp-plansTabel
+    var tableEmpPlans2 = EmpPlansTabel2();
+    function EmpPlansTabel2 () {
+        var table = $('#emp-plansTabel2 table').DataTable({
+            "dom": 'tilp',
+            "stateSave": false,
+            "scrollCollapse": false,
+            "info": true,
+            "paging": true,
+            "responsive": true,
+            "ordering": true,
+            "colReorder": true,
+            "columnDefs": [{
+                orderable: false,
+                targets: [0, 5]
+            }],
+        });
+        return table;
+    };
+    // #ShiftsTabel
+    var tableShifts = ShiftsTabel();
+    function ShiftsTabel () {
+        var table = $('#shiftsTabel table').DataTable({
+            "dom": 'tilp',
+            "stateSave": false,
+            "scrollCollapse": false,
+            "info": true,
+            "paging": true,
+            "responsive": true,
+            "ordering": true,
+            "colReorder": true,
+            "columnDefs": [{
+                orderable: false,
+                targets: [6]
+            }],
+        });
+        return table;
+    };
+    FilterDatatable(tableShifts);
+
+       // #groupTabel
+    var tableDash = DashTabel();
+    function DashTabel () {
+        var table = $('#DashTabel table').DataTable({
+            "dom": 'tilp',
+            "stateSave": false,
+            "scrollCollapse": false,
+            "info": true,
+            "paging": true,
+            "responsive": true,
+            "ordering": true,
+            "colReorder": true,
+        });
+        return table;
+    };
+    FilterDatatable(tableDash);
+    // sub table
+    //   linked-details
+    $('#groupTabel tbody').on('click', 'td a.linked-details', function () {
+        // $(this).addClass("selected");
+        var tr = $(this).closest('tr');
+        var row = $(this).closest('table').DataTable().row(tr);
+        if (row.child.isShown()) {
+            row.child.hide();
+            tr.removeClass('shown');
+            $(this).children().removeClass("select fa-ellipsis-v").addClass("fa-ellipsis-h");
+        } else {
+            row.child(format1(row.data())).show();
+            tr.addClass('shown');
+            tr.removeClass('selected');
+            $(this).children().addClass('select');
+            $(this).children("i").toggleClass("fa-ellipsis-h fa-ellipsis-v");
+        }
+    });
+    function format1 (rowData) {
+        var div = $('<div/>').addClass('loading').text('Loading...');
+        div.load("linked-to-" + rowData[0] + ".html", function () {
+            $(".loading").removeClass('loading');
+            div.find("table");
+        });
+        console.log(rowData[0]);
+        return div;
+    };
+
+
+// plans-Shift-rules
+$('#plansDefinTabel tbody').on('click', 'td a.plans-Shift-rules', function () {
+    var tr = $(this).closest('tr');
+    var row = $(this).closest('table').DataTable().row(tr);
+    if (row.child.isShown()) {
+        row.child.hide();
+        tr.removeClass('shown');
+        $(this).children().removeClass("select fa-ellipsis-v").addClass("fa-ellipsis-h");
+    } else {
+        row.child(format2(row.data())).show();
+        tr.addClass('shown');
+        tr.removeClass('selected');
+        $(this).children().addClass('select');
+        $(this).children("i").toggleClass("fa-ellipsis-h fa-ellipsis-v");
+    }
+});
+function format2 (rowData) {
+    var div = $('<div/>').addClass('loading').text('Loading...');
+    div.load("plans-Shift-rules-" + rowData[0] + ".html", function () {
+        $(".loading").removeClass('loading');
+        div.find("table");
+    });
+    console.log(rowData[0]);
+    return div;
+};
+// atten-element-rules
+$('#plansDefinTabel tbody').on('click', 'td a.atten-element-rules', function () {
+    var tr = $(this).closest('tr');
+    var row = $(this).closest('table').DataTable().row(tr);
+    if (row.child.isShown()) {
+        row.child.hide();
+        tr.removeClass('shown');
+        $(this).children().removeClass("select fa-ellipsis-v").addClass("fa-ellipsis-h");
+    } else {
+        row.child(format3(row.data())).show();
+        tr.addClass('shown');
+        tr.removeClass('selected');
+        $(this).children().addClass('select');
+        $(this).children("i").toggleClass("fa-ellipsis-h fa-ellipsis-v");
+    }
+});
+function format3 (rowData) {
+    var div = $('<div/>').addClass('loading').text('Loading...');
+    div.load("atten-element-rules-" + rowData[0] + ".html", function () {
+        $(".loading").removeClass('loading');
+        div.find("table");
+    });
+    console.log(rowData[0]);
+    return div;
+};
+//Atten-details
+    $('#groupTabel tbody').on('click', 'td a.Atten-details', function () {
+        // $(this).addClass("selected");
+        var tr = $(this).closest('tr');
+        var row = $(this).closest('table').DataTable().row(tr);
+        if (row.child.isShown()) {
+            row.child.hide();
+            tr.removeClass('shown');
+            $(this).children().removeClass("select fa-ellipsis-v").addClass("fa-ellipsis-h");
+        } else {
+            row.child(format4(row.data())).show();
+            tr.addClass('shown');
+            tr.removeClass('selected');
+            $(this).children().addClass('select');
+            $(this).children("i").toggleClass("fa-ellipsis-h fa-ellipsis-v");
+        }
+    });
+    function format4 (rowData) {
+        var div = $('<div/>').addClass('loading').text('Loading...');
+        div.load("Atten-details-" + rowData[0] + ".html", function () {
+            $(".loading").removeClass('loading');
+            div.find("table");
+        });
+        console.log(rowData[0]);
+        return div;
+    };
+//   linked-details -plans page
+    $('#plansTabel tbody').on('click', 'td a.linked-details', function () {
+        // $(this).addClass("selected");
+        var tr = $(this).closest('tr');
+        var row = $(this).closest('table').DataTable().row(tr);
+        if (row.child.isShown()) {
+            row.child.hide();
+            tr.removeClass('shown');
+            $(this).children().removeClass("select fa-ellipsis-v").addClass("fa-ellipsis-h");
+        } else {
+            row.child(format5(row.data())).show();
+            tr.addClass('shown');
+            tr.removeClass('selected');
+            $(this).children().addClass('select');
+            $(this).children("i").toggleClass("fa-ellipsis-h fa-ellipsis-v");
+        }
+    });
+    function format5 (rowData) {
+        var div = $('<div/>').addClass('loading').text('Loading...');
+        div.load("linked-to-" + rowData[0] + ".html", function () {
+            $(".loading").removeClass('loading');
+            div.find("table");
+        });
+        console.log(rowData[0]);
+        return div;
+    };
+    //   automatic-details -connection definition
+    $('#groupTabel tbody').on('click', 'td a.automatic-details', function () {
+        // $(this).addClass("selected");
+        var tr = $(this).closest('tr');
+        var row = $(this).closest('table').DataTable().row(tr);
+        if (row.child.isShown()) {
+            row.child.hide();
+            tr.removeClass('shown');
+            $(this).children().removeClass("select fa-ellipsis-v").addClass("fa-ellipsis-h");
+        } else {
+            row.child(format6(row.data())).show();
+            tr.addClass('shown');
+            tr.removeClass('selected');
+            $(this).children().addClass('select');
+            $(this).children("i").toggleClass("fa-ellipsis-h fa-ellipsis-v");
+        }
+    });
+    function format6 (rowData) {
+        var div = $('<div/>').addClass('loading').text('Loading...');
+        div.load("automatic-details-" + rowData[0] + ".html", function () {
+            $(".loading").removeClass('loading');
+            div.find("table");
+        });
+        console.log(rowData[0]);
+        return div;
+    };
+    //   automatic-details -connection definition
+    $('#groupTabel tbody').on('click', 'td a.log-details', function () {
+        // $(this).addClass("selected");
+        var tr = $(this).closest('tr');
+        var row = $(this).closest('table').DataTable().row(tr);
+        if (row.child.isShown()) {
+            row.child.hide();
+            tr.removeClass('shown');
+            $(this).children().removeClass("select fa-ellipsis-v").addClass("fa-ellipsis-h");
+        } else {
+            row.child(format7(row.data())).show();
+            tr.addClass('shown');
+            tr.removeClass('selected');
+            $(this).children().addClass('select');
+            $(this).children("i").toggleClass("fa-ellipsis-h fa-ellipsis-v");
+        }
+    });
+    function format7 (rowData) {
+        var div = $('<div/>').addClass('loading').text('Loading...');
+        div.load("log-details-" + rowData[0] + ".html", function () {
+            $(".loading").removeClass('loading');
+            div.find("table");
+        });
+        console.log(rowData[0]);
+        return div;
+    };
+    //hide popup if clicked outside
+    $(document).click(function (e) {
+        var $tgt = $(e.target);
+        if ($tgt.closest(".proGroupItem_popup,.GroupItem_popup,.proGroupItemBtn,.proItemBtn").length) { } else {
+            $(".proGroupItem_popup,.GroupItem_popup").addClass("dnone");
+        }
+    });
+    //
+    $('.filter-form-2').hide();
+    $(document).on('click', '.filter-collapse-show', function () {
+        $('.filter-form-2').slideToggle("slow", "swing", function () {
+            sizing();
+        });
+        $(this).toggleClass("filter-opened");
+    });
+});
+$(document).ready(function () {
+    $(".SelectionSelect").hide();
+    $(document).on('change', '.Selection1', function () {
+        if (this.value == 'Select') {
+            $(this).parent().parent().parent().siblings().children(".SelectionSelect").show();
+        } else {
+            $(this).parent().parent().parent().siblings().children(".SelectionSelect").hide();
+        }
+    });
+    $(document).on('change', '.Selection', function () {
+        if (this.value == 'Select') {
+            $(this).parent().siblings(".SelectionSelect").show();
+        } else {
+            $(this).parent().siblings(".SelectionSelect").hide();
+        }
+    });
+    $(document).on('change', '.Selection2', function () {
+        if (this.value == 'Select') {
+            $(this).parent().siblings(".SelectionSelect").show();
+        } else {
+            $(this).parent().siblings(".SelectionSelect").hide();
+        }
+    });
+    // Row inline Add
+    $(document).on('click', '.addNewRows', function () {
+        var newRow = $('.newrow') /*.first()*/;
+        console.log(newRow);
+        var newRowcontent = newRow.clone().removeClass('newrow');
+        newRow.before(newRowcontent);
+        //
+    });
+    // add new row - multi tables
+    $(document).on("click", ".add-Rows", function () {
+        var newRow = $(this).parent().parent().siblings().children().children().find(".newrow");
+        var newRowcontent = newRow.clone().removeClass("newrow");
+        newRow.before(newRowcontent);
+    });
+    // Row inline Add
+    $(document).on('click', '.addNewRows1', function (e) {
+        e.preventDefault();
+        var newRow = $('.newrow1') /*.first()*/;
+        console.log(newRow);
+        var newRowcontent = newRow.clone().removeClass('newrow1');
+        newRow.before(newRowcontent);
+    });
+    // Row inline Add
+    $(document).on('click', '.addNewRows2', function (e) {
+        e.preventDefault();
+        var newRow = $('.newrow2') /*.first()*/;
+        console.log(newRow);
+        var newRowcontent = newRow.clone().removeClass('newrow2');
+        newRow.before(newRowcontent);
+    });
+    // addUploadFile
+    $(document).on('click', '.addUploadFile', function (e) {
+        e.preventDefault();
+        var newFile = $('.uploadFileBlock') /*.first()*/;
+        var newFilecontent = newFile.clone().removeClass('uploadFileBlock');
+        newFile.before(newFilecontent);
+    });
+    //
+    $(document).on('click', '.btn-remove', function () {
+        $(this).parent().parent('.uploadBlock').remove();
+    });
+
+    // accordion
+    $('#accordion .collapse.in').prev('.panel-heading').addClass('open');
+    $('#accordion')
+        .on('show.bs.collapse', function (e) {
+            $(e.target).prev('.panel-heading').addClass('open');
+        })
+        .on('hide.bs.collapse', function (e) {
+            $(e.target).prev('.panel-heading').removeClass('open');
+        });
+    // info section
+    $(document).on('click', '.infoview-btn', function () {
+        $('.info-view').toggleClass('dnone');
+        $('.info-view').siblings().toggleClass('col-md-8 col-lg-9');
+        $('.info-view').siblings('info-siblings').toggleClass('col-md-8 col-lg-9');
+        $('.filterSec').removeClass('col-md-8 col-lg-9').addClass('col-md-12');
+        $('.shopping-section').removeClass('col-md-8 col-lg-9');
+    });
+    // Row inline Add -top add btn in page title-
+    $(document).on('click', '.addRowTable', function () {
+        var newRow = $(this).parent().parent().siblings().children().children().children().children().children().find('.new-row');
+        newRow.toggleClass('active');
+        newRow.children('.row-inline-editable').addClass("active");
+        newRow.children('.row-inline-editable').each(function (index, value) {
+            var text = $(this).children("input[type='text']").val("");
+            var checkbox = $(this).children("input[type='checkbox']").val("");
+            var select = $(this).children("select").removeAttr('checked');
+        });
+    });
+    //TableView-btn treeView-btn
+    $(document).on("click", ".tableView-btn", function () {
+        $(this).addClass("selected");
+        $(".treeView-btn").removeClass("selected");
+        $(".treeView").addClass("dnone");
+        $(".tableView").removeClass("dnone");
+    });
+    $(document).on("click", ".treeView-btn", function () {
+        $(this).addClass("selected");
+        $(".tableView-btn").removeClass("selected");
+        $(".treeView").removeClass("dnone");
+        $(".tableView").addClass("dnone");
+    });
+    //
+
+    // offer-msg-ntn
+    $(document).on("click", ".offer-msg-btn a", function () {
+        $(this).find("i").toggleClass("fa-minus fa-compress");
+        $(this).parent().siblings(".details-btn").toggleClass("dnone");
+        $(this).parent().siblings().children(".title").toggleClass("dnone");
+        $(this).parent().parent().parent(".offer-msg").toggleClass("resize");
+    });
+    // customer-size-btn  customer-box item  set-custom
+    $(document).on("click", ".customer-size-btn a", function () {
+        $(this).find("i").toggleClass("fa-angle-double-right fa-angle-double-left");
+        $(this).parent().parent().parent().toggleClass("col-xs-12 col-sm-5 col-md-4 col-lg-3 col-xs-12 col-sm-2 col-md-1 col-lg-1");
+        $(this).parent().parent().parent().siblings(".main-pos").toggleClass("col-xs-12 col-sm-7 col-md-8 col-lg-9 col-xs-12 col-sm-10 col-md-11 col-lg-11 no-padding-right");
+        $(this).parent().siblings(".customer-box .item ,.customer-box h3").toggleClass("dnone");
+        $(this).parent().siblings(".set-custom").toggle();
+    });
+    // select one row in table
+    $('.select-table tbody').on('click', 'tr', function () {
+        if ($(this).hasClass("selected")) {
+            $(this).removeClass('selected');
+            $(this).find("input").prop('checked', true);
+        } else {
+            $(this).addClass('selected');
+            $(this).find("input").prop('checked', false);
+            $('tbody tr').not(this).removeClass('selected');
+            $('tbody tr').not(this).find("input").prop('checked', false);
+        }
+    });
+    // select rows in table
+    $('.select-rows-table tbody').on('click', 'tr', function () {
+        if ($(this).hasClass("selected")) {
+            $(this).removeClass('selected');
+            $(this).find("input").prop('checked', true);
+        } else {
+            $(this).addClass('selected');
+            $(this).find("input").prop('checked', false);
+            // $('tbody tr').not(this).removeClass('selected');
+            // $('tbody tr').not(this).find("input").prop('checked', false);
+        }
+    });
+    //grid-view-btn tab-view-btn
+    $(document).on("click", ".grid-view-btn", function () {
+        $(this).addClass("selected");
+        $(".tab-view-btn").removeClass("selected");
+        $(".tab-view").addClass("dnone");
+        $(".grid-view").removeClass("dnone");
+    });
+    $(document).on("click", ".tab-view-btn", function () {
+        $(this).addClass("selected");
+        $(".grid-view-btn").removeClass("selected");
+        $(".tab-view").removeClass("dnone");
+        $(".grid-view").addClass("dnone");
+    });
+});
+$(document).ready(function () {
+    //
+    $(document).on('change', 'input[name=has-checked]', function () {
+        $(".has-checked").toggleClass("dnone");
+    });
+    //select all checkbox in table
+    $(document).on('change', 'input[name=check-all]', function () {
+        if (this.checked) {
+            $(this).parent().parent().parent().siblings().children().addClass('selected');
+            $(this).parent().parent().parent().siblings().children().children().find("input").prop('checked', true);
+            // apply template div in Schedule Template page
+            $(".apply-template").children().find("select").prop('disabled', false);
+            $(".apply-template").children().find("a").removeClass("disabled");
+        } else {
+            $(this).parent().parent().parent().siblings().children().removeClass('selected');
+            $(this).parent().parent().parent().siblings().children().children().find("input").prop('checked', false);
+            // apply template div in Schedule Template page
+            $(".apply-template").children().find("select").prop('disabled', true);
+            $(".apply-template").children().find("a").addClass("disabled");
+        };
+    });
+    // // check-td
+    $(document).on('change', 'input[name=check-tr]', function () {
+        if (this.checked) {
+            $(this).parent().parent().addClass('selected');
+            // apply template div in Schedule Template page
+            $(".btn-template").removeClass("disabled");
+            $('input[name=apply]').prop('disabled', false).parent("label");
+            $('input[name=apply]').parent("label").removeClass("text-muted");
+        } else {
+            $(this).parent().parent().removeClass('selected');
+            // apply template div in Schedule Template page
+            $(".btn-template").addClass("disabled");
+            $('input[name=apply]').prop('disabled', true);
+            $('input[name=apply]').parent("label").addClass("text-muted");
+        };
+
+        // $('input[type=checkbox]').not(this).parent().parent().removeClass('selected');
+        // $('input[type=checkbox]').not(this).prop('checked', false);
+    });
+    $(document).on('change', 'input[name=apply]', function () {
+        if (this.checked) {
+            $(".apply-template").removeClass("dnone");
+        } else {
+            $(".apply-template").addClass("dnone");
+        };
+    });
+    //Unassigned -Assigned
+    $(document).on('change', 'input[name=Unassigned]', function () {
+        // $(".unassigned").toggleClass("dnone");
+        if (this.checked) {
+            $(".unassigned").removeClass("dnone");
+        } else {
+            $(".unassigned").addClass("dnone");
+        };
+    });
+    $(document).on('change', 'input[name=Assigned]', function () {
+        // $(".assigned").toggleClass("dnone");
+        if (this.checked) {
+            $(".assigned").removeClass("dnone");
+        } else {
+            $(".assigned").addClass("dnone");
+        };
+    });
+    //
+    $(document).on('change', 'input[name=Calculation]', function () {
+        if (this.value == 'Variable') {
+            $(".compensation").removeClass("dnone");
+        } else {
+            $(".compensation").addClass("dnone");
+        }
+    });
+    // timepicker
+    $('.timepicker').timepicker({
+        timeFormat: 'h:mm p',
+        interval: 30,
+        // minTime: '10',
+        // maxTime: '6:00pm',
+        // defaultTime: '11',
+        // startTime: '10:00',
+        dynamic: true,
+        dropdown: true,
+        scrollbar: true
+    });
+    //
+    $(document).on("click", ".calenviewby-btn", function () {
+        $(this).toggleClass("select").removeClass('unselect');
+        $('.calenviewby-btn').not(this).removeClass('select').addClass('unselect');
+    });
+    //shift definition page
+    $(document).on('change', 'input[name=Calculation-way]', function () {
+        if (this.value == 'StaVar') {
+            $(".static").removeClass("dnone");
+            $(".calculated, .free").addClass("dnone");
+        };
+        if (this.value == 'Calculated') {
+            $(".calculated").removeClass("dnone");
+            $(" .free, .static").addClass("dnone");
+        };
+        if (this.value == 'free') {
+            $(".free").removeClass("dnone");
+            $(".calculated, .static").addClass("dnone");
+        };
+    });
+    //
+    $(document).on('change', 'input[name=Incomplete]', function () {
+        if (this.checked) {
+            $(this).parent().parent().siblings().children().children("input").prop('disabled', true);
+            $(this).parent().parent().siblings().children("label").addClass('text-muted');
+                 } else {
+            $(this).parent().parent().siblings().children().children("input").prop('disabled', false);
+            $(this).parent().parent().siblings().children("label").removeClass('text-muted');
+        };
+    });
+//
+    $(document).on('change', 'input[name=apply]', function () {
+        if (this.checked) {
+            $(this).parent().parent().siblings().children().children('input[name=incomplete-trans]').prop('disabled', false);
+            $(this).parent().parent().siblings().children().children('input[name=incomplete-trans]').parent("label").removeClass('text-muted');
+        } else {
+            $(this).parent().parent().siblings().children().children('input[name=incomplete-trans]').prop('disabled', true);
+            $(this).parent().parent().siblings().children().children('input[name=incomplete-trans]').parent("label").addClass('text-muted');
+            $(this).parent().parent().siblings().children().children('input[name=trans]').parent("label").addClass('dnone');
+        };
+    });
+    //
+    $(document).on('change', 'input[name=incomplete-trans]', function () {
+        if (this.checked) {
+            $(this).parent().parent().siblings().children().children('input[name=trans]').parent("label").removeClass('dnone');
+        }
+    });
+    // Calculation-way calc-way
+    $(document).on('change', 'input[name=Calculation-way]', function () {
+        if (this.checked) {
+            $(".calc-way").removeClass('dnone');
+        } else {
+            $(".calc-way").addClass('dnone');
+        };
+    });
+    //grid-view-btn tab-view-btn
+    $(document).on("click", ".calender-view-btn", function () {
+        $(this).addClass("selected");
+        $(".grid-view-btn").removeClass("selected");
+        $(".grid-view").addClass("dnone");
+        $(".calender-view").removeClass("dnone");
+    });
+    $(document).on("click", ".grid-view-btn", function () {
+        $(this).addClass("selected");
+        $(".calender-view-btn").removeClass("selected");
+        $(".grid-view").removeClass("dnone");
+        $(".calender-view").addClass("dnone");
+    });
+//   attend-without  attend-shift attend-radio
+    $(".attend-radio").hide();
+    $(document).on('change', 'input[name=attend-shift]', function () {
+        if (this.checked) {
+            $(".attend-radio").show();
+            $(".attend-without").find("input").prop('disabled', true);
+            $(".attend-without").find("label").addClass("text-muted");
+        } else {
+            $(".attend-radio").hide();
+            $(".attend-without").find("input").prop('disabled', false);
+            $(".attend-without").find("label").removeClass("text-muted");
+        };
+    });
+    // toggle password visibility
+    $(document).on('click', '.togglePassword', function () {
+            $(this).toggleClass('fa-eye-slash').toggleClass('fa-eye');
+        var type = $("#password").attr("type");
+        // now test it's value
+        if (type === 'password') {
+            $(this).siblings('#password').attr("type", "text");
+        } else {
+            $(this).siblings('#password').attr("type", "password");
+        }
+    });
+    // row-inline-edit
+    // $(document).on('click', '.row-inline-edit', function () {
+    //     if ($(this).hasClass('glyphicon-pencil')) {
+    //         $("input[type=password]").attr('readonly', false);
+    //     // $(".togglePassword").toggleClass('fa-eye-slash fa-eye');
+
+    //     };
+    //     if ($(this).hasClass('glyphicon-floppy-disk')) {
+    //         $("input[type=password]").attr('readonly', true);
+    //         // $(".togglePassword").toggleClass('fa-eye-slash fa-eye');
+    //     };
+    //     // var type = $("#password").attr("type");
+    //     // if (type === 'password') {
+    //     //     $('#password').attr("type", "text");
+    //     // } else {
+    //     //     $('#password').attr("type", "password");
+    //     // }
+
+    // });
+
+
+//   connect-icon
+    $(document).on('click', '.connect-icon', function () {
+        $(this).toggleClass('attend-icon-plug-in').toggleClass('attend-icon-plug-out');
+    });
+    // ip mask
+    $('.ip_address').mask('099.099.099.099');
+    //Automatic Attendance page
+    $(document).on('change', 'input[name=type]', function () {
+        if (this.value == 'machine') {
+            $(".machine").removeClass("dnone");
+            $(".database").addClass("dnone");
+        };
+        if (this.value == 'database') {
+            $(".database").removeClass("dnone");
+            $(".machine").addClass("dnone");
+        };
+    });
+    //Automatic Attendance page
+    $(document).on('change', 'input[name=end]', function () {
+        if (this.value == 'end-after') {
+            $("input[name=endAfter]").attr('readonly', false);
+            $("input[name=endBy]").attr('readonly', true);
+        };
+        if (this.value == 'end-by') {
+            $("input[name = endBy]").attr('readonly', false);
+            $("input[name=endAfter]").attr('readonly', true);
+        };
+        if (this.value == 'no-end') {
+            $("input[name = endBy] , input[name = endAfter]").attr('readonly', true);
+        };
+    });
+    // apply
+
+    $(document).on('change', 'input[name=apply]', function () {
+        if (this.checked) {
+            $(".recur-sec").removeClass("dnone");
+        } else {
+            $(".recur-sec").addClass("dnone");
+        };
+    });
+
+});
+var calendar = null;
+document.addEventListener('DOMContentLoaded', function () {
+    var calendarEl = document.getElementById('calendar');
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+        themeSystem: 'bootstrap',
+        initialView: 'dayGridMonth',
+        height: 'auto',
+        headerToolbar: {
+            left: '',
+            right: 'prevYear,prev,next,nextYear',
+            center: 'title'
+        },
+        nowIndicator: true,
+        selectable: true,
+        selectHelper: true,
+        editable: true,
+        eventLimit: true, // allow "more" link when too many events
+       expandRows: true,
+        events: [
+            {title: 'Shift 1', start: '2022-10-07T09:00:00', end: '2022-10-07 T 14:00:00', description: ''},
+            {title: 'Shift 2', start: '2022-11-07T12:00:00', end: '2022-11-07 T 06:00:00', description: ''},
+            {title: 'Shift 3', start: '2022-12-07T07:30:00', end: '2022-12-07 T 09:30:00', description: ''},
+            {title: 'Shift 4', start: '2022-12-07T10:00:00', end: '2022-12-07T15:00:00', description: ''},
+            {title: 'Shift 5', start: '2022-12-07T10:00:00', end: '2022-12-07T15:00:00', description: ''},
+            {title: 'Shift 6', start: '2022-12-07T10:00:00', end: '2022-12-07T15:00:00', description: ''},
+            {title: 'Shift 7', start: '2022-12-07T10:00:00', end: '2022-12-07T15:00:00', description: ''}
+        ],
+
+        select: function (event, jsEvent, view) {
+            // Display the modal.
+            $("#modal-shift").modal("show");
+         },
+
+        eventClick: function (event, jsEvent, view) {
+            // $('#modalTitle').html(event.title);
+            // $('#modalBody').html(event.description);
+            $('#modal-shift').modal();
+        },
+    });
+
+    calendar.render();
+});
+//
+document.addEventListener('DOMContentLoaded', function () {
+    var calendarEl2 = document.getElementById('calendar2');
+    var calendar2 = new FullCalendar.Calendar(calendarEl2, {
+        themeSystem: 'bootstrap',
+        initialView: 'dayGridMonth',
+        height: 'auto',
+        contentHeight: 400,
+        headerToolbar: {
+
+            center: 'title',
+               left: 'prev,next',
+            right: 'dayGridMonth,timeGridWeek,timeGridDay'
+        },
+        nowIndicator: true,
+        selectable: true,
+        selectHelper: true,
+        editable: true,
+        eventLimit: true, // allow "more" link when too many events
+        expandRows: true,
+        events: [
+            { title: 'Shift 1', start: '2022-12-30', end: '2022-12-30', description: '' },
+            { title: 'Shift 2', start: '2023-01-03', end: '2023-01-03', description: '' },
+            { title: 'Shift 3', start: '2023-01-03', end: '2023-01-03', description: '' },
+            { title: 'Shift 4', start: '2023-01-03', end: '2023-01-03', description: '' },
+            { title: 'Shift 5', start: '2023-01-07', end: '2023-01-07', description: '' },
+            { title: 'Shift 6', start: '2023-01-08', end: '2023-01-08', description: '' },
+            { title: 'Shift 7', start: '2023-01-08', end: '2023-01-08', description: '' }
+        ],
+        select: function (event, jsEvent, view) {
+            // Display the modal.
+            $("#modal-shift").modal("show");
+        },
+        eventClick: function (event, jsEvent, view) {
+            // $('#modalTitle').html(event.title);
+            // $('#modalBody').html(event.description);
+            $('#modal-shift').modal();
+        },
+    });
+    calendar2.render();
+});
+// AttendChart
+$(document).ready(function () {
+    var bar = document.getElementById("AttendChart");
+    var barChart = echarts.init(bar);
+    var app = {};
+    option = {
+        tooltip: {
+            trigger: 'axis'
+        },
+        grid: { top: "15%", bottom: "18%" },
+        legend: { bottom: 20 },
+        xAxis: {
+            type: 'category',
+            data: ['Mon 28/11', 'Tue 29/11', 'Wed 30/11', 'Thu 01/12', 'Fri 02/12', 'Sat 03/12', 'Sun 04/12'],
+            axisTick: {
+                show: true
+            },
+            axisLine: {
+                show: true
+            },
+
+            z: 10
+        },
+        yAxis: {
+            type: 'value',
+            axisLine: {
+                show: true
+            },
+            axisTick: {
+                show: false
+            },
+            // axisLabel: {
+            //     formatter: "{value} "
+            // },
+
+            splitNumber: 10,
+        },
+        series: [{
+            type: 'bar',
+            name: "Attendance",
+            itemStyle: {
+                // color: "#10961a",
+            },
+            barWidth: 35,
+            data: [4526, 4526, 4526, 4526, 4526, 4526, 4526],
+        },
+        ]
+    };
+    if (option && typeof option === "object") {
+        barChart.setOption(option, true);
+    };
+    $(window).on('resize', resize);
+    function resize () {
+        setTimeout(function () {
+            barChart.resize();
+        }, 0);
+    };
+});
+// Non-AttendChart
+$(document).ready(function () {
+    var bar2 = document.getElementById("Non-AttendChart");
+    var bar2Chart = echarts.init(bar2);
+    var app = {};
+    option = {
+        tooltip: {
+            trigger: 'axis'
+        },
+        grid: { top: "15%", bottom: "18%" },
+        legend: { bottom: 20 },
+        xAxis: {
+            type: 'category',
+            data: ['Mon 28/11', 'Tue 29/11', 'Wed 30/11', 'Thu 01/12', 'Fri 02/12', 'Sat 03/12', 'Sun 04/12'],
+            // axisTick: {
+            //     show: true
+            // },
+            // axisLine: {
+            //     show: true
+            // },
+            // axisLabel: {
+            //     rotate: -20
+            // },
+            z: 10
+        },
+        yAxis: {
+            type: 'value',
+            axisLine: {
+                show: true
+            },
+            axisTick: {
+                show: true
+            },
+            splitNumber: 10,
+        },
+        series: [{
+            type: 'bar',
+            name: "Non-Attendance",
+            itemStyle: {
+                color: "#bd0505",
+            },
+            barWidth: 35,
+            data: [4526, 4526, 4526, 4526, 4526, 4526, 4526],
+        },
+        ]
+    };
+    if (option && typeof option === "object") {
+        bar2Chart.setOption(option, true);
+    };
+    $(window).on('resize', resize);
+    function resize () {
+        setTimeout(function () {
+            bar2Chart.resize();
+        }, 0);
+    };
+});
+//  AttendChart2
+$(document).ready(function () {
+    var bar3 = document.getElementById("AttendChart2");
+    var bar3Chart = echarts.init(bar3);
+    var app = {};
+    option = {
+        tooltip: { trigger: 'axis' },
+        color: ["#91cc75", "#006699"],
+        grid: { top: "15%", bottom: "18%" },
+        legend: { bottom: 20 },
+        xAxis: { type: 'category' },
+        yAxis: { type: 'value' },
+        dataset: {
+            source: [
+                ['type', 'Attendance', 'Non-Attendance'],
+                ['Mon 28/11', 4526, 7526],
+                ['Tue 29/11', 4526, 2526],
+                ['Wed 30/11', 4526, 4526],
+                ['Thu 01/12', 4526, 6526],
+                ['Fri 02/12', 4526, 1526],
+                ['Sat 03/12', 4526, 3526],
+                ['Sun 04/12', 4526, 5526]
+            ]
+        },
+        series: [{ type: 'bar' }, { type: 'bar' }]
+    };
+    if (option && typeof option === "object") {
+        bar3Chart.setOption(option, true);
+    };
+    $(window).on('resize', resize);
+    function resize () {
+        setTimeout(function () {
+            bar3Chart.resize();
+        }, 0);
+    };
+});
+//Non-AttendChart2
+$(document).ready(function () {
+    var bar4 = document.getElementById("Non-AttendChart2");
+    var bar4Chart = echarts.init(bar4);
+    var app = {};
+    option = {
+        tooltip: { trigger: 'axis' },
+        color: ['#bd0505 ', '#10961a', '#db4f0e', '#00BCD4'],
+        grid: { top: "15%", bottom: "18%" },
+        legend: { bottom: 20 },
+        xAxis: { type: 'category' },
+        yAxis: { type: 'value' },
+        dataset: {
+            source: [
+                ['type', 'Absent', 'Vacation', 'Mission', 'Excuse'],
+                ['Mon 28/11', 4526, 7526, 4526, 7526],
+                ['Tue 29/11', 4526, 2526, 4526, 7526],
+                ['Wed 30/11', 4526, 4526, 4526, 7526],
+                ['Thu 01/12', 4526, 6526, 4526, 7526],
+                ['Fri 02/12', 4526, 1526, 4526, 7526],
+                ['Sat 03/12', 4526, 3526, 4526, 7526],
+                ['Sun 04/12', 4526, 5526, 4526, 7526]
+            ]
+        },
+        series: [{ type: 'bar' }, { type: 'bar' }, { type: 'bar' }, { type: 'bar' }]
+    };
+    if (option && typeof option === "object") {
+        bar4Chart.setOption(option, true);
+    };
+    $(window).on('resize', resize);
+    function resize () {
+        setTimeout(function () {
+            bar4Chart.resize();
+        }, 0);
+    };
+});
+// LateChart
+$(document).ready(function () {
+    var bar5 = document.getElementById("LateChart");
+    var LateChart = echarts.init(bar5);
+    var app = {};
+    option = {
+        tooltip: {
+            trigger: 'axis'
+        },
+        grid: { top: "15%", bottom: "18%" },
+        xAxis: {
+            type: 'category',
+            data: ['Mon 28/11', 'Tue 29/11', 'Wed 30/11', 'Thu 01/12', 'Fri 02/12', 'Sat 03/12', 'Sun 04/12'],
+            z: 10
+        },
+        yAxis: {
+            type: 'value',
+            axisLine: {
+                show: true
+            },
+            axisTick: {
+                show: true
+            },
+            splitNumber: 10,
+        },
+        series: [{
+            type: 'bar',
+            name: "Late",
+            itemStyle: {
+                color: "#5470c6",
+            },
+            barWidth: 35,
+            data: [4526, 4526, 4526, 4526, 4526, 4526, 4526],
+        },
+        ]
+    };
+    if (option && typeof option === "object") {
+        LateChart.setOption(option, true);
+    };
+    $(window).on('resize', resize);
+    function resize () {
+        setTimeout(function () {
+            LateChart.resize();
+        }, 0);
+    };
+});
+// leaveChart CompleteChart VacationChart
+$(document).ready(function () {
+    var bar6 = document.getElementById("LeaveChart");
+    var leaveChart = echarts.init(bar6);
+    var app = {};
+    option = {
+        tooltip: {
+            trigger: 'axis'
+        },
+        grid: { top: "15%", bottom: "18%" },
+        xAxis: {
+            type: 'category',
+            data: ['Mon 28/11', 'Tue 29/11', 'Wed 30/11', 'Thu 01/12', 'Fri 02/12', 'Sat 03/12', 'Sun 04/12'],
+            z: 10
+        },
+        yAxis: {
+            type: 'value',
+            axisLine: {
+                show: true
+            },
+            axisTick: {
+                show: true
+            },
+            splitNumber: 10,
+        },
+        series: [{
+            type: 'bar',
+            name: "Early Leave",
+            itemStyle: {
+                color: "#FAC858"
+            },
+            barWidth: 35,
+            data: [4526, 4526, 4526, 4526, 4526, 4526, 4526],
+        },
+        ]
+    };
+    if (option && typeof option === "object") {
+        leaveChart.setOption(option, true);
+    };
+    $(window).on('resize', resize);
+    function resize () {
+        setTimeout(function () {
+            leaveChart.resize();
+        }, 0);
+    };
+});
+// CompleteChart
+$(document).ready(function () {
+    var bar7 = document.getElementById("CompleteChart");
+    var CompleteChart = echarts.init(bar7);
+    var app = {};
+    option = {
+        tooltip: {
+            trigger: 'axis'
+        },
+        grid: { top: "15%", bottom: "18%" },
+        xAxis: {
+            type: 'category',
+            data: ['Mon 28/11', 'Tue 29/11', 'Wed 30/11', 'Thu 01/12', 'Fri 02/12', 'Sat 03/12', 'Sun 04/12'],
+            z: 10
+        },
+        yAxis: {
+            type: 'value',
+            axisLine: {
+                show: true
+            },
+            axisTick: {
+                show: true
+            },
+            splitNumber: 10,
+        },
+        series: [{
+            type: 'bar',
+            name: "Non Complete Attendance ",
+            itemStyle: {
+                color: "#00BCD4 "
+            },
+            barWidth: 35,
+            data: [4526, 4526, 4526, 4526, 4526, 4526, 4526],
+        },
+        ]
+    };
+    if (option && typeof option === "object") {
+        CompleteChart.setOption(option, true);
+    };
+    $(window).on('resize', resize);
+    function resize () {
+        setTimeout(function () {
+            CompleteChart.resize();
+        }, 0);
+    };
+});
+// VacationChart
+$(document).ready(function () {
+    var bar8 = document.getElementById("VacationChart");
+    var VacationChart = echarts.init(bar8);
+    var app = {};
+    option = {
+        tooltip: {
+            trigger: 'axis'
+        },
+        grid: { top: "15%", bottom: "18%" },
+        xAxis: {
+            type: 'category',
+            data: ['Mon 28/11', 'Tue 29/11', 'Wed 30/11', 'Thu 01/12', 'Fri 02/12', 'Sat 03/12', 'Sun 04/12'],
+            z: 10
+        },
+        yAxis: {
+            type: 'value',
+            axisLine: {
+                show: true
+            },
+            axisTick: {
+                show: true
+            },
+            splitNumber: 10,
+        },
+        series: [{
+            type: 'bar',
+            name: "Vacation",
+            itemStyle: {
+                color: "#10961a",
+            },
+            barWidth: 35,
+            data: [4526, 4526, 4526, 4526, 4526, 4526, 4526],
+        },
+        ]
+    };
+    if (option && typeof option === "object") {
+        VacationChart.setOption(option, true);
+    };
+    $(window).on('resize', resize);
+    function resize () {
+        setTimeout(function () {
+            VacationChart.resize();
+        }, 0);
+    };
+});

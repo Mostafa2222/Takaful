@@ -1,0 +1,62 @@
+<app-loading *ngIf="isLoading">{{ isLoading }}</app-loading>
+<div class="container-fluid DMSBlueBlue bg-img" dir="ltr">
+  <!-- content -->
+  <div class="">
+    <div class="page-content p-0">
+      <div
+        class="login-sec vh-100 text-center d-flex align-items-center justify-content-center"
+      >
+        <!-- <div class="col-12 col-md-5 login-details">
+          <div class="dms-logo"> -->
+        <!-- <img src="assets/images/dms-black-logo.png" alt="DMS" /> -->
+        <!-- </div>
+        </div> -->
+        <div class="col-12 col-md-7 login-form">
+          <div class="client-logo">
+            <img src="assets/images/logo-dark.png" alt="Takaful Logo" />
+          </div>
+          <!-- <form  (ngSubmit)="login()"> -->
+          <div class="input-group mb-3">
+            <span class="input-group-text"><i class="fas fa-user"></i></span>
+            <input
+              type="text"
+              class="form-control login-input"
+              placeholder="Username"
+              [(ngModel)]="username"
+            />
+
+            <input
+              type="password"
+              class="form-control login-input"
+              placeholder="Password"
+              [(ngModel)]="password"
+            />
+          </div>
+          <!-- <div class="input-group mb-3">
+              <span class="input-group-text"><i class="fas fa-key"></i></span>
+              <input
+                type="password"
+                class="login-input form-control changeTextToPassword"
+                placeholder="password"
+                formControlName="password"
+              />
+            </div> -->
+          <div class="text-center">
+            <button
+              class="btn btn-primary"
+              (click)="login()"
+              [disabled]="isLoading"
+            >
+              Login
+            </button>
+          </div>
+          <!-- </form> -->
+          <p *ngIf="error" style="color: red">
+            {{ error }}
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<app-footer></app-footer>
