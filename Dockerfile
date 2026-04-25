@@ -7,9 +7,6 @@ COPY . .
 RUN chmod +x mvnw
 RUN ./mvnw clean package -DskipTests
 
-# نطبع الملفات عشان نتأكد
-RUN ls target
-
 EXPOSE 2030
 
-CMD ["sh", "-c", "java -jar target/*.jar"]
+CMD ["java", "-jar", "target/Takaful-0.0.1-SNAPSHOT.jar"]
