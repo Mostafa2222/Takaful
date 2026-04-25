@@ -7,6 +7,9 @@ COPY . .
 RUN chmod +x mvnw
 RUN ./mvnw clean package -DskipTests
 
+# نطبع الملفات عشان نتأكد
+RUN ls target
+
 EXPOSE 2030
 
-CMD ["java", "-jar", "target/*.jar"]
+CMD ["sh", "-c", "java -jar target/*.jar"]
