@@ -54,10 +54,10 @@ public class AuthController {
         }
     }
     @PostMapping("/login")
-    public String login(@RequestBody LoginRequestDto request) {
+    public Map<String, String> login(@RequestBody LoginRequestDto request) {
 
 
-       // System.out.println(new BCryptPasswordEncoder().encode("123"));
+        System.out.println("password:" +new BCryptPasswordEncoder().encode("123"));
         User user = userRepository.findByUsername(request.getUsername())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
@@ -65,7 +65,9 @@ public class AuthController {
             throw new RuntimeException("Invalid password");
         }
 
-        return jwtUtil.generateToken(user);
+        String token = jwtUtil.generateToken(user);
+
+        return Map.of("token", token);
     }
     @GetMapping("/permissions")
     public List<Permission> getAllPermissions() {
