@@ -32,8 +32,8 @@ export class LoginComponent {
     this.load();
     this.error = null;
     this.authService.login(this.username, this.password).subscribe({
-      next: (token) => {
-        this.authService.saveToken(token);
+      next: (res) => {
+        this.authService.saveToken(res.token);
         // localStorage.setItem('permissions', JSON.stringify(this.authService.getPermissions()));
         this.isLoading = false;
         
