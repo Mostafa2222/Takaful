@@ -16,9 +16,9 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
-#    show-sql: true
-#    properties:
-#      hibernate:
+  #    show-sql: true
+  #    properties:
+  #      hibernate:
   http:
     encoding:
       charset: UTF-8
@@ -36,4 +36,42 @@ server:
 
 wallet:
   issuer-id=3388000000023103628
-
+#
+#spring:
+#  application:
+#    name: takaful
+#  servlet:
+#    multipart:
+#      max-file-size: 10MB
+#      max-request-size: 10MB
+#  flyway:
+#    baseline-on-migrate: true
+#  datasource:
+#    #url: jdbc:postgresql://localhost:5432/TakafulDB
+#    url: jdbc:postgresql://db.fwpyalcygxyeslnwelpf.supabase.co:5432/postgres?sslmode=require
+#    username: postgres
+#    password: M01018054991m@
+#  jpa:
+#    hibernate:
+#      ddl-auto: update
+##    show-sql: true
+##    properties:
+##      hibernate:
+#  http:
+#    encoding:
+#      charset: UTF-8
+#      enabled: true
+#      force: true
+#server:
+#  port: ${PORT:2030}
+#  tomcat:
+#    max-swallow-size: -1
+#  servlet:
+#    encoding:
+#      charset: UTF-8
+#      force: true
+##        format_sql: true
+#
+#wallet:
+#  issuer-id=3388000000023103628
+#
