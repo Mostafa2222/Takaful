@@ -15,11 +15,9 @@ export class AuthService {
   // }
 
   login(username: string, password: string) {
-    return this.http.post(this.env.apiUrl + 'login', {
+    return this.http.post<{ token: string }>(this.env.apiUrl + 'login', {
       username,
       password
-    }, {
-      responseType: 'text'
     });
   }
 
