@@ -21,7 +21,7 @@ spring:
       force: true
 
 server:
-  port: ${PORT:2030}
+  port: 10000
   tomcat:
     max-swallow-size: -1
   servlet:
