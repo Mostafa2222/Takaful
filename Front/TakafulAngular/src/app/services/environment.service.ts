@@ -16,7 +16,16 @@ export class EnvironmentService {
 
   loadConfig(): Observable<any> {
     // return this.http.get('/Front/Org/assets/configurations/config.json').pipe(
-       return this.http.get('/assets/configurations/config.json').pipe(
+    const host = window.location.hostname;
+
+    let env = 'prod';
+
+    if (host.includes('localhost')) {
+      env = 'local';
+    } else if (host.includes('dev')) {
+      env = 'dev';
+    }
+    return this.http.get(`/assets/configurations/config.${env}.json`).pipe(
       tap(config => {
         this.config = config;
       })
