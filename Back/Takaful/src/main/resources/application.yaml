@@ -1,0 +1,33 @@
+spring:
+  application:
+    name: takaful
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+  flyway:
+    baseline-on-migrate: true
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+
+  http:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+
+server:
+  port: ${PORT:2030}
+  tomcat:
+    max-swallow-size: -1
+  servlet:
+    encoding:
+      charset: UTF-8
+      force: true
+
+wallet:
+  issuer-id: 3388000000023103628
