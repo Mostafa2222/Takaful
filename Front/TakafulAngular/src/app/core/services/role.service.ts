@@ -15,10 +15,18 @@ export class RoleService {
     return this.http.get<any[]>(this.env.apiUrl + 'roles');
   }
 
-  updateRolePermissions(roleId: number, permissions: string[]) {
+  updateRolePermissions(roleId: number, data: any) {
     return this.http.put(
       this.env.apiUrl + `roles/${roleId}/permissions`,
-      permissions
+      data
     );
+  }
+
+  createRole(data: any) {
+    return this.http.post(this.env.apiUrl + 'roles', data);
+  }
+
+  deleteRole(id: number) {
+    return this.http.delete(this.env.apiUrl + `roles/${id}`);
   }
 }
