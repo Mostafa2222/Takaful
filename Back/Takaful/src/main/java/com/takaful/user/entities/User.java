@@ -47,9 +47,9 @@ public class User extends BaseEntity {
     private Set<Role> roles;
 
 
-    public boolean hasRole(String roleName) {
+    public boolean hasRole(String roleNameEn) {
         return this.roles.stream()
-                .anyMatch(r -> r.getName().equalsIgnoreCase(roleName));
+                .anyMatch(r -> r.getNameEn().equalsIgnoreCase(roleNameEn));
     }
 }
 

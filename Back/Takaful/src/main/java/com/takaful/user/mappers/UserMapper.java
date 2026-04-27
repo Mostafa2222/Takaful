@@ -19,7 +19,7 @@ public interface UserMapper {
 
     default List<String> mapRoles(User user) {
         return user.getRoles().stream()
-                .map(Role::getName)
+                .map(Role::getNameEn)
                 .toList();
     }
 
@@ -32,7 +32,7 @@ public interface UserMapper {
     }
 
 
-    @Mapping(target = "role", expression = "java(user.getRoles().stream().findFirst().map(r -> r.getName()).orElse(\"\"))")
+    @Mapping(target = "role", expression = "java(user.getRoles().stream().findFirst().map(r -> r.getNameEn()).orElse(\"\"))")
     UserResponse toUserDto(User user);
 
     List<UserResponse> toDtoList(List<User> users);

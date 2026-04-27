@@ -14,6 +14,13 @@ export interface User {
     canPrint: boolean;
   }
 
+  export interface Role {
+  id: number;
+  nameAr: string;
+  nameEn: string;
+  permissions: string[];
+}
+
   export interface PageResponse<T> {
     content: T[];
     totalPages: number;
@@ -21,3 +28,14 @@ export interface User {
     size: number;
     number: number;
   }
+
+  export interface Permission {
+  code: string;
+  nameAr: string;
+  nameEn: string;
+}
+
+export interface PermissionGroup {
+  group: string;
+  permissions: Permission[];
+}

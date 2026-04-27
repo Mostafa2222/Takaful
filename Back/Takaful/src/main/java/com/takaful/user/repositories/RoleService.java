@@ -7,8 +7,8 @@ import java.util.Set;
 
 public interface RoleService {
 
-    List<RoleDto> getAllRoles();
+   // List<RoleDto> getAllRoles();
 
-    void updatePermissions(Long roleId, Set<String> codes);
+   // void updatePermissions(Long roleId, Set<String> codes);
 
 }

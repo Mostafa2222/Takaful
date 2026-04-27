@@ -3,6 +3,7 @@
   display: flex;
   height: 100vh;
   overflow: hidden;
+  font-family: 'Cairo', sans-serif;
 }
 
 .app-sidebar {

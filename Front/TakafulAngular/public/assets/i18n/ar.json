@@ -1,4 +1,47 @@
 {
+  "messages": {
+    "auth": {
+      "login": {
+        "loading": "جاري تسجيل الدخول...",
+        "success": "تم تسجيل الدخول بنجاح"
+      }
+    },
+    "success": {
+      "saved": "تم الحفظ بنجاح",
+      "deleted": "تم الحذف بنجاح",
+      "confirm_delete": "هل أنت متأكد من الحذف؟"
+    },
+    "errors": {
+      "server_down": "السيرفر غير متاح حالياً",
+      "invalid_credentials": "بيانات الدخول غير صحيحة",
+      "forbidden": "ليس لديك صلاحية",
+      "not_found": "العنصر غير موجود",
+      "unknown": "حدث خطأ غير متوقع"
+    },
+    "alerts": {
+      "loading": "جاري التنفيذ...",
+      "error_title": "خطأ",
+      "success_title": "تم",
+      "confirm_title": "هل أنت متأكد؟",
+      "yes": "نعم",
+      "cancel": "إلغاء"
+    },
+    "memberships": {
+      "success": {
+        "confirm_delete": "هل تريد حذف هذه العضوية؟",
+        "deleted": "تم الحذف بنجاح",
+        "created": "تم الإضافة بنجاح",
+        "updated": "تم التعديل بنجاح",
+        "status_updated": "تم تحديث الحالة"
+      },
+      "errors": {
+        "delete_failed": "فشل الحذف",
+        "update_failed": "فشل التحديث",
+        "create_failed": "فشل الإضافة",
+        "forbidden": "ليس لديك صلاحية"
+      }
+    }
+  },
   "sidebar": {
     "user_profile": {
       "roles": {
@@ -16,8 +59,8 @@
     "users": "المستخدمين",
     "users_page": {
       "title": "إدارة المستخدمين",
-      "add":"إضافة مستخدم جديد",
-      "users_table":{
+      "add": "إضافة مستخدم جديد",
+      "users_table": {
         "ID": "رقم المعرف",
         "name": "الاسم الثلاثي",
         "phone": "رقم الجوال",
@@ -26,24 +69,75 @@
         "status": "حالة الحساب",
         "operations": "العمليات"
       }
-     },
-    "roles": "الصلاحيات",
+    },
+    "roles": "الأدوار والصلاحيات",
+    "roles_page": {
+      "title": "إدارة الأدوار",
+      "sub": "إدارة الصلاحيات & العضويات",
+      "add": "إضافة دور جديد",
+      "roles_table": {
+        "name": "الدور",
+        "userCounts": "عدد المستخدمين",
+        "permissions": "الصلاحيات",
+        "operations": "العمليات"
+      },
+      "roles_modal": {
+        "add": "إضافة دور جديد",
+        "edit": "تعديل الدور",
+        "related": "اختر الصلاحيات المناسبة لهذا الدور ",
+        "selected": "الصلاحيات المختارة: ",
+        "nameAr": "الاسم بالعربي",
+        "nameEn": "الاسم بالإنجليزية",
+        "filter": "ابحث عن صلاحية...",
+        "permissions": {
+          "groups": {
+            "GENERAL": "عام",
+            "USERS": "المستخدمين",
+            "PRODUCTS": "المنتجات",
+            "MEDICAL": "الخدمات الطبية",
+            "OPERATIONS": "العمليات",
+            "LOCATIONS": "المناطق",
+            "REPORTS": "التقارير",
+            "MEMBERSHIPS": "العضويات",
+            "VISITS": "الزيارات",
+            "STRUCTURE": "الهيكل التنظيمي",
+            "TAX": "الضرائب",
+            "SETTINGS": "الإعدادات",
+            "WEBSITE": "الموقع",
+            "CLIENTS": "العملاء",
+            "SALES": "المبيعات",
+            "MERCHANTS": "التجار",
+            "CONTRACTS": "العقود",
+            "MARKETING": "التسويق",
+            "CONTACT": "تواصل",
+            "SUBSCRIPTIONS": "الاشتراكات",
+            "ACCOUNTS": "الحسابات",
+            "INVOICES": "الفواتير"
+          }
+        },
+        "cancel": "إلغاء",
+        "save": "حفظ",
+        "validation": {
+          "nameAr": "Required Ar"
+        }
+      }
+    },
     "products_section": "المنتجات",
     "cards": "العضويات",
     "memberships_page": {
       "title": "إدارة العضويات",
-      "add":"إضافة عضوية جديدة",
-      "memberships_table":{
+      "add": "إضافة عضوية جديدة",
+      "memberships_table": {
         "operations": "العمليات",
-        "cardsCount":"عدد البطاقات",
+        "cardsCount": "عدد البطاقات",
         "duration": "المدة"
       },
-      "memberships_modal":{
+      "memberships_modal": {
         "title": "إضافة عضوية جديدة",
-        "nameAr":"الاسم بالعربية",
-        "nameEn":"الاسم بالإنجليزية",
-        "price":"السعر",
-        "cardsCount":"عدد العضويات",
+        "nameAr": "الاسم بالعربية",
+        "nameEn": "الاسم بالإنجليزية",
+        "price": "السعر",
+        "cardsCount": "عدد العضويات",
         "duration": {
           "DAY": "يوم",
           "WEEK": "أسبوع",
@@ -52,17 +146,17 @@
           "CUSTOM": "مخصص"
         },
         "durationValue": "المدة",
-        "color":"اللون",
-        "feature":"ميزة",
-        "addFeature":"إضافة ميزة",        
+        "color": "اللون",
+        "feature": "ميزة",
+        "addFeature": "إضافة ميزة",
         "active": "تفعيل العضوية",
-        "cancel":"إلغاء",
-        "save":"حفظ",
-        "validation":{
-          "nameAr":"حقل مطلوب"
+        "cancel": "إلغاء",
+        "save": "حفظ",
+        "validation": {
+          "nameAr": "حقل مطلوب"
         }
       }
-     },
+    },
     "medical_network": "الشبكة الطبية",
     "medical_services": "الخدمات الطبية",
     "coupons": "الكوبونات",

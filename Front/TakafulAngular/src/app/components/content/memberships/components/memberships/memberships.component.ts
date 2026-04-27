@@ -52,22 +52,23 @@ export class MembershipsComponent implements OnInit {
 
   getDuration(m: any) {
     if (!m) return '';
-  
+
     const type = this.translate.instant(
       'sidebar.memberships_page.memberships_modal.duration.' + m.durationType
     );
-  
+
     return `${m.durationValue} ${type}`;
   }
   constructor(
     private fb: FormBuilder,
     private _membershipService: MembershipService,
-    private translate: TranslateService, 
-    private _authService: AuthService
-  ) {}
+    private translate: TranslateService,
+    private _authService: AuthService,
+    private _alertService: AlertService
+  ) { }
 
   ngOnInit(): void {
-    const permissions =this._authService.getPermissions();// JSON.parse(localStorage.getItem('permissions') || '[]');
+    const permissions = this._authService.getPermissions();// JSON.parse(localStorage.getItem('permissions') || '[]');
     this.canToggle = permissions.includes('MEMBERSHIP_UPDATE');
     this.currentLang =
       this.translate.currentLang || this.translate.getDefaultLang() || 'ar';
@@ -214,7 +215,11 @@ export class MembershipsComponent implements OnInit {
   // 🗑 DELETE
   // =========================
   async delete(m: any) {
-    const confirmed = await AlertService.confirm('هل تريد حذف هذه العضوية؟');
+
+    const confirmed = await this._alertService.confirm(
+      this.translate.instant('messages.memberships.success.confirm_delete')
+    );
+
     if (!confirmed) return;
 
     const oldList = [...this.memberships];
@@ -223,11 +228,16 @@ export class MembershipsComponent implements OnInit {
 
     this._membershipService.delete(m.id).subscribe({
       next: () => {
-        AlertService.toastSuccess('تم الحذف بنجاح');
+        this._alertService.toastSuccess(
+          this.translate.instant('messages.memberships.success.deleted')
+        );
       },
       error: () => {
         this.memberships = oldList;
-        AlertService.error('فشل الحذف');
+
+        this._alertService.error(
+          this.translate.instant('messages.memberships.errors.delete_failed')
+        );
       },
     });
   }
@@ -236,33 +246,39 @@ export class MembershipsComponent implements OnInit {
   // 🔁 TOGGLE ACTIVE
   // =========================
   toggle(m: any) {
+
     if (!this.canToggle) {
-      AlertService.error('ليس لديك صلاحية');
+      this._alertService.error(
+        this.translate.instant('messages.memberships.errors.forbidden')
+      );
       return;
     }
-  
+
     const old = m.isActive;
     m.isActive = !m.isActive;
-  
+
     const payload = {
       ...m,
       isActive: m.isActive,
-  
-      // 🔥 أهم سطر
       features: (m.features || []).map((f: any) =>
         typeof f === 'string'
           ? { nameAr: f, nameEn: f }
           : f
       ),
     };
-  
+
     this._membershipService.update(m.id, payload).subscribe({
       next: () => {
-        AlertService.toastSuccess('تم تحديث الحالة');
+        this._alertService.toastSuccess(
+          this.translate.instant('messages.memberships.success.status_updated')
+        );
       },
       error: () => {
         m.isActive = old;
-        AlertService.error('فشل تحديث الحالة');
+
+        this._alertService.error(
+          this.translate.instant('messages.memberships.errors.update_failed')
+        );
       },
     });
   }
@@ -282,7 +298,7 @@ export class MembershipsComponent implements OnInit {
     features: this.fb.array([]),
   });
 
-  
+
   normalizeFeatures(features: any[]) {
     return (features || []).map(f =>
       typeof f === 'string'
@@ -349,9 +365,17 @@ export class MembershipsComponent implements OnInit {
       next: (res: any) => {
         const index = this.memberships.findIndex((x) => x.id === tempId);
         if (index !== -1) this.memberships[index] = res;
+
+        this._alertService.toastSuccess(
+          this.translate.instant('messages.memberships.success.created')
+        );
       },
       error: () => {
         this.memberships = this.memberships.filter((x) => x.id !== tempId);
+
+        this._alertService.error(
+          this.translate.instant('messages.memberships.errors.create_failed')
+        );
       },
     });
 
@@ -359,6 +383,7 @@ export class MembershipsComponent implements OnInit {
   }
 
   updateMembership() {
+
     const id = this.editing.id;
 
     const index = this.memberships.findIndex((x) => x.id === id);
@@ -376,13 +401,16 @@ export class MembershipsComponent implements OnInit {
       next: (res: any) => {
         this.memberships[index] = res;
 
-        AlertService.close();
-        AlertService.toastSuccess('تم التعديل بنجاح');
+        this._alertService.toastSuccess(
+          this.translate.instant('messages.memberships.success.updated')
+        );
       },
       error: () => {
         this.memberships[index] = old;
-        AlertService.close();
-        AlertService.error('فشل التعديل');
+
+        this._alertService.error(
+          this.translate.instant('messages.memberships.errors.update_failed')
+        );
       },
     });
 

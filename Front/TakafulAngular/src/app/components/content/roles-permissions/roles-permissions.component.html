@@ -1,35 +1,201 @@
-<div class="layout">
-  <div class="roles">
-    <h3>Roles</h3>
+<div class="roles-page">
 
-    <div
-      *ngFor="let role of roles"
-      (click)="selectRole(role)"
-      [class.active]="role === selectedRole"
-      class="role-item"
-    >
-      {{ role.name }}
+  <!-- HEADER -->
+  <div class="header">
+    <div>
+      <h2>{{"sidebar.roles_page.title" | translate}}</h2>
+      <p class="sub">{{"sidebar.roles_page.sub" | translate}}</p>
     </div>
+
+    <button class="btn-add" (click)="openCreateModal()">
+      + {{"sidebar.roles_page.add" | translate}}
+    </button>
   </div>
 
-  <div class="permissions" *ngIf="selectedRole">
-    <h3>صلاحيات {{ selectedRole.name }}</h3>
+  <!-- TABLE -->
+  <div class="table-wrapper">
+    <table class="table table-striped roles-table table-responsive">
 
-    <div *ngFor="let group of groups" class="group">
-      <h4>{{ group.group }}</h4>
+      <thead style="text-align: right;">
+        <tr>
+          <th>{{"sidebar.roles_page.roles_table.name" | translate}}</th>
+          <th>{{"sidebar.roles_page.roles_table.permissions" | translate}}</th>
+          <th>{{"sidebar.roles_page.roles_table.operations" | translate}}</th>
+        </tr>
+      </thead>
 
-      <div class="perm-grid">
-        <div
-          *ngFor="let p of group.permissions"
-          class="perm-card"
-          [class.active]="selectedPermissions.includes(p.code)"
-          (click)="togglePermission(p.code)"
-        >
-          {{ p.nameAr }}
-        </div>
+      <tbody>
+        <tr *ngFor="let role of roles">
+
+          <td class="role-name">
+            {{ currentLang === 'ar' ? role.nameAr : role.nameEn }}
+          </td>
+
+          <td>
+            <div class="badges">
+              <span *ngFor="let p of role.permissions | slice:0:5" class="badge">
+                {{ getPermissionName(p) }}
+              </span>
+
+              <span *ngIf="role.permissions.length > 5" class="more">
+                +{{ role.permissions.length - 5 }}
+              </span>
+            </div>
+          </td>
+
+          <td class="actions">
+            <button class="icon-btn edit" (click)="edit(role)">✏️</button>
+            <button class="icon-btn delete" (click)="delete(role)">🗑</button>
+          </td>
+
+        </tr>
+      </tbody>
+
+    </table>
+  </div>
+
+</div>
+
+
+<!-- MODAL -->
+<div class="modal" *ngIf="showModal">
+  <div class="modal-card">
+
+    <!-- HEADER -->
+    <div class="modal-header">
+      <div>
+        <h2>
+          {{ modalTitle | translate }}
+        </h2>
+        <p class="sub">
+          {{"sidebar.roles_page.roles_modal.related" | translate}}
+        </p>
+      </div>
+      <button class="btn close-btn" (click)="close()">✕</button>
+    </div>
+
+    <!-- ROLE NAME -->
+    <div class="row p-2">
+      <div class="col-md-6">
+        <label>{{"sidebar.roles_page.roles_modal.nameAr" | translate}}</label>
+        <input class="form-control" [(ngModel)]="roleNameAr"
+          [placeholder]="'sidebar.roles_page.roles_modal.nameAr' | translate" />
+      </div>
+
+      <div class="col-md-6">
+        <label>{{"sidebar.roles_page.roles_modal.nameEn" | translate}}</label>
+        <input class="form-control" [(ngModel)]="roleNameEn" />
+      </div>
+      <div class="col-md-6">
+        <input class="form-control" [(ngModel)]="search"
+          [placeholder]="'sidebar.roles_page.roles_modal.filter' | translate" />
       </div>
     </div>
 
-    <button (click)="save()" class="btn bg-primary text-light">Save</button>
+
+    <!-- PERMISSIONS -->
+
+    <div class="selected-box" *ngIf="selectedPermissions.length">
+
+      <span class="selected-title">
+        {{"sidebar.roles_page.roles_modal.selected" | translate}}
+      </span>
+
+      <span *ngFor="let code of selectedPermissions" class="selected-chip" (click)="togglePermission(code)">
+        {{ getPermissionName(code) }} ✕
+      </span>
+
+    </div>
+    <div class="tabs">
+
+      <div *ngFor="let group of getVisibleGroups()" class="tab" [class.active]="activeTab === group.group"
+        [class.has-selected]="isGroupSelected(group)" (click)="setActiveTab(group.group)">
+
+        {{ ('sidebar.roles_page.roles_modal.permissions.groups.' + group.group) | translate }}
+
+        <span class="tab-count" *ngIf="isGroupSelected(group)">
+          ✓
+        </span>
+
+      </div>
+
+    </div>
+    <div class="tab-content">
+
+      <div *ngFor="let group of getVisibleGroups()">
+
+        <div *ngIf="activeTab === group.group">
+
+          <!-- HEADER -->
+          <div class="tab-header">
+
+            <span class="count">{{ group.permissions.length }}</span>
+
+            <button class="select-all" (click)="toggleSelectAll(group)">
+              {{ isAllSelected(group) ? 'Unselect' : 'Select All' }}
+            </button>
+
+          </div>
+
+          <!-- GRID -->
+          <div class="permissions-grid">
+
+            <div *ngFor="let p of filterPermissions(group.permissions); let i = index" class="permission-card"
+              tabindex="0" [class.active]="selectedPermissions.includes(p.code)" (click)="togglePermission(p.code)"
+              (keydown.enter)="togglePermission(p.code)">
+              {{ currentLang === 'ar' ? p.nameAr : p.nameEn }}
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+    <!-- <div class="permissions-wrapper">
+
+      <div *ngFor="let group of getVisibleGroups()" class="group">
+
+        <div class="group-header">
+          <h3>
+            {{
+              ('sidebar.roles_page.roles_modal.permissions.groups.' + group.group)
+              | translate
+            }}
+          </h3>
+
+          <span class="count">
+            {{ group.permissions.length }}
+          </span>
+        </div>
+
+        <div class="permissions-grid">
+
+          <div
+            *ngFor="let p of group.permissions"
+            class="permission-card"
+            [class.active]="selectedPermissions.includes(p.code)"
+            (click)="togglePermission(p.code)"
+          >
+            {{ currentLang === 'ar' ? p.nameAr : p.nameEn }}
+          </div>
+
+        </div>
+
+      </div>
+
+    </div> -->
+
+    <!-- ACTIONS -->
+    <div class="modal-footer">
+      <button class="btn cancel" (click)="close()">
+        {{"sidebar.roles_page.roles_modal.cancel" | translate}}
+      </button>
+      <button class="btn save" (click)="submit()">
+        {{"sidebar.roles_page.roles_modal.save" | translate}}
+      </button>
+    </div>
+
   </div>
 </div>

@@ -54,19 +54,18 @@ public class UserService {
 
         Page<User> users;
 
+        boolean hasSearch = search != null && !search.trim().isEmpty();
+
         if (currentUser.hasRole("ADMIN")) {
-            if (search == null || search.trim().isEmpty()) {
-                users = userRepository.findAll(pageable);
-            } else {
-                users = userRepository.searchAll(search, pageable);
-            }
+            users = hasSearch
+                    ? userRepository.searchAll(search, pageable)
+                    : userRepository.findAll(pageable);
         } else {
-            if (search == null || search.trim().isEmpty()) {
-                users = userRepository.findByParentId(currentUser.getId(), pageable);
-            } else {
-                users = userRepository.searchByParent(currentUser.getId(), search, pageable);
-            }
-        }
+            users = hasSearch
+                    ? userRepository.searchByParent(currentUser.getId(), search, pageable)
+                    : userRepository.findByParentId(currentUser.getId(), pageable);
+
+    }
 
         System.out.println("users pages:"+users.getTotalPages() +", length:"+users.getTotalElements());
         return new PageResponse<>(
@@ -82,8 +81,11 @@ public class UserService {
         Role role = roleRepository.findById(dto.roleId)
                 .orElseThrow(() -> new RuntimeException("Role not found"));
 
+        if (currentUser.hasRole("USER") && role.getNameEn().equals("ADMIN")) {
+            throw new RuntimeException("Not allowed");
+        }
         // 🔒 Security Logic
-        if(currentUser.hasRole("USER") && !role.getName().equals("AGENT")) {
+        if(currentUser.hasRole("USER") && !role.getNameEn().equals("AGENT")) {
             throw new RuntimeException("Not allowed to create this role");
         }
 
@@ -91,11 +93,11 @@ public class UserService {
             throw new RuntimeException("Username already exists");
         }
 
-        Optional<User> userOpt = userRepository.findByUsername(dto.getUsername());
-
-        if(userOpt.isEmpty()) {
-            userOpt = userRepository.findByEmail(dto.getUsername());
-        }
+//        Optional<User> userOpt = userRepository.findByUsername(dto.getUsername());
+//
+//        if(userOpt.isEmpty()) {
+//            userOpt = userRepository.findByEmail(dto.getUsername());
+//        }
         User user = new User();
 
         user.setNameAr(dto.nameAr);

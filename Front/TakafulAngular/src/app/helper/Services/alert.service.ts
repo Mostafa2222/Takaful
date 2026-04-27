@@ -1,29 +1,32 @@
+import { Injectable } from '@angular/core';
 import Swal from 'sweetalert2';
+import { TranslateService } from '@ngx-translate/core';
 
+@Injectable({ providedIn: 'root' })
 export class AlertService {
 
-    static loading(title: string = 'جاري التنفيذ...') {
+    constructor(private translate: TranslateService) { }
+
+    loading(title?: string) {
         Swal.fire({
-            title,
+            title: title || this.translate.instant('alerts.loading'),
             allowOutsideClick: false,
-            didOpen: () => {
-                Swal.showLoading();
-            }
+            didOpen: () => Swal.showLoading()
         });
     }
 
-    static close() {
+    close() {
         Swal.close();
     }
 
-    static error(message: string) {
+    error(message: string) {
         Swal.fire({
             icon: 'error',
-            title: 'خطأ',
+            title: this.translate.instant('messages.alerts.error_title'),
             text: message,
-            timer: 2000, 
+            timer: 2000,
             showConfirmButton: false,
-            confirmButtonText: 'موافق',
+            confirmButtonText: this.translate.instant('messages.alerts.yes'),
             confirmButtonColor: '#1e88e5',
             background: '#fff',
             customClass: {
@@ -33,33 +36,33 @@ export class AlertService {
         });
     }
 
-    static success(message: string) {
+    success(message: string) {
         Swal.fire({
             icon: 'success',
-            title: 'تم',
+            title: this.translate.instant('messages.alerts.success_title'),
             text: message,
-            timer: 2000, 
+            timer: 2000,
             showConfirmButton: false,
-            confirmButtonText: 'موافق'
+            confirmButtonText: this.translate.instant('messages.alerts.yes')
         });
     }
 
-    static confirm(message: string): Promise<boolean> {
+    confirm(message: string): Promise<boolean> {
         return Swal.fire({
             icon: 'warning',
-            title: 'هل أنت متأكد؟',
+            title: this.translate.instant('messages.alerts.confirm_title'),
             text: message,
             // timer: 2000, 
             showConfirmButton: true,
             showCancelButton: true,
-            confirmButtonText: 'نعم',
-            cancelButtonText: 'إلغاء',
+            confirmButtonText: this.translate.instant('messages.alerts.yes'),
+            cancelButtonText: this.translate.instant('messages.alerts.cancel'),
             confirmButtonColor: '#d33',
             reverseButtons: true
         }).then(result => result.isConfirmed);
     }
 
-    static toastSuccess(message: string) {
+    toastSuccess(message: string) {
         Swal.fire({
             toast: true,
             position: 'top-end',
@@ -70,7 +73,7 @@ export class AlertService {
         });
     }
 
-    static toastError(message: string) {
+    toastError(message: string) {
         Swal.fire({
             toast: true,
             position: 'top-end',
@@ -80,10 +83,6 @@ export class AlertService {
             timer: 2500
         });
     }
+
 }
 
-//AlertService.toastSuccess(`تم اختيار نوع البطاقة: ${type.name}, يمكنك تغيير هذا لاحقًا من الإعدادات, لا تقلق!, ID: ${type.id}`);
-// AlertService.error('من فضلك أكمل البيانات المطلوبة في هذه الخطوة');
-  //   AlertService.toastSuccess(`تم اختيار اللون: ${this.activeField}`);
-//   AlertService.error('من فضلك أكمل البيانات');
-// AlertService.success('تم إضافة المكافأة');

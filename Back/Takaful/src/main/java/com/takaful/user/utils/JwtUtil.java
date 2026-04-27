@@ -30,7 +30,7 @@ public class JwtUtil {
                 .claim("permissions", permissions)
                 .claim("nameEn", user.getNameEn())
                 .claim("nameAr", user.getNameAr())
-                .claim("roleCode", user.getRoles().stream().map(Role::getName).findFirst().orElse("USER"))
+                .claim("roleCode", user.getRoles().stream().map(Role::getNameEn).findFirst().orElse("USER"))
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION))
                 .signWith(Keys.hmacShaKeyFor(SECRET.getBytes()), SignatureAlgorithm.HS256)

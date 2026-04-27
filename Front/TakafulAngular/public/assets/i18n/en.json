@@ -1,4 +1,47 @@
 {
+  "messages": {
+    "auth": {
+      "login": {
+        "loading": "Logging in...",
+        "success": "Login successful"
+      }
+    },
+    "success": {
+      "saved": "Saved successfully",
+      "deleted": "Deleted successfully",
+      "confirm_delete": "Are you sure you want to delete?"
+    },
+    "errors": {
+      "server_down": "Server unavailable",
+      "invalid_credentials": "Invalid credentials",
+      "forbidden": "Access denied",
+      "not_found": "Resource not found",
+      "unknown": "Unexpected error"
+    },
+    "alerts": {
+      "loading": "Processing...",
+      "error_title": "Error",
+      "success_title": "Success",
+      "confirm_title": "Are you sure?",
+      "yes": "Yes",
+      "cancel": "Cancel"
+    },
+    "memberships": {
+      "success": {
+        "confirm_delete": "Do you want to delete this membership?",
+        "deleted": "Deleted successfully",
+        "created": "Created successfully",
+        "updated": "Updated successfully",
+        "status_updated": "Status updated"
+      },
+      "errors": {
+        "delete_failed": "Delete failed",
+        "update_failed": "Update failed",
+        "create_failed": "Create failed",
+        "forbidden": "Access denied"
+      }
+    }
+  },
   "sidebar": {
     "user_profile": {
       "roles": {
@@ -28,6 +71,57 @@
       }
     },
     "roles": "Roles",
+    "roles_page": {
+      "title": "Roles Management",
+      "sub": "Roles & Permissions Management",
+      "add": "Add New Role",
+      "roles_table": {
+        "name": "Role Name",
+        "userCounts": "Number of users",
+        "permissions": "Permissions",
+        "operations": "Operations"
+      },
+      "roles_modal": {
+        "add": "Add New Role",
+        "edit": "Edit Role",
+        "related": "Choose suitable permissionsfor this role",
+        "selected": "Selected Permissions: ",
+        "nameAr": "Arabic Name",
+        "nameEn": "English Name",
+        "filter": "Search for permission...",
+        "permissions": {
+          "groups": {
+            "GENERAL": "General",
+            "USERS": "Users",
+            "PRODUCTS": "Products",
+            "MEDICAL": "Medical",
+            "OPERATIONS": "Operations",
+            "LOCATIONS": "Locations",
+            "REPORTS": "Reports",
+            "MEMBERSHIPS": "Memberships",
+            "VISITS": "Visits",
+            "STRUCTURE": "Structure",
+            "TAX": "Tax",
+            "SETTINGS": "Settings",
+            "WEBSITE": "Website",
+            "CLIENTS": "Clients",
+            "SALES": "Sales",
+            "MERCHANTS": "Merchants",
+            "CONTRACTS": "Contracts",
+            "MARKETING": "Marketing",
+            "CONTACT": "Contact",
+            "SUBSCRIPTIONS": "Subscriptions",
+            "ACCOUNTS": "Accounts",
+            "INVOICES": "Invoices"
+          }
+        },
+        "cancel": "Cancel",
+        "save": "Save",
+        "validation": {
+          "nameAr": "Required En"
+        }
+      }
+    },
     "products_section": "Products",
     "cards": "Memberships",
     "memberships_page": {
@@ -35,8 +129,8 @@
       "add": "Add New Membership",
       "memberships_table": {
         "operations": "Operations",
-        "cardsCount":"Cards Count",
-        "duration":"Duration"
+        "cardsCount": "Cards Count",
+        "duration": "Duration"
       },
       "memberships_modal": {
         "title": "Add New Membership",
@@ -58,8 +152,8 @@
         "active": "Activate Membership",
         "cancel": "Cancel",
         "save": "Save",
-        "validation":{
-          "nameAr":"Required En"
+        "validation": {
+          "nameAr": "Required En"
         }
       }
     },
