@@ -132,7 +132,8 @@
             <span class="count">{{ group.permissions.length }}</span>
 
             <button class="select-all" (click)="toggleSelectAll(group)">
-              {{ isAllSelected(group) ? 'Unselect' : 'Select All' }}
+              {{ isAllSelected(group) ? currentLang === 'ar'? 'إزالة اختيار الكل' :'Unselect' : currentLang === 'ar'?
+              'اختيار الكل' :'Select All' }}
             </button>
 
           </div>
