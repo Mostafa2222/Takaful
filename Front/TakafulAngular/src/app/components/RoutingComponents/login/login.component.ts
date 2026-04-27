@@ -34,7 +34,7 @@ export class LoginComponent {
   login() {
 
     this._alertService.loading(
-      this.translate.instant('auth.login.loading')
+      this.translate.instant('messages.auth.login.loading')
     );
 
     this.authService.login(this.username, this.password).subscribe({

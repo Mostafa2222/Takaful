@@ -9,7 +9,7 @@ export class AlertService {
 
     loading(title?: string) {
         Swal.fire({
-            title: title || this.translate.instant('alerts.loading'),
+            title: title || this.translate.instant('messages.alerts.loading'),
             allowOutsideClick: false,
             didOpen: () => Swal.showLoading()
         });
