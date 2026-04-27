@@ -70,7 +70,7 @@
         "operations": "العمليات"
       }
     },
-    "roles": "الأدوار والصلاحيات",
+    "roles": "إدارة الأدوار",
     "roles_page": {
       "title": "إدارة الأدوار",
       "sub": "إدارة الصلاحيات & العضويات",
@@ -122,7 +122,9 @@
         }
       }
     },
-    "products_section": "المنتجات",
+    "permissions": "إدارة الصلاحيات",
+    "permissions_page": {},
+    "products_section": "منتجات البطاقات",
     "cards": "العضويات",
     "memberships_page": {
       "title": "إدارة العضويات",
@@ -157,13 +159,13 @@
         }
       }
     },
-    "medical_network": "الشبكة الطبية",
-    "medical_services": "الخدمات الطبية",
-    "coupons": "الكوبونات",
-    "offers": "العروض",
-    "operations_section": "العمليات",
-    "operations": "إدارة العمليات",
-    "visits": "الزيارات",
+    "medical_network": "إدارة الشبكة الطبية ",
+    "medical_services": " إدارة الخدمات الطبية",
+    "coupons": "منتجات الكوبونات",
+    "offers": "منتجات العروض",
+    "operations_section": "العمليات المدفوعة",
+    "operations": "إدارة العمليات المدفوعة",
+    "visits": "إدارة الزيارات المنزلية",
     "clients_section": "العملاء",
     "clients": "العملاء",
     "verify_membership": "التحقق من العضوية",
@@ -178,15 +180,16 @@
     "contact": "اتصل بنا",
     "subscriptions_section": "الاشتراكات",
     "subscriptions": "الاشتراكات",
-    "finance_section": "المالية",
+    "finance_section": "إدارة الحسابات",
     "accounts": "الحسابات",
     "invoices": "الفواتير",
     "tax": "الضريبة",
+    "e-payments": "المدفوعات الإليكترونية",
     "reports_section": "التقارير",
     "reports": "التقارير",
     "locations_section": "المناطق",
     "locations": "إدارة المناطق",
-    "system_settings": "الإعدادات",
+    "system_settings": "إعدادات النظام",
     "website_settings": "إدارة الموقع"
   }
 }

@@ -122,6 +122,8 @@
         }
       }
     },
+    "permissions": "Permissions",
+    "permissions_page": {},
     "products_section": "Products",
     "cards": "Memberships",
     "memberships_page": {
@@ -182,6 +184,7 @@
     "accounts": "Accounts",
     "invoices": "Invoices",
     "tax": "Tax",
+    "e-payments": "Electronic Payments",
     "reports_section": "Reports",
     "reports": "Reports",
     "locations_section": "Locations",
