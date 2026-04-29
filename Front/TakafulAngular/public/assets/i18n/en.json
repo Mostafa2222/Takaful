@@ -62,11 +62,17 @@
       "add": "Add New User",
       "users_table": {
         "ID": "ID",
-        "name": "Full Name",
+        "nameAr": "Full Name",
+        "nameEn": "Full Name",
+        "username": "Username",
+        "password": "Password",
         "phone": "Phone",
+        "country": "Country",
+        "City": "City",
         "email": "Email",
         "role": "Role",
-        "status": "Status",
+        "isActive": "Status",
+        "canPrint": "Can Print",
         "operations": "Operations"
       }
     },

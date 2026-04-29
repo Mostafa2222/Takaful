@@ -20,8 +20,7 @@ public class JwtUtil {
     private final long EXPIRATION = 1000 * 60 * 60 * 24; // 24h
 
     public String generateToken(User user) {
-        Set<String> permissions = user.getRoles().stream()
-                .flatMap(r -> r.getPermissions().stream())
+        Set<String> permissions = user.getRole().getPermissions().stream()
                 .map(Permission::getCode)
                 .collect(Collectors.toSet());
         return Jwts.builder()
@@ -30,7 +29,9 @@ public class JwtUtil {
                 .claim("permissions", permissions)
                 .claim("nameEn", user.getNameEn())
                 .claim("nameAr", user.getNameAr())
-                .claim("roleCode", user.getRoles().stream().map(Role::getNameEn).findFirst().orElse("USER"))
+                .claim("roleNameAr", user.getRole().getNameAr())
+                .claim("roleNameEn", user.getRole().getNameEn())
+//                .claim("roleCode", user.getRoles().stream().map(Role::getName).findFirst().orElse("USER"))
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION))
                 .signWith(Keys.hmacShaKeyFor(SECRET.getBytes()), SignatureAlgorithm.HS256)

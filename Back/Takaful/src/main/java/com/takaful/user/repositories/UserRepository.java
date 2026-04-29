@@ -14,7 +14,7 @@ import org.springframework.data.repository.query.Param;
 public interface UserRepository extends JpaRepository<User, UUID> {
     @Query("""
     SELECT u FROM User u
-    LEFT JOIN FETCH u.roles r
+    LEFT JOIN FETCH u.role r
     LEFT JOIN FETCH r.permissions
     WHERE u.phone = :phone
 """)
@@ -22,7 +22,7 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 
     @Query("""
     SELECT u FROM User u
-    LEFT JOIN FETCH u.roles r
+    LEFT JOIN FETCH u.role r
     LEFT JOIN FETCH r.permissions
     WHERE u.id = :id
 """)

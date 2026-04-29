@@ -5,9 +5,24 @@ import { LayoutComponent } from './components/shared/layout/layout.component';
 import { LoginComponent } from './components/RoutingComponents/login/login.component';
 import { noAuthGuard } from './core/guards/no-auth.guard';
 import { AuthGuard } from './core/guards/auth.guard';
+import { WebsiteLayoutComponent } from './Features/layouts/website-layout/website-layout.component';
 
 const routes: Routes = [
-  // { path: '', redirectTo: 'Content/LegalStatus', pathMatch: 'full' },
+
+  //  WEBSITE (PUBLIC)
+  {
+    path: '',
+    component: WebsiteLayoutComponent,
+    children: [
+      {
+        path: '',
+        loadChildren: () =>
+          import('./Features/website/pages/components/website-content/website.content.module')
+            .then(m => m.WebsiteContentModule)
+      }
+    ]
+  },
+  //  DASHBOARD (PROTECTED)
   {
     path: '',
     component: LayoutComponent,
@@ -19,14 +34,7 @@ const routes: Routes = [
           import('./components/content/content.module').then(
             (m) => m.ContentModule
           ),
-      },
-      {
-        path: 'website',
-        loadChildren: () =>
-          import(
-            './Features/website/pages/components/website-content/website.content.module'
-          ).then((m) => m.WebsiteContentModule),
-      },
+      }
     ],
   },
   { path: 'Login', component: LoginComponent, canActivate: [noAuthGuard] },
@@ -42,4 +50,4 @@ const routes: Routes = [
   ],
   exports: [RouterModule],
 })
-export class AppRoutingModule {}
+export class AppRoutingModule { }

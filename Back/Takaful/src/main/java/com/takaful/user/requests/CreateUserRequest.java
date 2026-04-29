@@ -3,12 +3,12 @@ package com.takaful.user.requests;
 import lombok.Data;
 
 @Data
-public class CreateUserDto {
+public class CreateUserRequest {
         public String username;
         public String nameAr;
         public String nameEn;
-        private String lastNameAr;
-        private String lastNameEn;
+//        private String lastNameAr;
+//        private String lastNameEn;
         public String phone;
         public String email;
         public String password;

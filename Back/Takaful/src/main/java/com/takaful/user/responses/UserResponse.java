@@ -10,16 +10,20 @@ public class UserResponse {
 
     private UUID id;
 
+    private Long userKey;
+
+    private String formattedUserKey;
+
     private String nameAr;
     private String nameEn;
 
-    private String lastNameAr;
-    private String lastNameEn;
+//    private String lastNameAr;
+//    private String lastNameEn;
     private String username;
     private String phone;
     private String email;
-    private String country;
-    private String city;
+//    private String country;
+//    private String city;
     private Boolean isActive;
     private Boolean canPrint;
 

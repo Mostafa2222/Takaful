@@ -1,7 +1,7 @@
 package com.takaful.user.services;
 
 import com.takaful.user.mappers.UserMapper;
-import com.takaful.user.requests.CreateUserDto;
+import com.takaful.user.requests.CreateUserRequest;
 import com.takaful.user.entities.Role;
 import com.takaful.user.entities.User;
 import com.takaful.user.repositories.RoleRepository;
@@ -19,9 +19,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -67,7 +66,6 @@ public class UserService {
 
     }
 
-        System.out.println("users pages:"+users.getTotalPages() +", length:"+users.getTotalElements());
         return new PageResponse<>(
                 users.getContent().stream().map(userMapper::toUserDto).toList(),
                 users.getNumber(),
@@ -76,7 +74,7 @@ public class UserService {
                 users.getTotalPages()
         );
     }
-    public User createUser(CreateUserDto dto, User currentUser) {
+    public User createUser(CreateUserRequest dto, User currentUser) {
 
         Role role = roleRepository.findById(dto.roleId)
                 .orElseThrow(() -> new RuntimeException("Role not found"));
@@ -84,14 +82,15 @@ public class UserService {
         if (currentUser.hasRole("USER") && role.getNameEn().equals("ADMIN")) {
             throw new RuntimeException("Not allowed");
         }
-        // 🔒 Security Logic
-        if(currentUser.hasRole("USER") && !role.getNameEn().equals("AGENT")) {
-            throw new RuntimeException("Not allowed to create this role");
+
+        if(userRepository.findByUsername(dto.getUsername()).isPresent()) {
+            throw new RuntimeException("Username exists");
         }
 
-        if(userRepository.findByUsername(dto.getUsername()).isPresent()){
-            throw new RuntimeException("Username already exists");
+        if(currentUser.hasRole("USER") && !role.getNameEn().equals("AGENT")) {
+            throw new RuntimeException("Not allowed to create this user");
         }
+
 
 //        Optional<User> userOpt = userRepository.findByUsername(dto.getUsername());
 //
@@ -102,13 +101,13 @@ public class UserService {
 
         user.setNameAr(dto.nameAr);
         user.setNameEn(dto.nameEn);
-        user.setLastNameAr(dto.getLastNameAr());
-        user.setLastNameEn(dto.getLastNameEn());
+//        user.setLastNameAr(dto.getLastNameAr());
+//        user.setLastNameEn(dto.getLastNameEn());
         user.setPhone(dto.phone);
         user.setEmail(dto.email);
         user.setUsername(dto.getUsername());
-        user.setCountry(dto.getCountry());
-        user.setCity(dto.getCity());
+//        user.setCountry(dto.getCountry());
+//        user.setCity(dto.getCity());
 
         user.setIsActive(dto.getIsActive() != null ? dto.getIsActive() : true);
         user.setCanPrint(dto.getCanPrint() != null ? dto.getCanPrint() : false);
@@ -116,7 +115,7 @@ public class UserService {
 
         user.setParent(currentUser);
 
-        user.setRoles(Set.of(role));
+        user.setRole(role);
 
         return userRepository.save(user);
     }
@@ -125,12 +124,29 @@ public class UserService {
         return (User) auth.getPrincipal();
     }
 
-    public void registerUser(String rawPassword) {
-        String encodedPassword = passwordEncoder.encode(rawPassword);
-        System.out.println(encodedPassword);
+    public User update(UUID id, CreateUserRequest request) {
+
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        Role role = roleRepository.findById(request.getRoleId())
+                .orElseThrow(() -> new RuntimeException("Role not found"));
+
+        user.setNameAr(request.getNameAr());
+        user.setNameEn(request.getNameEn());
+        user.setUsername(request.getUsername());
+        user.setPhone(request.getPhone());
+        user.setEmail(request.getEmail());
+        user.setPassword(passwordEncoder.encode(request.password));
+        user.setIsActive(request.getIsActive());
+        user.setCanPrint(request.getCanPrint());
+
+        user.setRole(role);
+
+        return userRepository.save(user);
     }
 
-    public boolean checkPassword(String rawPassword, String savedPassword) {
-        return passwordEncoder.matches(rawPassword, savedPassword);
+    public void delete(UUID id) {
+        userRepository.deleteById(id);
     }
 }

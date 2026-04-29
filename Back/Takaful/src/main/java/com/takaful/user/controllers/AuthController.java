@@ -2,9 +2,8 @@ package com.takaful.user.controllers;
 
 import com.takaful.user.repositories.PermissionRepository;
 import com.takaful.user.requests.CreateRoleRequest;
-import com.takaful.user.requests.CreateUserDto;
+import com.takaful.user.requests.CreateUserRequest;
 import com.takaful.user.requests.LoginRequestDto;
-import com.takaful.user.dtos.RoleDto;
 import com.takaful.user.entities.Permission;
 import com.takaful.user.entities.User;
 import com.takaful.user.services.RoleService;
@@ -18,7 +17,6 @@ import com.takaful.user.utils.JwtUtil;
 import jakarta.annotation.PostConstruct;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -27,7 +25,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api")
@@ -95,7 +93,7 @@ public class AuthController {
 
 
     @PutMapping("/roles/{id}/permissions")
-    @PreAuthorize("hasAuthority('VIEW_ROLES')")
+//    @PreAuthorize("hasAuthority('VIEW_ROLES')")
     public void updateRolePermissions(
             @PathVariable Long id,
             @RequestBody @Valid CreateRoleRequest req
@@ -122,11 +120,25 @@ public class AuthController {
 
 
     @PostMapping("/users/add")
-    public User create(@RequestBody CreateUserDto dto, Authentication auth) {
+    @PreAuthorize("hasAuthority('CREATE_USER')")
+    public User create(@RequestBody CreateUserRequest dto, Authentication auth) {
 
         User currentUser = userService.getCurrentUser(auth);
-
         return userService.createUser(dto, currentUser);
+    }
+
+    @PutMapping("/users/{id}")
+    @PreAuthorize("hasAuthority('CREATE_USER')")
+    public void updateUsers(
+            @PathVariable UUID id,
+            @RequestBody @Valid CreateUserRequest req
+    ) {
+        userService.update(id, req);
+    }
+
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable UUID id) {
+        userService.delete(id);
     }
 }
 

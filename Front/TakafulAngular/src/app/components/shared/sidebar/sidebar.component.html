@@ -27,10 +27,11 @@
       </i>
     </button>
 
-    <button class="lang-btn neo-item2" (click)="toggleLang()" 
+    <button class="lang-btn neo-item2 " (click)="toggleLang()" 
     *ngIf="!collapsed">
       <i class="fa fa-globe"></i>
-      {{ currentLang === "ar" ? "EN" : "AR" }}
+      <div><span style="color: var(--sidebar-icon);">{{ currentLang === "ar" ? "EN" : "AR" }}</span></div>
+      
     </button>
   </div>
 
@@ -46,7 +47,7 @@
       <div class="info">
         <div class="name">{{ userName  }}</div>
         <div class="role">
-          {{ 'sidebar.user_profile.roles.' + user?.roleCode | translate }}
+          {{ user?.roleName }}
         </div>
       </div>
   

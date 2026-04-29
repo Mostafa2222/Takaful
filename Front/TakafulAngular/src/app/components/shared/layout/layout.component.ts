@@ -14,16 +14,16 @@ export class LayoutComponent implements OnInit{
     private router:Router,
     public _layoutService:LayoutService,private _treeRest:TreeRestService) {
   }
-    addTreeToStorage() {
-      this._treeRest.getTreeNodesUsingView().subscribe(
-        (res: any) => {
-          // localStorage.removeItem("Tree");
-          // localStorage.setItem("Tree", JSON.stringify(res));
-        },
-        err => {
-          console.error(err);
-        });
-    }
+    // addTreeToStorage() {
+    //   this._treeRest.getTreeNodesUsingView().subscribe(
+    //     (res: any) => {
+    //       // localStorage.removeItem("Tree");
+    //       // localStorage.setItem("Tree", JSON.stringify(res));
+    //     },
+    //     err => {
+    //       console.error(err);
+    //     });
+    // }
   ngOnInit() {
       if (localStorage.getItem('token') === null) {
         this.router.navigate(['/Login']);

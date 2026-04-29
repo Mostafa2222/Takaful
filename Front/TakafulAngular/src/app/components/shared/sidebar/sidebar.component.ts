@@ -30,7 +30,7 @@ export class SidebarComponent implements OnInit {
     private translate: TranslateService,
     private authService: AuthService,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.currentLang = this.translate.currentLang || 'ar';
@@ -127,21 +127,21 @@ export class SidebarComponent implements OnInit {
   getUserFromToken() {
     const token = this.authService.getToken();
     if (!token) return null;
-  
+
     try {
       let base64 = token.split('.')[1];
       base64 = base64.replace(/-/g, '+').replace(/_/g, '/');
-  
+
       const payload = JSON.parse(atob(base64));
-  
+
       const lang = localStorage.getItem('lang') || 'ar';
-  
-      
+
+
       return {
         name: lang === 'ar' ? decodeURIComponent(escape(payload.nameAr)) : payload.nameEn,
-        roleCode: payload.roleCode
+        roleName: lang === 'ar' ? decodeURIComponent(escape(payload.roleNameAr)) : payload.roleNameEn
       };
-  
+
     } catch (e) {
       console.error('Decode error', e);
       return null;

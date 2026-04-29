@@ -16,7 +16,7 @@ const routes: Routes = [
     path: 'roles',
     component: RolesPermissionsComponent,
     canActivate: [PermissionGuard],
-    data: { permission: 'VIEW_ROLES' },
+    data: { permission: 'MANAGE_ROLES' },
   },
   {
     path: 'users',

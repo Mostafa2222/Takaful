@@ -55,7 +55,8 @@
               "node_modules/ngx-toastr/toastr.css",
               "node_modules/primeng/resources/themes/lara-light-indigo/theme.css",
               "node_modules/primeng/resources/primeng.min.css",
-              "node_modules/primeicons/primeicons.css"
+              "node_modules/primeicons/primeicons.css",
+              "public/assets/website/css/style.css"
             ],
             "scripts": [
               "node_modules/jquery/dist/jquery.min.js",
@@ -82,8 +83,9 @@
               "public/assets/js/jqwidgets/jqxbuttons.js" ,
               "public/assets/js/jqwidgets/jqxscrollbar.js" ,
               "public/assets/js/jqwidgets/jqxpanel.js" ,
-              "public/assets/js/jqwidgets/jqxcheckbox.js"
-          ]
+              "public/assets/js/jqwidgets/jqxcheckbox.js",
+              "public/assets/website/js/script.js"
+            ]
           },
           "configurations": {
             "production": {

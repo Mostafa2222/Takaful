@@ -25,8 +25,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         User user = repo.findByPhone(phone);
 
-        Set<String> permissions = user.getRoles().stream()
-                .flatMap(r -> r.getPermissions().stream())
+        Set<String> permissions = user.getRole().getPermissions().stream()
                 .map(Permission::getCode)
                 .collect(Collectors.toSet());
 

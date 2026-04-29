@@ -59,8 +59,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
                 if (user != null) {
 
-                    Set<String> permissions = user.getRoles().stream()
-                            .flatMap(r -> r.getPermissions().stream())
+                    Set<String> permissions = user.getRole().getPermissions().stream()
                             .map(Permission::getCode)
                             .collect(Collectors.toSet());
 
@@ -76,7 +75,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                     SecurityContextHolder.getContext().setAuthentication(auth);
 
                     System.out.println("USER: " + user.getPhone());
-                    System.out.println("USER ROLES: " + user.getRoles());
+                    System.out.println("USER ROLES: " + user.getRole());
                     System.out.println("PERMISSIONS: " + permissions);
                 }
 

@@ -13,11 +13,13 @@ import java.util.Set;
 @Getter @Setter
 public class User extends BaseEntity {
 
+    @Column(name = "user_key")
+    private Long userKey;
     private String nameAr;
     private String nameEn;
 
-    private String lastNameAr;
-    private String lastNameEn;
+//    private String lastNameAr;
+//    private String lastNameEn;
 
     @Column(unique = true)
     private String username;
@@ -38,18 +40,14 @@ public class User extends BaseEntity {
 
     @OneToMany(mappedBy = "parent")
     private List<User> children;
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "user_roles",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id")
-    )
-    private Set<Role> roles;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "role_id")
+    private Role role;
 
     public boolean hasRole(String roleNameEn) {
-        return this.roles.stream()
-                .anyMatch(r -> r.getNameEn().equalsIgnoreCase(roleNameEn));
+        return this.role != null &&
+                this.role.getNameEn().equalsIgnoreCase(roleNameEn);
     }
 }
 

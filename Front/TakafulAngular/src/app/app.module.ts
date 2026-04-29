@@ -28,6 +28,7 @@ import { LoginComponent } from './components/RoutingComponents/login/login.compo
 import { TreeModule } from 'primeng/tree';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { AuthInterceptor } from './core/interceptors/auth.interceptor';
+import { WebsiteLayoutComponent } from './Features/layouts/website-layout/website-layout.component';
 // import { ContextMenuModule } from 'primeng/contextmenu';
 
 
@@ -50,7 +51,8 @@ export function initializeApp(configService: EnvironmentService) {
     LoginComponent,
     ToasteralertComponent,
     LayoutComponent,
-    LoadingComponent
+    LoadingComponent,
+    WebsiteLayoutComponent,
   ],
   imports: [
     CommonModule,

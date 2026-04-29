@@ -13,6 +13,6 @@ public class UserDto {
     private String nameEn;
     private String phone;
 
-    private List<String> roles;
+    private String role;
     private List<String> permissions;
 }

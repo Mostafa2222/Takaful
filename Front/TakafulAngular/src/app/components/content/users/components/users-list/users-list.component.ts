@@ -5,6 +5,7 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { RoleService } from '../../../../../core/services/role.service';
 import { TranslateService } from '@ngx-translate/core';
 import { AuthService } from '../../../../../core/services/auth.service';
+import { AlertService } from '../../../../../helper/Services/alert.service';
 
 @Component({
   selector: 'app-users-list',
@@ -12,9 +13,11 @@ import { AuthService } from '../../../../../core/services/auth.service';
   styleUrl: './users-list.component.css',
 })
 export class UsersListComponent {
+  editingUser: any = null;
+
   users: any[] = [];
   page = 0;
-  size = 2;
+  size = 5;
   totalPages = 0;
   roles: any[] = [];
   loading = false;
@@ -25,24 +28,33 @@ export class UsersListComponent {
   sortField = '';
   sortDirection: 'asc' | 'desc' = 'asc';
   showModal = false;
-  
+  currentLang = this.translate.currentLang || 'ar';
+
   showColumnsMenu = false;
   allColumns = [
-    { field: 'id', label: 'sidebar.users_page.users_table.ID', visible: true },
-    { field: 'nameAr', label: 'sidebar.users_page.users_table.name', visible: true },
+    { field: 'formattedUserKey', label: 'sidebar.users_page.users_table.ID', visible: true },
+    { field: 'nameAr', label: 'sidebar.users_page.users_table.nameAr', visible: true },
+    { field: 'nameEn', label: 'sidebar.users_page.users_table.nameEn', visible: true },
+    { field: 'username', label: 'sidebar.users_page.users_table.username', visible: true },
     { field: 'phone', label: 'sidebar.users_page.users_table.phone', visible: true },
+    // { field: 'country', label: 'sidebar.users_page.users_table.country', visible: true },
+    // { field: 'city', label: 'sidebar.users_page.users_table.city', visible: true },
     { field: 'email', label: 'sidebar.users_page.users_table.email', visible: true },
     { field: 'role', label: 'sidebar.users_page.users_table.role', visible: true },
-    { field: 'status', label: 'sidebar.users_page.users_table.status', visible: true },
+    { field: 'isActive', label: 'sidebar.users_page.users_table.isActive', visible: true },
+    { field: 'canPrint', label: 'sidebar.users_page.users_table.canPrint', visible: true },
+    { field: 'operations', label: 'sidebar.users_page.users_table.operations', visible: true },
   ];
   get visibleColumns() {
     return this.allColumns.filter((c) => c.visible);
   }
   form = this.fb.group({
     nameAr: ['', Validators.required],
-    lastNameAr: [''],
+    nameEn: ['', Validators.required],
     username: ['', Validators.required],
     phone: ['', Validators.required],
+    // country: ['', Validators.required],
+    // city: ['', Validators.required],
     email: ['', [Validators.email]],
     password: ['', Validators.required],
     roleId: [null, Validators.required],
@@ -53,26 +65,37 @@ export class UsersListComponent {
     private userService: UserService,
     private roleService: RoleService,
     private fb: FormBuilder,
-    private translate: TranslateService, 
-    private _authService: AuthService
-  ) {}
+    private translate: TranslateService,
+    private _authService: AuthService,
+    private _alertService: AlertService
+  ) { }
   ngOnInit() {
     this.initColumns();
     this.loadUsers();
     this.loadRoles();
-    this.translate.onLangChange.subscribe(() => {
+
+    this.currentLang = this.translate.currentLang || 'ar';
+
+    this.translate.onLangChange.subscribe((res) => {
+      this.currentLang = res.lang;
       this.initColumns();
     });
   }
 
   initColumns() {
     this.allColumns = [
-      { field: 'id', label: this.translate.instant('sidebar.users_page.users_table.ID'), visible: true },
-      { field: 'nameAr', label: this.translate.instant('sidebar.users_page.users_table.name'), visible: true },
+      { field: 'formattedUserKey', label: this.translate.instant('sidebar.users_page.users_table.ID'), visible: true },
+      { field: 'nameAr', label: this.translate.instant('sidebar.users_page.users_table.nameAr'), visible: true },
+      { field: 'nameEn', label: this.translate.instant('sidebar.users_page.users_table.nameEn'), visible: true },
+      { field: 'username', label: this.translate.instant('sidebar.users_page.users_table.username'), visible: true },
       { field: 'phone', label: this.translate.instant('sidebar.users_page.users_table.phone'), visible: true },
+      // { field: 'country', label: this.translate.instant('sidebar.users_page.users_table.country'), visible: true },
+      // { field: 'city', label: this.translate.instant('sidebar.users_page.users_table.city'), visible: true },
       { field: 'email', label: this.translate.instant('sidebar.users_page.users_table.email'), visible: true },
       { field: 'role', label: this.translate.instant('sidebar.users_page.users_table.role'), visible: true },
-      { field: 'status', label: this.translate.instant('sidebar.users_page.users_table.status'), visible: true },
+      { field: 'isActive', label: this.translate.instant('sidebar.users_page.users_table.isActive'), visible: true },
+      { field: 'canPrint', label: this.translate.instant('sidebar.users_page.users_table.canPrint'), visible: true },
+      { field: 'operations', label: this.translate.instant('sidebar.users_page.users_table.operations'), visible: true }
     ];
   }
   loadUsers() {
@@ -80,19 +103,19 @@ export class UsersListComponent {
       page: this.page,
       size: this.size
     };
-  
+
     if (!this.search || this.search.trim() === '') {
       params.search = null;
     }
     if (this.search) {
       params.search = this.search;
     }
-  
+
     if (this.sortField) {
       params.sort = this.sortField;
       params.direction = this.sortDirection;
     }
-  
+
     this.userService.getUsers(params).subscribe(res => {
       this.users = res.content;
       this.totalPages = res.totalPages;
@@ -100,33 +123,28 @@ export class UsersListComponent {
   }
 
   loadRoles() {
-    
-  this.roleService.getRoles().subscribe((res) => {
+    this.roleService.getRoles().subscribe((res) => {
 
-    const permissions = this._authService.getPermissions(); // 👈 مهم
-    const isAdmin = permissions.includes('MANAGE_USERS'); // أو ROLE_ADMIN
+      const permissions = this._authService.getPermissions();
+      const isAdmin = permissions.includes('MANAGE_ROLES');
 
-    if (isAdmin) {
-      this.roles = res;
-    } else {
-      // 👇 فلترة (حسب الاسم أو ID)
-      this.roles = res.filter(r => r.name === 'AGENT');
-    }
-
-  });
+      if (isAdmin) {
+        this.roles = res;
+      } else {
+        this.roles = res.filter(r => r.nameEn === 'AGENT');
+      }
+    });
   }
 
   onSearch(event: any) {
     clearTimeout(this._debounce);
-  
+
     this._debounce = setTimeout(() => {
       this.search = event.target.value;
       this.page = 0;
       this.loadUsers();
     }, 400);
   }
-  
-
 
   toggleColumnsMenu() {
     this.showColumnsMenu = !this.showColumnsMenu;
@@ -156,7 +174,7 @@ export class UsersListComponent {
     this.page++;
     this.loadUsers();
   }
-  
+
   prev() {
     if (this.page > 0) {
       this.page--;
@@ -174,28 +192,108 @@ export class UsersListComponent {
 
   exportPDF() {
     const doc = new jsPDF();
-  
+
     doc.text('Users Report', 10, 10);
-  
+
     this.users.forEach((u, i) => {
       doc.text(`${u.nameAr} - ${u.phone}`, 10, 20 + (i * 10));
     });
-  
+
     doc.save('users.pdf');
   }
 
   openModal() {
-    this.showModal = true;
-  }
+  this.editingUser = null;
+
+  this.form.reset({
+    isActive: true,
+    canPrint: false
+  });
+
+  this.showModal = true;
+}
 
   close() {
-    this.showModal = false;
+  this.showModal = false;
+  this.editingUser = null;
+}
+
+  edit(user: any) {
+    this.editingUser = user;
+
+    this.form.patchValue({
+      nameAr: user.nameAr,
+      nameEn: user.nameEn,
+      username: user.username,
+      phone: user.phone,
+      // country: user.country,
+      // city: user.city,
+      email: user.email,
+      password: user.password,
+      roleId: user.roleId,
+      isActive: user.isActive,
+      canPrint: user.canPrint
+    });
+
+    this.showModal = true;
+  }
+  delete(user: any) {
+    this._alertService.confirm(
+      this.translate.instant('messages.success.confirm_delete')
+    ).then(confirmed => {
+
+      if (!confirmed) return;
+
+      this._alertService.loading();
+
+      this.userService.delete(user.id).subscribe({
+        next: () => {
+          this._alertService.close();
+          this._alertService.success(
+            this.translate.instant('messages.success.deleted')
+          );
+          this.loadUsers();
+        },
+        error: (err) => {
+          this._alertService.close();
+          this._alertService.error(this.handleError(err));
+        }
+      });
+
+    });
   }
 
+
   submit() {
-    this.userService.create(this.form.value).subscribe(() => {
-      this.close();
-      this.loadUsers();
+    const payload = this.form.value;
+
+    this._alertService.loading();
+
+    const request = this.editingUser
+      ? this.userService.update(this.editingUser.id, payload)
+      : this.userService.create(payload);
+
+    request.subscribe({
+      next: () => {
+        this._alertService.close();
+        this._alertService.success(
+          this.translate.instant('messages.success.saved')
+        );
+
+        this.close();
+        this.loadUsers();
+      },
+      error: (err) => {
+        this._alertService.close();
+        this._alertService.error(this.handleError(err));
+      }
     });
+  }
+
+  handleError(err: any): string {
+    if (err.status === 0) return this.translate.instant('messages.errors.server_down');
+    if (err.status === 401) return this.translate.instant('messages.errors.invalid_credentials');
+    if (err.status === 403) return this.translate.instant('messages.errors.forbidden');
+    return this.translate.instant('messages.errors.unknown');
   }
 }

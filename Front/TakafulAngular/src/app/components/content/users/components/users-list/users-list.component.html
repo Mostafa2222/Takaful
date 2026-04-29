@@ -1,151 +1,173 @@
 <div class="users-page">
 
-    <div class="header">
-      <h2>{{"sidebar.users_page.title" | translate}}</h2>
-  
-      
-      <button class="btn-primary" (click)="openModal()">
-        <i class="fa fa-plus"></i> {{"sidebar.users_page.add" | translate}}
+  <div class="header">
+    <h2>{{"sidebar.users_page.title" | translate}}</h2>
+
+
+    <button class="btn-primary" (click)="openModal()">
+      <i class="fa fa-plus"></i> {{"sidebar.users_page.add" | translate}}
+    </button>
+  </div>
+
+  <!-- 🔍 GLOBAL SEARCH -->
+  <input type="text" placeholder="Search..." (input)="onSearch($event)" />
+
+  <div class="actions">
+
+    <button class="btn" (click)="exportExcel()">
+      <i class="fa fa-file-excel"></i>
+    </button>
+
+    <button class="btn" (click)="exportPDF()">
+      <i class="fa fa-file-pdf"></i>
+    </button>
+
+    <div class="dropdown">
+      <button class="btn" (click)="toggleColumnsMenu()">
+        <i class="fa fa-table"></i>
       </button>
+
+      <div class="menu" *ngIf="showColumnsMenu">
+        <label *ngFor="let col of allColumns">
+          <input type="checkbox" [checked]="col.visible" (change)="toggleColumn(col)" />
+          {{ col.label }}
+        </label>
+      </div>
     </div>
-  
-    <!-- 🔍 GLOBAL SEARCH -->
-    <input
-      type="text"
-      placeholder="Search..."
-      (input)="onSearch($event)"
-    />
-  
-    <div class="actions">
-  
-        <button class="btn" (click)="exportExcel()">
-          <i class="fa fa-file-excel"></i>
-        </button>
-  
-        <button class="btn" (click)="exportPDF()">
-          <i class="fa fa-file-pdf"></i>
-        </button>
-  
-        <div class="dropdown">
-          <button class="btn" (click)="toggleColumnsMenu()">
-            <i class="fa fa-table"></i>
-          </button>
-  
-          <div class="menu" *ngIf="showColumnsMenu">
-            <label *ngFor="let col of allColumns">
-              <input type="checkbox"
-                     [checked]="col.visible"
-                     (change)="toggleColumn(col)" />
-              {{ col.label }}
-            </label>
-          </div>
-        </div>
-      </div>
-    <!-- 📊 TABLE -->
-    <div class="table">
-  
-      <!-- HEADER -->
-      <div class="row header">
-        <ng-container *ngFor="let col of visibleColumns">
-          <span (click)="sort(col.field)">
-            {{ col.label | translate }}
-            <i class="fa fa-sort"></i>
-          </span>
-        </ng-container>
-      </div>
-  
-      <!-- FILTER ROW -->
-      <div class="row filters">
-        <ng-container *ngFor="let col of visibleColumns">
-          <span>
-            <input
-              type="text"
-              (input)="onColumnFilter(col.field, $event)"
-              placeholder="Filter..."
-            />
-          </span>
-        </ng-container>
-      </div>
-  
-      <!-- DATA -->
-      <div class="row" *ngFor="let user of users">
-        <ng-container *ngFor="let col of visibleColumns">
-          <span>
-  
-            <!-- dynamic render -->
+  </div>
+  <!-- 📊 TABLE -->
+  <div class="table-wrapper">
+    <table class="users-table">
+
+      <thead>
+        <tr>
+          <th *ngFor="let col of visibleColumns">
+            <span (click)="sort(col.field)">
+              {{ col.label | translate }}
+              <i class="fa fa-sort"></i>
+            </span>
+          </th>
+        </tr>
+        <tr>
+          <th *ngFor="let col of visibleColumns">
+            <span>
+              <input type="text" (input)="onColumnFilter(col.field, $event)" placeholder="Filter..." />
+            </span>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of users">
+          <td *ngFor="let col of visibleColumns">
             <ng-container [ngSwitch]="col.field">
-  
-              <span *ngSwitchCase="'status'"
-                    [class.active]="user.isActive"
-                    [class.inactive]="!user.isActive">
-                {{ user.isActive ? 'Active' : 'Inactive' }}
+
+              <span *ngSwitchCase="'isActive'" class="status" [class.active]="user.isActive"
+                [class.inactive]="!user.isActive">
+                {{ user.isActive ? currentLang === 'ar'? 'نشط' :'active' : currentLang === 'ar'?
+                'غير نشط' :'inactive' }}
               </span>
-  
+
+              <div *ngSwitchCase="'operations'" class="actions">
+                <button class="icon-btn edit" (click)="edit(user)">✏️</button>
+                <button class="icon-btn delete" (click)="delete(user)">🗑</button>
+              </div>
               <span *ngSwitchDefault>
                 {{ user[col.field] }}
               </span>
-  
+
             </ng-container>
-  
-          </span>
-        </ng-container>
-      </div>
-  
-    </div>
-  
-    <div class="pagination">
-        <button class="btn" (click)="prev()" [disabled]="page === 0">Prev</button>
-      
-        <span>{{ page + 1 }} / {{ totalPages }}</span>
-      
-        <button class="btn" (click)="next()" [disabled]="page + 1 >= totalPages">Next</button>
-      </div>
-  
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
   </div>
+
+  <div class="pagination">
+    <button class="btn" (click)="prev()" [disabled]="page === 0">Prev</button>
+
+    <span>{{ page + 1 }} / {{ totalPages }}</span>
+
+    <button class="btn" (click)="next()" [disabled]="page + 1 >= totalPages">Next</button>
+  </div>
+
+</div>
 
 <div class="modal" *ngIf="showModal">
   <div class="modal-card">
-    <h3>إضافة مستخدم</h3>
+    <div class="modal-header">
+      <h2>{{ editingUser ? currentLang === 'ar'? 'تعديل مستخدم' : 'Edit User' : currentLang === 'ar'?
+        'إضافة مستخدم': 'Add New User' }}</h2>
+      <button (click)="close()" class="btn cancel">✕</button>
+    </div>
 
     <form [formGroup]="form" (ngSubmit)="submit()">
       <div class="grid">
-        <input formControlName="nameAr" placeholder="الاسم الأول" />
-        <input formControlName="lastNameAr" placeholder="الاسم الثاني" />
 
-        <input formControlName="username" placeholder="اسم المستخدم" />
+        <div>
+          <label>{{"sidebar.users_page.users_table.nameAr" | translate}}</label>
+          <input class="form-control" formControlName="nameAr" />
+        </div>
 
-        <input formControlName="phone" placeholder="رقم الجوال" />
-        <input formControlName="email" placeholder="البريد الإلكتروني" />
+        <div>
+          <label>{{"sidebar.users_page.users_table.nameEn" | translate}}</label>
+          <input class="form-control" formControlName="nameEn" />
+        </div>
 
-        <input
-          type="password"
-          formControlName="password"
-          placeholder="كلمة المرور"
-        />
+        <div>
+          <label>{{"sidebar.users_page.users_table.username" | translate}}</label>
+          <input class="form-control" formControlName="username" />
+        </div>
 
-        <select formControlName="roleId">
-          <option *ngFor="let r of roles" [value]="r.id">
-            {{ r.name }}
-          </option>
-        </select>
+        <div>
+          <label>{{"sidebar.users_page.users_table.phone" | translate}}</label>
+          <input class="form-control" formControlName="phone" />
+        </div>
+
+        <div>
+          <label>{{"sidebar.users_page.users_table.email" | translate}}</label>
+          <input class="form-control" formControlName="email" />
+        </div>
+
+        <div>
+          <label>{{"sidebar.users_page.users_table.password" | translate}}</label>
+          <input type="password" class="form-control" formControlName="password" />
+        </div>
+
+        <div class="form-group">
+          <label>{{"sidebar.users_page.users_table.role" | translate}}</label>
+          <select formControlName="roleId" class="form-control">
+            <option *ngFor="let r of roles" [value]="r.id">
+              {{ currentLang === 'ar' ? r.nameAr : r.nameEn }}
+            </option>
+          </select>
+        </div>
       </div>
 
       <div class="toggles">
-        <label>
-          حالة الحساب
+
+        <div class="form-group p-2">
+          <label class="m-2">{{"sidebar.users_page.users_table.isActive" | translate}}</label>
+          &nbsp;
           <input type="checkbox" formControlName="isActive" />
-        </label>
+        </div>
 
-        <label>
-          إمكانية الطباعة
-          <input type="checkbox" formControlName="canPrint" />
-        </label>
+        <div class="form-group p-2">
+          <label class="m-2">{{"sidebar.users_page.users_table.canPrint" | translate}}</label>
+          &nbsp;
+          <input type="checkbox" formControlName="canPrint"/>
+        </div>
+
       </div>
 
-      <div class="actions">
-        <button class="btn text-dark btn-danger" (click)="close()">إلغاء</button>
-        <button class="btn text-dark btn-primary" type="submit">حفظ</button>
-      </div>
+      <div class="modal-footer">
+      <button class="btn cancel" (click)="close()">
+        {{"sidebar.roles_page.roles_modal.cancel" | translate}}
+      </button>
+      <button class="btn save" (click)="submit()">
+        {{"sidebar.roles_page.roles_modal.save" | translate}}
+      </button>
+    </div>
     </form>
   </div>
 </div>

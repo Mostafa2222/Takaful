@@ -13,27 +13,33 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface UserMapper {
 
-    @Mapping(target = "roles", expression = "java(mapRoles(user))")
+    @Mapping(target = "role", expression = "java(mapRole(user))")
     @Mapping(target = "permissions", expression = "java(mapPermissions(user))")
     UserDto toDto(User user);
 
-    default List<String> mapRoles(User user) {
-        return user.getRoles().stream()
-                .map(Role::getNameEn)
-                .toList();
+    default String mapRole(User user) {
+        return user.getRole() != null
+                ? user.getRole().getNameEn()
+                : null;
     }
 
     default List<String> mapPermissions(User user) {
-        return user.getRoles().stream()
-                .flatMap(r -> r.getPermissions().stream())
+        if (user.getRole() == null) return List.of();
+
+        return user.getRole().getPermissions().stream()
                 .map(Permission::getCode)
-                .distinct()
                 .toList();
     }
 
 
-    @Mapping(target = "role", expression = "java(user.getRoles().stream().findFirst().map(r -> r.getNameEn()).orElse(\"\"))")
+    @Mapping(target = "role", expression = "java(mapRole(user))")
+    @Mapping(target = "formattedUserKey", expression = "java(formatUserKey(user.getUserKey()))")
     UserResponse toUserDto(User user);
 
     List<UserResponse> toDtoList(List<User> users);
+
+    default String formatUserKey(Long userKey) {
+        if (userKey == null) return null;
+        return String.format("U-%04d", userKey);
+    }
 }
